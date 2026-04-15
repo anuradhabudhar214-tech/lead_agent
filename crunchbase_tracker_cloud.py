@@ -117,30 +117,46 @@ def compile_auditor_intel_extreme(discovery_package):
     if not key: return "SKIP"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     
+    # Step 1: Extract company name from discovery package
+    company_name = discovery_package.split('|')[0].replace('Title:', '').strip()[:80]
+    
     prompt = f"""
-    AUDIT MISSION: Extract as much UAE startup intelligence as possible from this source.
-    CONTEXT: {discovery_package}
-    
-    INSTRUCTION: Extract the main company and any secondary startups mentioned.
-    1. EXTRACT REAL DATA ONLY. No guesses.
-    2. financials: Only state facts found. If not found, use 'Searching...'.
-    3. ceo_founder: FORMAT AS 'Name (Role) - UNMASKED'.
-    4. registry_status: Only say VERIFIED if the source explicitly confirms it. Otherwise say 'PROBING...'.
-    5. RETURN JSON ONLY.
-    
+    ROLE: Senior UAE Market Intelligence Auditor.
+    MISSION: Perform a deep verification audit on '{company_name}'.
+    SIGNAL SOURCE: {discovery_package}
+
+    AUDIT RULES:
+    1. Use ALL your knowledge about this company. Do NOT just read the snippet.
+    2. GCC ONLY: Must be a real UAE/Dubai/Abu Dhabi entity. If not, score: 0.
+    3. NO Indian/Pakistani rupee companies. UAE-based only.
+    4. ceo_founder: Give real name and role. Format: 'Name (Title)'. 
+    5. financials: State actual funding round if known (e.g. $5M Series A, AED 2M seed). 
+    6. registry_status: Check if registered in UAE registries:
+       - DED Dubai (Dubai Economy & Tourism)  
+       - DCAI (Dubai Chamber of AI)
+       - ADBC Abu Dhabi Business Centre
+       - DIFC (Dubai International Financial Centre)
+       - WAM.ae (UAE State Registry)
+       - "Active Entity - Master Registry" if confirmed active
+       - "Financial Register - Verified" if funding is confirmed
+       If unsure: "PROBING..."
+    7. patron_chairman: UAE government patron or board chairman if known.
+    8. integration_opportunity: Specific IT service they would need from an IT solutions vendor.
+    9. RETURN JSON ONLY. No markdown.
+
     FORMAT:
     {{
-        "company": "string (or 'Ecosystem News' if no specific company)",
+        "company": "string",
         "industry": "string",
-        "confidence_score": int,
-        "strategic_signal": "string (Main summary)",
-        "integration_opportunity": "string",
+        "confidence_score": int (0-100, min 70 to pass),
+        "strategic_signal": "string (1 sentence: what they are doing in UAE right now)",
+        "integration_opportunity": "string (specific IT service opportunity)",
         "patron_chairman": "string",
-        "ceo_founder": "string",
-        "financials": "string",
-        "registry_status": "string"
+        "ceo_founder": "string (Name and Role)",
+        "financials": "string (exact funding amount or stage if known)",
+        "registry_status": "string (UAE registry classification)"
     }}
-    Low quality / No relevance? score: 0.
+    Not a UAE tech company or score below 70? Return: {{"confidence_score": 0}}
     """
     
     payload = {
@@ -158,8 +174,8 @@ def compile_auditor_intel_extreme(discovery_package):
         text = res_data['candidates'][0]['content']['parts'][0]['text']
         data = json.loads(text)
         
-        if data.get("confidence_score", 0) < 40: return "SKIP"
-        if not data.get("company") or data.get("company") == "": data["company"] = "UAE Tech Sector"
+        if data.get("confidence_score", 0) < 70: return "SKIP"
+        if not data.get("company"): return "SKIP"
         data["status"] = "Active" if data.get("confidence_score", 0) >= 85 else "Pending"
         return data
     except Exception as e:
@@ -179,8 +195,8 @@ def compile_auditor_intel_extreme(discovery_package):
                 )
                 data = json.loads(chat_completion.choices[0].message.content)
                 conf = data.get("confidence_score", 0)
-                if conf < 40: return "SKIP"
-                if not data.get("company") or data.get("company") == "": data["company"] = "UAE Tech Sector"
+                if conf < 70: return "SKIP"
+                if not data.get("company"): return "SKIP"
                 data["status"] = "Active" if conf >= 85 else "Pending"
                 return data
             except Exception as ex:
