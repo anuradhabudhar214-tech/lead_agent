@@ -465,10 +465,9 @@
                             lastUpdateEl.innerText = `Paused manually at ${timeStr}`;
                         } else {
                             let nextDate = new Date(runDate);
-                            nextDate.setHours(nextDate.getHours() + 1);
-                            nextDate.setMinutes(0); // Top of next hour
+                            nextDate.setMinutes(nextDate.getMinutes() + 20);
                             let nextTimeStr = nextDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Wake: ${nextTimeStr}`;
+                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Wake: ${nextTimeStr} (~20 min)`;
                         }
                     } catch(e) {
                          lastUpdateEl.innerText = usage.last_run;
