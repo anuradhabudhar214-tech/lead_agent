@@ -451,7 +451,31 @@
                 }
 
                 const lastUpdateEl = document.getElementById('last-update');
-                if (lastUpdateEl) lastUpdateEl.innerText = usage.last_run || 'Recently';
+                if (lastUpdateEl && usage.last_run && usage.last_run !== 'Recently') {
+                    try {
+                        let runDate = new Date(usage.last_run);
+                        if (!usage.last_run.includes('Z') && !usage.last_run.includes('+')) {
+                            runDate = new Date(usage.last_run + 'Z'); 
+                        }
+                        let timeStr = runDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        if (cloudStatus.includes('Hunting') || cloudStatus.includes('Waking')) {
+                            lastUpdateEl.innerText = `Woke up at ${timeStr} (Hunting...)`;
+                        } else if (cloudStatus.includes('Paused')) {
+                            lastUpdateEl.innerText = `Paused manually at ${timeStr}`;
+                        } else {
+                            let nextDate = new Date(runDate);
+                            nextDate.setHours(nextDate.getHours() + 1);
+                            nextDate.setMinutes(0); // Top of next hour
+                            let nextTimeStr = nextDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Wake: ${nextTimeStr}`;
+                        }
+                    } catch(e) {
+                         lastUpdateEl.innerText = usage.last_run;
+                    }
+                } else if (lastUpdateEl) {
+                    lastUpdateEl.innerText = 'Recently';
+                }
             } catch (error) { console.error('Usage Tracking Error:', error); }
         }
 
