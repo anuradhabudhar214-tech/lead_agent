@@ -236,7 +236,16 @@ def run_tracker():
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
         results = serper_search_broad(niche)
         
-        for item in results:
+        for idx, item in enumerate(results):
+            # Instant Kill Switch: Check if user paused via dashboard during the hunt
+            if supabase and idx % 2 == 0:  # Check every 2 items to save API calls
+                try:
+                    res = supabase.table("system_stats").select("status").eq("id", 1).execute()
+                    if res.data and res.data[0].get("status") == "Paused ⏸️":
+                        logger.warning("🛑 INSTANT KILL SWITCH ACTIVATED: Hunt aborted by user.")
+                        return
+                except: pass
+
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Date: {item.get('date')}"
             intel = compile_auditor_intel_extreme(discovery_package)
             
