@@ -3,18 +3,15 @@ import time
 import json
 import logging
 import requests
-from datetime import datetime, timezone, timedelta
-from supabase import create_client, Client
-from groq import Groq
-import google.generativeai as genai
+from datetime import datetime, timezone
 
 # --- CONFIGURATION & LOGGING ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
+# Core Credentials (from Env or Config)
+SUPABASE_URL = os.getenv("SUPABASE_URL") or "https://zsrlgjufmaecmcbqoidd.supabase.co"
+SUPABASE_KEY = os.getenv("SUPABASE_KEY") or "sb_publishable__8ePqXcMLZ9zNaASQBuM_g_e2GUKK3e"
 
 class Vault:
     def __init__(self):
@@ -43,144 +40,110 @@ class Vault:
 
 vault = Vault()
 
+def supabase_call(method, table, data=None, params=None):
+    url = f"{SUPABASE_URL}/rest/v1/{table}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates"
+    }
+    try:
+        if method == "GET":
+            return requests.get(url, headers=headers, params=params).json()
+        elif method == "POST":
+            return requests.post(url, headers=headers, json=data)
+        elif method == "PATCH":
+            return requests.patch(url, headers=headers, json=data, params=params)
+    except Exception as e:
+        logger.error(f"❌ Supabase Error: {e}")
+    return None
+
 def track_cloud_usage(api_name):
-    if not supabase: return
     try:
         col = f"{api_name.lower()}_calls"
-        res = supabase.table("system_stats").select(col).eq("id", 1).execute()
-        if res.data:
-            new_val = (res.data[0].get(col) or 0) + 1
-            supabase.table("system_stats").update({col: new_val, "last_updated": datetime.now(timezone.utc).isoformat()}).eq("id", 1).execute()
+        res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": col})
+        if res:
+            new_val = (res[0].get(col) or 0) + 1
+            supabase_call("PATCH", "system_stats", data={col: new_val, "last_updated": datetime.now(timezone.utc).isoformat()}, params={"id": "eq.1"})
     except: pass
 
 def update_agent_status(status):
-    if not supabase: return
     try:
         data = {"status": status, "last_run_at": datetime.now(timezone.utc).isoformat()}
         if status == "Hunting 🔴":
-            res = supabase.table("system_stats").select("total_scans").eq("id", 1).execute()
-            if res.data: data["total_scans"] = (res.data[0].get("total_scans") or 0) + 1
-        supabase.table("system_stats").update(data).eq("id", 1).execute()
+            res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "total_scans"})
+            if res: data["total_scans"] = (res[0].get("total_scans") or 0) + 1
+        supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
     except: pass
 
-def compile_auditor_intel(discovery_package):
-    """Uses Gemini 2.0 Flash to extract executive intelligence from REAL-TIME Web News."""
-    prompt = f"""
-    AUDIT MISSION: Extract UAE Startup intelligence from this recent NEWS signal.
-    CONTEXT: {discovery_package}
+def compile_auditor_intel_direct(discovery_package):
+    """Dependency-free Gemini API call via raw requests (No google.generativeai needed)."""
+    key = vault.get_gemini_key()
+    if not key: return "SKIP"
     
-    REQUIREMENTS:
-    - Identify the Company Name or Entity doing the tech activity.
-    - Extract Industry (e.g. AI, FinTech, E-Commerce).
-    - Confidence Score (0-100) - and how clearly this is a real business signal in UAE 2026.
-    - Strategic Signal: What happened? (New launch, funding, hire, partnership).
-    - Integration Opportunity: How can a high-end consultant/auditor help them?
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+    prompt = f"AUDIT MISSION: Extract UAE Startup intelligence. RETURN JSON ONLY. Context: {discovery_package}"
     
-    RETURN JSON ONLY:
-    {{
-        "company": "string",
-        "industry": "string",
-        "confidence_score": int,
-        "strategic_signal": "string",
-        "integration_opportunity": "string",
-        "patron_chairman": "string",
-        "ceo_founder": "string",
-        "financials": "string",
-        "registry_status": "string"
-    }}
-    Low quality / No company found? score: 0.
-    """
-    for _ in range(len(vault.gemini_keys)):
-        key = vault.get_gemini_key()
-        if not key: break
-        try:
-            track_cloud_usage("Gemini")
-            genai.configure(api_key=key)
-            model = genai.GenerativeModel('gemini-2.0-flash')
-            response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
-            data = json.loads(response.text)
-            if data.get("confidence_score", 0) < 50: return "SKIP"
-            data["status"] = "Active" if data.get("confidence_score") >= 85 else "Pending"
-            return data
-        except Exception as e:
-            if "429" in str(e): vault.rotate_gemini()
-            continue
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"response_mime_type": "application/json"}
+    }
+    
+    try:
+        track_cloud_usage("Gemini")
+        r = requests.post(url, json=payload, timeout=15)
+        res_data = r.json()
+        text = res_data['candidates'][0]['content']['parts'][0]['text']
+        data = json.loads(text)
+        
+        if data.get("confidence_score") and data["confidence_score"] < 50: return "SKIP"
+        data["status"] = "Active" if data.get("confidence_score", 0) >= 85 else "Pending"
+        return data
+    except Exception as e:
+        logger.error(f"❌ Gemini Direct Error: {e}")
+        vault.rotate_gemini()
     return "SKIP"
 
 def serper_search(query):
-    for _ in range(len(vault.serper_keys)):
-        key = vault.get_serper_key()
-        if not key: return []
-        url = "https://google.serper.dev/search"
-        headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
-        try:
-            track_cloud_usage("Serper")
-            # Past 24 hours only (qdr:d) to ensure April 15 results
-            payload = {"q": query, "num": 10, "tbs": "qdr:d"}
-            response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
-            organic = response.json().get('organic', [])
-            for item in organic: item['published_date'] = item.get('date', 'Live News')
-            return organic
-        except:
-            vault.rotate_serper()
-            continue
+    key = vault.get_serper_key()
+    if not key: return []
+    url = "https://google.serper.dev/search"
+    headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
+    try:
+        track_cloud_usage("Serper")
+        payload = {"q": query, "num": 10, "tbs": "qdr:d"} # Today Only
+        r = requests.post(url, headers=headers, json=payload, timeout=10)
+        organic = r.json().get('organic', [])
+        for item in organic: item['published_date'] = item.get('date', 'Live News')
+        return organic
+    except:
+        vault.rotate_serper()
     return []
 
-def save_to_supabase(leads):
-    if not supabase or not leads: return
-    for lead in leads:
-        try:
-            # We FORCE discovered_at to refresh so the user sees "Today's Updates" 
-            # for every company found in today's scan.
-            data = {
-                "company": lead.get("company"),
-                "industry": lead.get("industry"),
-                "confidence_score": lead.get("confidence_score"),
-                "patron_chairman": lead.get("patron_chairman"),
-                "ceo_founder": lead.get("ceo_founder"),
-                "financials": lead.get("financials"),
-                "strategic_signal": lead.get("strategic_signal"),
-                "integration_opportunity": lead.get("integration_opportunity"),
-                "registry_status": lead.get("registry_status"),
-                "url": lead.get("url"),
-                "status": lead.get("status", "Pending"),
-                "published_date": lead.get("published_date", "Recently"),
-                "discovered_at": datetime.now(timezone.utc).isoformat() 
-            }
-            supabase.table("uae_leads").upsert(data, on_conflict="company").execute()
-            logger.info(f"✅ SYNC: {lead.get('company')} to Cloud DB (Refreshed for Today).")
-        except: pass
-
 def run_tracker():
-    # We remove the seen_urls check for the 'Daily' freshness scan 
-    # to ensure that if a company is mentioned in NEW news today, it updates.
-    
-    # --- GLOBAL NEWS QUERIES ---
+    # Final aggressive April 15 niches
     niches = [
-        "new tech startup company UAE news April 15 2026",
-        "UAE startups funding announcements Dubai Abu Dhabi today",
-        "Dubai Silicon Oasis latest startups news 2026",
-        "Abu Dhabi Hub71 startups funding news today April 15",
-        "UAE tech ecosystem news launched today 2026",
-        "Dubai blockchain startups funding news April 2026"
+        "new tech startup UAE news April 15 2026",
+        "Dubai funding announcement April 2026",
+        "Abu Dhabi Hub71 startups news April 15",
+        "UAE Venture Capital latest funding Dubai 2026"
     ]
-    
     niche = niches[int(time.time() / 300) % len(niches)] 
     logger.info(f"🚀 GLOBAL NEWS SCOUT: '{niche}'...")
     
     raw_results = serper_search(niche)
     for item in raw_results:
-        link = item.get('link')
-        if not link: continue
+        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {item.get('link')}"
+        intel = compile_auditor_intel_direct(discovery_package)
         
-        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link} | Published: {item.get('published_date')}"
-        logger.info(f"🔍 AUDITING NEWS: {item.get('title')[:40]}...")
-        intel = compile_auditor_intel(discovery_package)
-        
-        if isinstance(intel, dict):
-            intel['url'] = link
-            save_to_supabase([intel])
-            
+        if isinstance(intel, dict) and intel.get("company"):
+            intel['url'] = item.get('link')
+            intel['published_date'] = item.get('published_date', 'April 15, 2026')
+            intel['discovered_at'] = datetime.now(timezone.utc).isoformat()
+            supabase_call("POST", "uae_leads", data=intel)
+            logger.info(f"✅ SYNC: {intel['company']} to Cloud DB.")
+
 if __name__ == "__main__":
     update_agent_status("Hunting 🔴")
     try:
