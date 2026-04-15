@@ -28,10 +28,14 @@ class Vault:
                 self.config = json.load(f)
         serper_env = os.getenv("SERPER_API_KEYS", "")
         gemini_env = os.getenv("GEMINI_API_KEYS", "")
-        self.serper_keys = [k for k in serper_env.split(",") if k] or self.config.get("SERPER_API_KEYS", [])
-        self.gemini_keys = [k for k in gemini_env.split(",") if k] or self.config.get("GEMINI_API_KEYS", [])
+        groq_env = os.getenv("GROQ_API_KEYS", "") or os.getenv("GROQ_API_KEY", "")
+        self.serper_keys = [k.strip() for k in serper_env.split(",") if k.strip()] or self.config.get("SERPER_API_KEYS", [])
+        self.gemini_keys = [k.strip() for k in gemini_env.split(",") if k.strip()] or self.config.get("GEMINI_API_KEYS", [])
+        self.groq_keys = [k.strip() for k in groq_env.split(",") if k.strip()] or self.config.get("GROQ_API_KEY", [])
+        if isinstance(self.groq_keys, str): self.groq_keys = [self.groq_keys]
         self.serper_idx = 0
         self.gemini_idx = 0
+        self.groq_idx = 0
 
     def get_serper_key(self):
         return self.serper_keys[self.serper_idx % len(self.serper_keys)] if self.serper_keys else None
@@ -46,6 +50,13 @@ class Vault:
     def rotate_gemini(self):
         self.gemini_idx += 1
         logger.info(f"🔄 Rotated Gemini Key")
+
+    def get_groq_key(self):
+        return self.groq_keys[self.groq_idx % len(self.groq_keys)] if self.groq_keys else None
+
+    def rotate_groq(self):
+        self.groq_idx += 1
+        logger.info(f"🔄 Rotated Groq Key")
 
 vault = Vault()
 
@@ -182,7 +193,7 @@ def compile_auditor_intel_extreme(discovery_package):
         logger.error(f"⚠️ Gemini Exhausted/Error: {e}")
         vault.rotate_gemini()
         # FALLBACK: GROQ
-        groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
+        groq_key = vault.get_groq_key()
         if groq_key:
             try:
                 logger.info(f"⚡ FALLBACK: Groq Activated")
@@ -200,7 +211,8 @@ def compile_auditor_intel_extreme(discovery_package):
                 data["status"] = "Active" if conf >= 85 else "Pending"
                 return data
             except Exception as ex:
-                logger.error(f"❌ Final Fallback Error: {ex}")
+                logger.error(f"❌ Groq Error: {ex}")
+                vault.rotate_groq()
     return "SKIP"
 
 def serper_search_broad(query):
