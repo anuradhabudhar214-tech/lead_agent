@@ -70,11 +70,11 @@ def compile_auditor_intel(discovery_package):
     CONTEXT: {discovery_package}
     
     REQUIREMENTS:
-    - Identify the Company Name.
-    - Extract Industry (e.g. AI, Fintech).
-    - Confidence Score (0-100) based on how clearly this is a UAE business signal from 2026.
-    - Strategic Signal: News summary (Funding, Expansion, Hiring).
-    - Executive Info: CEO or Founder.
+    - Identify the Company Name or Entity doing the tech activity.
+    - Extract Industry (e.g. AI, FinTech, E-Commerce).
+    - Confidence Score (0-100) - and how clearly this is a real business signal in UAE 2026.
+    - Strategic Signal: What happened? (New launch, funding, hire, partnership).
+    - Integration Opportunity: How can a high-end consultant/auditor help them?
     
     RETURN JSON ONLY:
     {{
@@ -115,7 +115,7 @@ def serper_search(query):
         headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
         try:
             track_cloud_usage("Serper")
-            # Past 24 hours only for today's freshness
+            # Past 24 hours only (qdr:d) to ensure April 15 results
             payload = {"q": query, "num": 10, "tbs": "qdr:d"}
             response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             organic = response.json().get('organic', [])
@@ -130,6 +130,8 @@ def save_to_supabase(leads):
     if not supabase or not leads: return
     for lead in leads:
         try:
+            # We FORCE discovered_at to refresh so the user sees "Today's Updates" 
+            # for every company found in today's scan.
             data = {
                 "company": lead.get("company"),
                 "industry": lead.get("industry"),
@@ -143,38 +145,33 @@ def save_to_supabase(leads):
                 "url": lead.get("url"),
                 "status": lead.get("status", "Pending"),
                 "published_date": lead.get("published_date", "Recently"),
-                "discovered_at": datetime.now(timezone.utc).isoformat() # Force TODAY
+                "discovered_at": datetime.now(timezone.utc).isoformat() 
             }
             supabase.table("uae_leads").upsert(data, on_conflict="company").execute()
-            logger.info(f"✅ SYNC: {lead.get('company')} to Cloud DB.")
+            logger.info(f"✅ SYNC: {lead.get('company')} to Cloud DB (Refreshed for Today).")
         except: pass
 
 def run_tracker():
-    seen_urls = []
-    if supabase:
-        try:
-            res = supabase.table("uae_leads").select("url").execute()
-            seen_urls = [r['url'] for r in res.data] if res.data else []
-        except: pass
-
-    # --- DEEP WEB NEWS QUERIES (NO CRUNCHBASE LOCK) ---
+    # We remove the seen_urls check for the 'Daily' freshness scan 
+    # to ensure that if a company is mentioned in NEW news today, it updates.
+    
+    # --- GLOBAL NEWS QUERIES ---
     niches = [
-        "new tech startup company launched Dubai Abu Dhabi news April 2026",
-        "UAE Venture Capital funding latest announcements April 15 2026",
-        "Dubai Silicon Oasis startup expansion April 2026",
-        "Abu Dhabi Hub71 startups funding news today",
-        "UAE Ministry of Economy tech project launch 2026",
-        "Dubai Digital Twin AI startup news April 15",
-        "UAE new software company set up Dubai 2026 news"
+        "new tech startup company UAE news April 15 2026",
+        "UAE startups funding announcements Dubai Abu Dhabi today",
+        "Dubai Silicon Oasis latest startups news 2026",
+        "Abu Dhabi Hub71 startups funding news today April 15",
+        "UAE tech ecosystem news launched today 2026",
+        "Dubai blockchain startups funding news April 2026"
     ]
     
-    niche = niches[int(time.time() / 300) % len(niches)] # Rotate every 5 mins
+    niche = niches[int(time.time() / 300) % len(niches)] 
     logger.info(f"🚀 GLOBAL NEWS SCOUT: '{niche}'...")
     
     raw_results = serper_search(niche)
     for item in raw_results:
         link = item.get('link')
-        if not link or link in seen_urls: continue
+        if not link: continue
         
         discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link} | Published: {item.get('published_date')}"
         logger.info(f"🔍 AUDITING NEWS: {item.get('title')[:40]}...")
