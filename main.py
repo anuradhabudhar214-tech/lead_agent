@@ -14,7 +14,7 @@ supabase: Client = None
 if SUPABASE_URL and SUPABASE_KEY:
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-@app.get("/api/leads")
+@app.get("/api/updates")
 async def get_leads():
     """Fetches leads from the professional cloud database."""
     if not supabase:
@@ -67,10 +67,7 @@ async def read_root():
     path = "static/index.html" if os.path.exists("static/index.html") else "index.html"
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
-            html = f.read()
-            # Inject a small script to point to our API
-            html = html.replace('fetch("/api/updates")', 'fetch("/api/leads")')
-            return html
+            return HTMLResponse(content=f.read())
     return "<h1>Dashboard UI Missing</h1>"
 
 if __name__ == "__main__":
