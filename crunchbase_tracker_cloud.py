@@ -271,10 +271,10 @@ def run_tracker():
     ]
     
     # Process 2 niches per run to stay under your 3000/day target velocity
-    current_niches = [niches[int(time.time() / 300) % len(niches)], 
-                      niches[(int(time.time() / 300) + 1) % len(niches)]]
+    selected_niches = [current_niches[int(time.time() / 300) % len(current_niches)], 
+                       current_niches[(int(time.time() / 300) + 1) % len(current_niches)]]
                       
-    for niche in current_niches:
+    for niche in selected_niches:
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
         results = serper_search_broad(niche)
         
