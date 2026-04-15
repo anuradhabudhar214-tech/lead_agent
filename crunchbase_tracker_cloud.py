@@ -5,14 +5,19 @@ import logging
 import requests
 import csv
 from datetime import datetime, timezone
+from groq import Groq
 
 # --- CONFIGURATION & LOGGING ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+from supabase import create_client, Client
+
 # Core Credentials (from Env or Config)
 SUPABASE_URL = os.getenv("SUPABASE_URL") or "https://zsrlgjufmaecmcbqoidd.supabase.co"
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") or "sb_publishable__8ePqXcMLZ9zNaASQBuM_g_e2GUKK3e"
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
+
 CSV_FILE = "enterprise_leads.csv"
 
 class Vault:
@@ -21,8 +26,10 @@ class Vault:
         if os.path.exists("config.json"):
             with open("config.json", "r") as f:
                 self.config = json.load(f)
-        self.serper_keys = os.getenv("SERPER_API_KEYS", "").split(",") or self.config.get("SERPER_API_KEYS", [])
-        self.gemini_keys = os.getenv("GEMINI_API_KEYS", "").split(",") or self.config.get("GEMINI_API_KEYS", [])
+        serper_env = os.getenv("SERPER_API_KEYS", "")
+        gemini_env = os.getenv("GEMINI_API_KEYS", "")
+        self.serper_keys = [k for k in serper_env.split(",") if k] or self.config.get("SERPER_API_KEYS", [])
+        self.gemini_keys = [k for k in gemini_env.split(",") if k] or self.config.get("GEMINI_API_KEYS", [])
         self.serper_idx = 0
         self.gemini_idx = 0
 
@@ -123,16 +130,17 @@ def compile_auditor_intel_extreme(discovery_package):
     
     FORMAT:
     {{
-        "company": "string",
+        "company": "string (or 'Ecosystem News' if no specific company)",
         "industry": "string",
         "confidence_score": int,
-        "strategic_signal": "string",
+        "strategic_signal": "string (Main summary)",
         "integration_opportunity": "string",
         "patron_chairman": "string",
         "ceo_founder": "string",
         "financials": "string",
         "registry_status": "string"
     }}
+    Low quality / No relevance? score: 0.
     """
     
     payload = {
@@ -144,31 +152,61 @@ def compile_auditor_intel_extreme(discovery_package):
         track_cloud_usage("Gemini")
         r = requests.post(url, json=payload, timeout=15)
         res_data = r.json()
+        if 'error' in res_data:
+            if res_data['error'].get('code') == 429:
+                raise Exception("429 Quota Exceeded")
         text = res_data['candidates'][0]['content']['parts'][0]['text']
         data = json.loads(text)
         
-        if data.get("confidence_score", 0) < 50: return "SKIP"
+        if data.get("confidence_score", 0) < 40: return "SKIP"
+        if not data.get("company") or data.get("company") == "": data["company"] = "UAE Tech Sector"
         data["status"] = "Active" if data.get("confidence_score", 0) >= 85 else "Pending"
         return data
     except Exception as e:
-        logger.error(f"❌ Gemini Extreme Error: {e}")
+        logger.error(f"⚠️ Gemini Exhausted/Error: {e}")
         vault.rotate_gemini()
+        # FALLBACK: GROQ
+        groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
+        if groq_key:
+            try:
+                logger.info(f"⚡ FALLBACK: Groq Activated")
+                track_cloud_usage("Groq")
+                client_groq = Groq(api_key=groq_key)
+                chat_completion = client_groq.chat.completions.create(
+                    messages=[{"role": "user", "content": prompt}],
+                    model="llama-3.3-70b-versatile",
+                    response_format={"type": "json_object"}
+                )
+                data = json.loads(chat_completion.choices[0].message.content)
+                conf = data.get("confidence_score", 0)
+                if conf < 40: return "SKIP"
+                if not data.get("company") or data.get("company") == "": data["company"] = "UAE Tech Sector"
+                data["status"] = "Active" if conf >= 85 else "Pending"
+                return data
+            except Exception as ex:
+                logger.error(f"❌ Final Fallback Error: {ex}")
     return "SKIP"
 
 def serper_search_broad(query):
     """Max-Volume Serper discovery (50 results per call)."""
-    key = vault.get_serper_key()
-    if not key: return []
-    url = "https://google.serper.dev/search"
-    headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
-    try:
-        track_cloud_usage("Serper")
-        # num: 50 for max results per credit spent
-        payload = {"q": query, "num": 50, "tbs": "qdr:d"} 
-        r = requests.post(url, headers=headers, json=payload, timeout=10)
-        return r.json().get('organic', [])
-    except:
-        vault.rotate_serper()
+    for _ in range(len(vault.serper_keys)):
+        key = vault.get_serper_key()
+        if not key: return []
+        url = "https://google.serper.dev/search"
+        headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
+        try:
+            track_cloud_usage("Serper")
+            # num: 50 for max results per credit spent
+            payload = {"q": query, "num": 50, "tbs": "qdr:d"} 
+            r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
+            res_data = r.json()
+            if 'organic' in res_data:
+                return res_data['organic']
+            # If no organic results, it might be an error or quota exceeded.
+            vault.rotate_serper()
+        except:
+            vault.rotate_serper()
+            continue
     return []
 
 def run_tracker():
@@ -197,7 +235,11 @@ def run_tracker():
                 intel['discovered_at'] = datetime.now(timezone.utc).isoformat()
                 
                 # --- DUAL STORAGE: Supabase + CSV ---
-                supabase_call("POST", "uae_leads", data=intel)
+                if supabase:
+                    try:
+                        supabase.table("uae_leads").upsert(intel, on_conflict="company").execute()
+                    except Exception as e:
+                        logger.error(f"❌ DB Error: {e}")
                 save_to_csv(intel)
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
