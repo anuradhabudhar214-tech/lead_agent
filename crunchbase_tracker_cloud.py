@@ -222,10 +222,17 @@ def run_tracker():
 
     update_agent_status("Hunting 🔴")
     niches = [
+        # Deep Database Profiling (For detailed funding and decision-makers)
+        "site:crunchbase.com/organization UAE Series A funding 2026",
+        "site:apollo.io/companies Dubai technology hiring 2026",
+        "site:crunchbase.com/organization Abu Dhabi startups 2026",
+        "site:apollo.io/companies UAE artificial intelligence",
+        
+        # High-Velocity Live News (For breaking signals)
         "Dubai AI and Blockchain startups investment news 2026",
+        "UAE Tech ecosystem expansion recruitment 2026",
         "UAE Venture Capital funding rounds today",
-        "Abu Dhabi Hub71 startups funding announcements April 2026",
-        "UAE Tech ecosystem expansion recruitment 2026"
+        "Abu Dhabi Hub71 startups funding announcements April 2026"
     ]
     
     # Process 2 niches per run to stay under your 3000/day target velocity
