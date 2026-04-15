@@ -42,6 +42,10 @@ jobs:
         run: |
           git config --global user.name "Desert Intel Bot"
           git config --global user.email "bot@desertintel.ae"
-          git add enterprise_leads.csv
-          git commit -m "📊 Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"
-          git push origin main
+          if [ -f enterprise_leads.csv ]; then
+            git add enterprise_leads.csv
+            git commit -m "📊 Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"
+            git push origin main || echo "Push skipped"
+          else
+            echo "No CSV file generated this run, skipping commit."
+          fi
