@@ -317,39 +317,17 @@
     </div>
 
     <script>
-        async function fetchState() {
-            try {
-                const response = await fetch('/api/state');
-                const data = await response.json();
-                
-                document.getElementById('status-text').innerText = data.status;
-                document.getElementById('current-task').innerText = data.current_task;
-                document.getElementById('last-update').innerText = data.last_update;
-
-                if (data.current_task.includes('Niche')) {
-                    document.getElementById('current-niche').innerText = data.current_task;
-                }
-
-                const dot = document.getElementById('status-dot');
-                if (data.status === 'Running') {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            } catch (error) {
-                console.error('Error fetching state:', error);
-            }
-        }
-
+        // --- DATA FETCHING ---
         async function fetchUpdates() {
             try {
                 const response = await fetch('/api/updates');
                 const updates = await response.json();
                 
                 const table = document.getElementById('updates-table');
+                if (!table) return;
+                
                 table.innerHTML = '';
                 
-                // Safety check: ensure we have an array of leads
                 if (!Array.isArray(updates)) {
                     console.error('Leads feed in Setup Mode or offline:', updates);
                     table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">📡 Agent is initializing or Database is not connected...</td></tr>`;
@@ -364,12 +342,10 @@
                 let lastDate = "";
 
                 updates.forEach((item, index) => {
-                    // Extract Date and Format (e.g., April 15, 2026)
                     const rawDate = item.discovered_at || '';
                     const dateObj = new Date(rawDate);
                     const groupDate = !isNaN(dateObj) ? dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently Discovered';
 
-                    // Inject High-Contrast Date Divider if day changes
                     if (groupDate !== lastDate) {
                         const divider = document.createElement('tr');
                         divider.className = "date-header-row";
@@ -391,8 +367,6 @@
                     let isVerified = item.status === "Active" || confidence >= 85;
                     let scoreColor = isVerified ? "var(--green)" : "#fbbf24";
                     
-                    let scoreDisplay = `<div style="font-size: 1.5rem; font-weight: 800; color: ${scoreColor}; text-align: center;">${confidence}%</div><div style="font-size: 0.65rem; color: var(--text-dim); text-align: center; text-transform: uppercase;">Confidence</div>`;
-
                     const financials = item.financials || '—';
                     const finColor = (financials.includes('UNVERIFIED')) ? '#fbbf24' : 'var(--text-bright)';
                     const registryStatus = item.registry_status || 'Checking...';
@@ -403,88 +377,28 @@
                         `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">PENDING</span>`;
 
                     const actionBtns = (item.status === "Pending") ? `
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
-                        </div>
+                        <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
                     ` : `<div style="text-align: right; color: var(--green); font-size: 0.75rem; font-weight: 700;">✓ IN MASTER</div>`;
 
-                    row.style.background = isVerified ? 'transparent' : 'rgba(251, 191, 36, 0.01)';
                     row.innerHTML = `
-                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; font-size: 0.9rem; width: 60px;">
-                            #${updates.length - index}
-                        </td>
+                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; width: 60px;">#${updates.length - index}</td>
                         <td>
-                            <div style="display: flex; align-items: center;">
-                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-bright);">${item.company}</div>
-                                ${auditBadge}
-                            </div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-bright);">${item.company} ${auditBadge}</div>
                             <div style="display: flex; gap: 10px; margin: 4px 0;">
                                 <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Registry: ${registryStatus}</div>
                                 <div style="color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">📰 Source: ${item.published_date || 'Live Signal'}</div>
                             </div>
-                            <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.2); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; margin-top: 8px;">
-                                <strong style="color: var(--green); font-size: 0.7rem; display: block; margin-bottom: 2px; letter-spacing: 1px;">⚡ INTEGRATION OPPORTUNITY</strong>
-                                ${item.integration_opportunity}
-                            </div>
+                            <div style="background: rgba(16, 185, 129, 0.05); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: var(--text-dim); margin-top: 8px;">${item.integration_opportunity}</div>
                         </td>
-                        <td>
-                            <div style="font-size: 0.95rem; font-weight: 700; color: ${finColor};">${financials}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">
-                                <strong style="color: var(--accent);">Industry:</strong> ${item.industry || 'Tech/AI'}
-                            </div>
-                        </td>
-                        <td>
-                            <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">
-                                <span style="display: block; color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">🚀 2026 STRATEGIC SIGNAL</span>
-                                ${item.strategic_signal || 'Processing...'}
-                            </div>
-                        </td>
-                        <td>
-                            ${scoreDisplay}
-                        </td>
-                        <td>
-                            <div style="margin-bottom: 8px; background: rgba(251, 191, 36, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid #fbbf24; font-size: 0.85rem;">
-                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px;">Patron / Chairman</span>
-                                👤 ${item.patron_chairman || 'Checking...'}
-                            </div>
-                            <div style="background: rgba(16, 185, 129, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid var(--green); font-size: 0.9rem; font-weight: 600; color: var(--text-bright);">
-                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px;">CEO / Founder (Unmasked)</span>
-                                👤 ${item.ceo_founder || 'Hunting...'}
-                            </div>
-                        </td>
-                        <td>
-                            ${actionBtns}
-                        </td>
+                        <td><div style="font-size: 0.95rem; font-weight: 700; color: ${finColor};">${financials}</div></td>
+                        <td><div style="background: rgba(99, 102, 241, 0.05); padding: 12px; border-radius: 8px; font-size: 0.9rem;">${item.strategic_signal}</div></td>
+                        <td><div style="font-size: 1.5rem; font-weight: 800; color: ${scoreColor}; text-align: center;">${confidence}%</div></td>
+                        <td>👤 ${item.ceo_founder || 'Hunting...'}</td>
+                        <td>${actionBtns}</td>
                     `;
                     table.appendChild(row);
                 });
-            } catch (error) {
-                console.error('Error fetching updates:', error);
-            }
-        }
-
-        async function verifyLead(company) {
-            if (!confirm(`Move ${company} to Master Verified List?`)) return;
-            try {
-                const response = await fetch('/api/verify', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ company })
-                });
-                if (response.ok) refreshData();
-            } catch (e) { alert('Verify failed'); }
-        }
-
-        async function discardLead(company) {
-            if (!confirm(`Discard ${company}?`)) return;
-            try {
-                const response = await fetch('/api/discard', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ company })
-                });
-                if (response.ok) refreshData();
-            } catch (e) { alert('Discard failed'); }
+            } catch (error) { console.error('Error fetching updates:', error); }
         }
 
         async function fetchUsage() {
@@ -492,55 +406,48 @@
                 const response = await fetch('/api/usage');
                 const usage = await response.json();
                 
-                // Update Usage Counters
-                document.getElementById('serper-usage').innerText = usage.Serper || 0;
-                document.getElementById('gemini-usage').innerText = usage.Gemini || 0;
-                document.getElementById('groq-usage').innerText = usage.Groq || 0;
-                document.getElementById('total-scans').innerText = usage.total_scans || 0;
-                document.getElementById('today-insights').innerText = usage.today_count || 0;
-                document.getElementById('total-updates').innerText = usage.total_leads || 0;
+                const updateEl = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = val || 0;
+                };
 
-                // Update Live Cloud Hunter Status
+                updateEl('serper-usage', usage.Serper);
+                updateEl('gemini-usage', usage.Gemini);
+                updateEl('groq-usage', usage.Groq);
+                updateEl('total-scans', usage.total_scans);
+                updateEl('today-insights', usage.today_count);
+                updateEl('total-updates', usage.total_leads);
+
                 const statusDot = document.getElementById('status-dot');
                 const statusText = document.getElementById('status-text');
                 const cloudStatus = usage.status || 'Sleeping 💤';
                 
-                statusText.innerText = `Cloud Engine: ${cloudStatus}`;
-                if (cloudStatus.includes('Hunting')) {
-                    statusDot.classList.add('active'); // Pulse only when hunting
-                    statusDot.style.background = "#ef4444"; // Red
-                } else {
-                    statusDot.classList.remove('active'); // Steady when sleeping
-                    statusDot.style.background = "#10b981"; // Green
+                if (statusText) statusText.innerText = `Cloud Engine: ${cloudStatus}`;
+                if (statusDot) {
+                    if (cloudStatus.includes('Hunting')) {
+                        statusDot.classList.add('active');
+                        statusDot.style.background = "#ef4444";
+                    } else {
+                        statusDot.classList.remove('active');
+                        statusDot.style.background = "#10b981";
+                    }
                 }
 
-                // Update Last Scan Time if available
                 const lastUpdateEl = document.getElementById('last-update');
-                if (lastUpdateEl && usage.last_run && usage.last_run !== "Never") {
-                    lastUpdateEl.innerText = usage.last_run;
-                }
-            } catch (error) {
-                console.error('Error fetching usage:', error);
-            }
+                if (lastUpdateEl && usage.last_run) lastUpdateEl.innerText = usage.last_run;
+            } catch (error) { console.error('Error fetching usage:', error); }
         }
 
-        async function startAgent() {
-            await fetch('/api/start', { method: 'POST' });
-            setTimeout(refreshData, 1000);
-        }
-
-        async function stopAgent() {
-            await fetch('/api/stop', { method: 'POST' });
-            setTimeout(refreshData, 1000);
+        async function verifyLead(company) {
+            await fetch('/api/verify', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ company }) });
+            refreshData();
         }
 
         function refreshData() {
-            fetchState();
             fetchUpdates();
             fetchUsage();
         }
 
-        // Auto-refresh
         setInterval(refreshData, 5000);
         refreshData();
     </script>
