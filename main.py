@@ -58,9 +58,9 @@ async def get_state():
 
 @app.get("/api/usage")
 async def get_usage():
-    """Returns the real usage statistics from the cloud database."""
+    """Returns the real usage statistics and live engine status."""
     if not supabase:
-        return {"Serper": 0, "Gemini": 0, "Groq": 0}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Offline", "last_run": "Never"}
     
     try:
         res = supabase.table("system_stats").select("*").eq("id", 1).execute()
@@ -69,12 +69,13 @@ async def get_usage():
             return {
                 "Serper": stats.get("serper_calls", 0),
                 "Gemini": stats.get("gemini_calls", 0),
-                "Groq": stats.get("groq_calls", 0)
+                "Groq": stats.get("groq_calls", 0),
+                "status": stats.get("status", "Sleeping 💤"),
+                "last_run": stats.get("last_run_at", "Recently")
             }
-        return {"Serper": 0, "Gemini": 0, "Groq": 0}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "last_run": "N/A"}
     except Exception as e:
-        # Fallback for when the table doesn't exist yet
-        return {"Serper": 0, "Gemini": 0, "Groq": 0}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Setup Required", "last_run": "N/A"}
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():

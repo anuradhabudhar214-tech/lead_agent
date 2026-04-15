@@ -249,13 +249,13 @@
         </header>
 
         <div class="grid">
-            <div class="card stats-card">
-                <span class="label">Current Task</span>
-                <span id="current-task" class="value">Idle</span>
+            <div class="card stats-card" style="border-bottom: 3px solid var(--accent);">
+                <span class="label">Auto-Hunt Frequency</span>
+                <span class="value" style="color: var(--accent);">HOURLY</span>
             </div>
-            <div class="card stats-card">
-                <span class="label">Last Scan</span>
-                <span id="last-update" class="value">Never</span>
+            <div class="card stats-card" style="border-bottom: 3px solid var(--green);">
+                <span class="label">Last Intelligent Scan</span>
+                <span id="last-update" class="value" style="font-size: 1rem;">Analyzing...</span>
             </div>
             <div class="card stats-card">
                 <span class="label">Total Insights</span>
@@ -473,9 +473,30 @@
             try {
                 const response = await fetch('/api/usage');
                 const usage = await response.json();
+                
+                // Update Usage Counters
                 document.getElementById('serper-usage').innerText = usage.Serper || 0;
                 document.getElementById('gemini-usage').innerText = usage.Gemini || 0;
                 document.getElementById('groq-usage').innerText = usage.Groq || 0;
+
+                // Update Live Cloud Hunter Status
+                const statusDot = document.getElementById('status-dot');
+                const statusText = document.getElementById('status-text');
+                const cloudStatus = usage.status || 'Sleeping 💤';
+                
+                statusText.innerText = `Cloud Engine: ${cloudStatus}`;
+                if (cloudStatus.includes('Hunting')) {
+                    statusDot.classList.add('active');
+                    statusDot.style.background = "#ef4444"; // Red for Hunting
+                } else {
+                    statusDot.classList.remove('active');
+                    statusDot.style.background = "#10b981"; // Green for Resting
+                }
+
+                // Update Last Scan Time if available
+                if (usage.last_run && usage.last_run !== "Never") {
+                    document.getElementById('last-update').innerText = usage.last_run;
+                }
             } catch (error) {
                 console.error('Error fetching usage:', error);
             }

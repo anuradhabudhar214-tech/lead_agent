@@ -73,20 +73,28 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL els
 
 def track_cloud_usage(api_name):
     """Increments the usage counters in Supabase for the dashboard."""
+def track_cloud_usage(call_type):
+    """Updates the statistics and live status in the cloud DB."""
     if not supabase: return
     try:
-        # Use RPC if available, or fetch-then-update
-        column = "serper_calls" if api_name == "Serper" else "gemini_calls" if api_name == "Gemini" else "groq_calls"
-        
-        # Atomically increment in Supabase using a raw RPC or just a sequence of read-write
-        # For simplicity in this setup, we'll do an update with a subquery-like logic if possible, 
-        # but since we want it 100% reliable, we'll do a simple increment.
-        res = supabase.table("system_stats").select(column).eq("id", 1).execute()
-        if res.data:
-            current_val = res.data[0].get(column, 0)
-            supabase.table("system_stats").update({column: current_val + 1, "last_updated": "now()"}).eq("id", 1).execute()
+        if call_type == "Serper":
+            supabase.rpc("increment_serper", {"row_id": 1}).execute()
+        elif call_type == "Gemini":
+            supabase.rpc("increment_gemini", {"row_id": 1}).execute()
+        elif call_type == "Groq":
+            supabase.rpc("increment_groq", {"row_id": 1}).execute()
     except Exception as e:
         logger.debug(f"Usage tracking failed: {e}")
+
+def update_agent_status(status):
+    """Updates the live engine status (Hunting/Sleeping) in the DB."""
+    if not supabase: return
+    try:
+        data = {"id": 1, "status": status, "last_run_at": "now()"}
+        supabase.table("system_stats").upsert(data, on_conflict="id").execute()
+        logger.info(f"📡 AGENT STATUS: {status}")
+    except Exception as e:
+        logger.debug(f"Status update failed: {e}")
 
 def compile_auditor_intel(discovery_package):
     """Deep Auditor with Auto-Extraction. discovery_package contains title, snippet, link."""
@@ -157,7 +165,9 @@ def serper_search(query):
         headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
         try:
             track_cloud_usage("Serper")
-            response = requests.post(url, headers=headers, data=json.dumps({"q": query, "num": 10}), timeout=10)
+            # Added tbs: qdr:w to ensure results from the last 7 days only
+            payload = {"q": query, "num": 10, "tbs": "qdr:w"}
+            response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             res_data = response.json()
             if response.status_code != 200:
                 vault.rotate_serper()
@@ -223,4 +233,8 @@ def run_tracker():
             logger.info(f"⏭️ SKIPPING: Discovery (Low Signal Strength)")
             
 if __name__ == "__main__":
-    run_tracker()
+    update_agent_status("Hunting 🔴")
+    try:
+        run_tracker()
+    finally:
+        update_agent_status("Sleeping 💤")
