@@ -215,7 +215,22 @@ def run_tracker():
             seen_urls = [r['url'] for r in res.data] if res.data else []
         except: pass
 
-    niches = vault.config.get("NICHES", ["UAE AI startups 2026"])
+    # --- HIGH VELOCITY UAE 2026 NICHES ---
+    niches = [
+        "Dubai AI and Blockchain startups investment news April 2026",
+        "UAE Venture Capital funding rounds 2026 list",
+        "Abu Dhabi Hub71 startups funding announcements April 2026",
+        "DIFC FinTech hive new startups funding 2026",
+        "UAE Tech startups hiring CEO April 2026",
+        "Dubai Digital Transformation new projects funding 2026",
+        "Abu Dhabi HealthTech new investments 2026",
+        "UAE CyberSecurity startups expansion Dubai 2026",
+        "MENA Region tech startups series A funding 2026",
+        "Dubai Digital Economy expansion news April 2026",
+        "UAE new software house launch Dubai 2026",
+        "Top AI companies in UAE raising funds 2026"
+    ]
+    # Rotate niche based on the current hour to ensure 24/7 diversity
     niche = niches[int(time.time() / 3600) % len(niches)]
     # Target specific Crunchbase profiles for "Clear" results
     target_query = f"site:crunchbase.com organization UAE {niche} 2026"
