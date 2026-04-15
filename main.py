@@ -25,7 +25,7 @@ async def get_leads():
         res = supabase.table("uae_leads")\
             .select("*")\
             .order("discovered_at", desc=True)\
-            .limit(500)\
+            .limit(1000)\
             .execute()
         return res.data
     except Exception as e:
