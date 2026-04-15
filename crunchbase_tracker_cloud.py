@@ -77,25 +77,25 @@ def update_agent_status(status):
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
     except: pass
 
-def compile_auditor_intel_direct(discovery_package):
-    """Dependency-free Gemini API call with 'Premium Pattern' enforcement."""
+def compile_auditor_intel_deep(discovery_news, probing_results):
+    """Dependency-free Gemini 2.0 call with multi-source validation."""
     key = vault.get_gemini_key()
     if not key: return "SKIP"
     
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     
-    # --- PREMIUM PATTERN ENFORCEMENT PROMPT ---
     prompt = f"""
-    AUDIT MISSION: Extract UAE Startup intelligence from the following signal.
-    CONTEXT: {discovery_package}
+    AUDIT MISSION: Final Fact Verification for UAE Intelligence.
+    SOURCE A (Discovery News): {discovery_news}
+    SOURCE B (Deep Probing Results): {probing_results}
     
-    CRITICAL FORMATTING RULES (MATCH SCREENSHOT PATTERN):
-    1. company: Absolute name (e.g. UAE's AI, Norbloc).
-    2. financials: Must start with currency and amount. Example: 'USD $7.82 billion (2025) and USD $46.33 billion (projected by 2030)'. If unknown, use 'USD $1.2M (Estimated Seed)'.
-    3. strategic_signal: Brief high-impact summary. 
-    4. ceo_founder: FORMAT AS 'Name (Role) - UNMASKED'. Example: 'Ali Sajwani (Managing Director, DAMAC) - UNMASKED'. If unknown, find Founder/Chairman.
-    5. registry_status: Use 'VERIFIED WITH WAM.AE AND LINKEDIN' if the lead is a national or high-authority entity. Otherwise use 'VERIFIED WITH DED AND LINKEDIN'.
-    6. confidence_score: 0-100. (85+ marks as AUDITED).
+    STRICT REQUIREMENTS:
+    1. EXTRACT REAL DATA ONLY. If financial data (funding, revenue) is not EXPLICITLY stated in Source A or B, use "Searching...". No estimates.
+    2. company: Exact legal or trade name.
+    3. financials: Specific amounts only (e.g. 'USD $50M'). No patterns or guesses.
+    4. ceo_founder: FORMAT AS 'Name (Role) - UNMASKED'. ONLY use names confirmed in the sources.
+    5. registry_status: Use 'VERIFIED WITH WAM.AE' or 'VERIFIED WITH DED' only if Source B confirms a listing. Otherwise use 'UNVERIFIED'.
+    6. confidence_score: 0-100 logic.
     
     RETURN JSON ONLY:
     {{
@@ -109,7 +109,7 @@ def compile_auditor_intel_direct(discovery_package):
         "financials": "string",
         "registry_status": "string"
     }}
-    If signal is low quality, return confidence_score: 0.
+    Low quality or no confirmed company? score: 0.
     """
     
     payload = {
@@ -128,51 +128,84 @@ def compile_auditor_intel_direct(discovery_package):
         data["status"] = "Active" if data.get("confidence_score", 0) >= 85 else "Pending"
         return data
     except Exception as e:
-        logger.error(f"❌ Gemini Direct Error: {e}")
+        logger.error(f"❌ Gemini Deep Error: {e}")
         vault.rotate_gemini()
     return "SKIP"
 
-def serper_search(query):
+def serper_search(query, timeframe="qdr:d"):
     key = vault.get_serper_key()
     if not key: return []
     url = "https://google.serper.dev/search"
     headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
     try:
         track_cloud_usage("Serper")
-        payload = {"q": query, "num": 10, "tbs": "qdr:d"} # Today Only
+        payload = {"q": query, "num": 10}
+        if timeframe: payload["tbs"] = timeframe
         r = requests.post(url, headers=headers, json=payload, timeout=10)
-        organic = r.json().get('organic', [])
-        for item in organic: item['published_date'] = item.get('date', 'Live News')
-        return organic
+        return r.json().get('organic', [])
     except:
         vault.rotate_serper()
     return []
 
+def identify_company_simple(title, snippet):
+    """Min-cost identification for deep probing."""
+    key = vault.get_gemini_key()
+    if not key: return None
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+    prompt = f"Extract the ONE main UAE company name mentioned in this news title/snippet. Respond with ONLY the name or 'NONE'. \nTitle: {title}\nSnippet: {snippet}"
+    payload = {"contents": [{"parts": [{"text": prompt}]}]}
+    try:
+        r = requests.post(url, json=payload, timeout=10)
+        name = r.json()['candidates'][0]['content']['parts'][0]['text'].strip()
+        return None if name == "NONE" else name
+    except: return None
+
 def run_tracker():
-    # Final aggressive April 15 niches
+    update_agent_status("Hunting 🔴")
     niches = [
         "new tech startup UAE news April 15 2026",
-        "Dubai funding announcement April 2026",
-        "Abu Dhabi Hub71 startups news April 15",
-        "UAE Venture Capital latest funding Dubai 2026"
+        "Dubai funding announcement today",
+        "Abu Dhabi Hub71 startups news today",
+        "UAE tech ecosystem expansion 2026"
     ]
-    niche = niches[int(time.time() / 300) % len(niches)] 
-    logger.info(f"🚀 GLOBAL NEWS SCOUT: '{niche}'...")
+    niche = niches[int(time.time() / 600) % len(niches)] 
+    logger.info(f"🚀 PHASE 1: DISCOVERY - '{niche}'...")
     
-    raw_results = serper_search(niche)
-    for item in raw_results:
-        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {item.get('link')}"
-        intel = compile_auditor_intel_direct(discovery_package)
+    news_results = serper_search(niche)
+    
+    for item in news_results:
+        link = item.get('link')
+        if not link: continue
+        
+        # --- Stage 2: Identification ---
+        company_name = identify_company_simple(item.get('title'), item.get('snippet'))
+        if not company_name: continue
+        
+        logger.info(f"🔍 PHASE 2: DEEP PROBE - '{company_name}'...")
+        
+        # --- Stage 3: Deep Verification Search ---
+        probe_query = f'"{company_name}" UAE License DED site:ded.ae OR site:wam.ae OR site:linkedin.com financials funding 2026'
+        probing_results = serper_search(probe_query, timeframe=None) # Comprehensive search
+        
+        probe_context = " | ".join([f"T: {p.get('title')} S: {p.get('snippet')}" for p in probing_results[:5]])
+        news_context = f"Title: {item.get('title')} Snippet: {item.get('snippet')}"
+        
+        # --- Stage 4: High-Fidelity Extraction ---
+        intel = compile_auditor_intel_deep(news_context, probe_context)
         
         if isinstance(intel, dict) and intel.get("company"):
-            intel['url'] = item.get('link')
-            intel['published_date'] = item.get('published_date', 'April 15, 2026')
+            intel['url'] = link
+            intel['published_date'] = item.get('date', 'April 15, 2026')
             intel['discovered_at'] = datetime.now(timezone.utc).isoformat()
+            
+            # --- Anti-Hallucination Polish ---
+            if "USD" not in str(intel.get("financials", "")):
+                intel["financials"] = "Searching..."
+            
             supabase_call("POST", "uae_leads", data=intel)
-            logger.info(f"✅ SYNC: {intel['company']} to Cloud DB.")
+            logger.info(f"✅ DEEP SYNC: {intel['company']} (Fact-Verified).")
 
 if __name__ == "__main__":
-    update_agent_status("Hunting 🔴")
     try:
         run_tracker()
     finally:

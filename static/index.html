@@ -369,7 +369,7 @@
                     let scoreColor = isVerified ? "var(--green)" : "#fbbf24";
                     
                     const financials = item.financials || '—';
-                    const finColor = (financials.includes('UNVERIFIED')) ? '#fbbf24' : 'var(--text-bright)';
+                    const finColor = (financials.includes('UNVERIFIED') || financials.includes('Searching') || financials.includes('Hunting')) ? '#fbbf24' : 'var(--text-bright)';
                     const registryStatus = item.registry_status || 'Checking...';
                     const regColor = (registryStatus.includes('VERIFIED')) ? 'var(--green)' : '#fbbf24';
                     
