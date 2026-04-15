@@ -82,11 +82,37 @@ def compile_auditor_intel(company_name):
         try:
             logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini...")
             client = genai.Client(api_key=key)
-            response = client.models.generate_content(
-                model='gemini-1.5-flash',
-                contents=prompt,
-                config={'response_mime_type': 'application/json'}
-            )
+            
+            # Try a couple of model variants to avoid 404
+            model_to_use = 'gemini-1.5-flash'
+            try:
+                response = client.models.generate_content(
+                    model=model_to_use,
+                    contents=prompt,
+                    config={'response_mime_type': 'application/json'}
+                )
+            except Exception as e:
+                if "404" in str(e):
+                    logger.warning("⚠️ Model variant 404. Listing available models for key...")
+                    try:
+                        avail = [m.name for m in client.models.list()]
+                        logger.info(f"📋 AVAILABLE MODELS: {avail}")
+                        # Automatically pick the first flash model available
+                        flash_models = [m for m in avail if 'flash' in m.lower()]
+                        if flash_models:
+                            model_to_use = flash_models[0].replace('models/', '')
+                            logger.info(f"♻️ AUTO-PICKED: {model_to_use}")
+                            response = client.models.generate_content(
+                                model=model_to_use,
+                                contents=prompt,
+                                config={'response_mime_type': 'application/json'}
+                            )
+                        else:
+                            raise e
+                    except:
+                        raise e
+                else:
+                    raise e
             
             data = json.loads(response.text)
             if data.get("confidence_score", 0) < 70: return "SKIP"
@@ -109,7 +135,9 @@ def compile_auditor_intel(company_name):
                 model="llama-3.3-70b-versatile",
                 response_format={"type": "json_object"}
             )
-            return json.loads(chat_completion.choices[0].message.content)
+            data = json.loads(chat_completion.choices[0].message.content)
+            if data.get("confidence_score", 0) < 70: return "SKIP"
+            return data
         except Exception as e:
             logger.error(f"❌ Final Fallback Error: {e}")
     
