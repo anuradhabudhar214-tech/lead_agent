@@ -37,3 +37,11 @@ jobs:
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
         run: |
           python crunchbase_tracker_cloud.py
+
+      - name: 📁 Persist Local Intelligence (CSV Backup)
+        run: |
+          git config --global user.name "Desert Intel Bot"
+          git config --global user.email "bot@desertintel.ae"
+          git add enterprise_leads.csv
+          git commit -m "📊 Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"
+          git push origin main
