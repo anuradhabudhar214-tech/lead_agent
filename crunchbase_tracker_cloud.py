@@ -88,20 +88,19 @@ def track_cloud_usage(api_name):
     except Exception as e:
         logger.debug(f"Usage tracking failed: {e}")
 
-def compile_auditor_intel(company_name):
-    """Infinite Audit Engine with Auto-Rotation using confirmed available cloud models."""
-    prompt = f"ROLE: Senior UAE Auditor. OBJ: Deep Audit '{company_name}'. Instructions: Extract verified signals from WAM.ae, LinkedIn patterns, and 2026 Dubai registry news. Rules: GCC Only, No Rupees, Full JSON. fields: industry, financials, strategic_signal (2026 Focus), integration_opportunity, registry_status (Verified via WAM/LinkedIn), ceo_founder (Unmasked), patron_chairman, confidence_score (80-100 for clear leads). OUT: JSON."
+def compile_auditor_intel(discovery_package):
+    """Deep Auditor with Auto-Extraction. discovery_package contains title, snippet, link."""
+    prompt = f"ROLE: Senior UAE Auditor. OBJ: Deep Audit this discovery: {discovery_package}. Instructions: 1. Identify the SINGLE most promising UAE startup. 2. Extract verified signals from WAM.ae, LinkedIn patterns, and 2026 Dubai registry news. 3. Return full JSON. fields: company, industry, financials, strategic_signal (2026 Focus), integration_opportunity, registry_status (Verified via WAM/LinkedIn), ceo_founder (Unmasked), patron_chairman, confidence_score (80-100 for clear leads). OUT: JSON."
     
     # Try all Gemini Keys before giving up
     for _ in range(len(vault.gemini_keys)):
         key = vault.get_gemini_key()
         if not key: break
         try:
-            logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini 2.0...")
+            logger.info(f"💎 DEEP AUDIT: Analyzing discovery package with Gemini 2.0...")
             client = genai.Client(api_key=key)
             track_cloud_usage("Gemini")
             
-            # Use Gemini 2.0 Flash (Confirmed available via Diag)
             response = client.models.generate_content(
                 model='gemini-2.0-flash',
                 contents=prompt,
@@ -110,6 +109,8 @@ def compile_auditor_intel(company_name):
             
             data = json.loads(response.text)
             if data.get("confidence_score", 0) < 75: return "SKIP"
+            # Ensure we have a company name
+            if not data.get("company") or data.get("company").lower().startswith("top "): return "SKIP"
             return data
         except Exception as e:
             if "429" in str(e) or "limit" in str(e).lower():
@@ -191,26 +192,27 @@ def run_tracker():
 
     niches = vault.config.get("NICHES", ["UAE AI startups 2026"])
     niche = niches[int(time.time() / 3600) % len(niches)]
-    target_query = f"new company registration UAE {niche} April 2026"
-    logger.info(f"🚀 24/7 HUNT: Targeting new {niche} companies...")
+    # Target specific Crunchbase profiles for "Clear" results
+    target_query = f"site:crunchbase.com organization UAE {niche} 2026"
+    logger.info(f"🚀 24/7 HUNT: Targeting 'Clear' {niche} profiles...")
     
     raw_results = serper_search(target_query)
     for item in raw_results:
         link = item.get('link')
         if not link or link in seen_urls: continue
         
-        # Extract potential company name from snippet
-        company = item.get('title', '').split("-")[0].strip()
-        logger.info(f"🔍 AUDITING: {company}...")
-        intel = compile_auditor_intel(company)
+        # Pass the full discovery context to the AI for extraction
+        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link}"
+        logger.info(f"🔍 AUDITING DISCOVERY: {item.get('title')[:50]}...")
+        intel = compile_auditor_intel(discovery_package)
         
         if isinstance(intel, dict):
             intel['url'] = link
-            logger.info(f"💎 FOUND: {company} | Score: {intel.get('confidence_score')}%")
+            company = intel.get('company')
+            logger.info(f"💎 FOUND CLEAR LEAD: {company} | Score: {intel.get('confidence_score')}%")
             save_to_supabase([intel])
         elif intel == "SKIP":
-            # STOP: Don't clutter Supabase with low-quality Discarded leads anymore
-            logger.info(f"⏭️ SKIPPING: {company} (Low Signal Strength)")
+            logger.info(f"⏭️ SKIPPING: Discovery (Low Signal Strength)")
             
 if __name__ == "__main__":
     run_tracker()
