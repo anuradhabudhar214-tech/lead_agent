@@ -121,7 +121,7 @@ def serper_search(query):
         try:
             response = requests.post(url, headers=headers, data=json.dumps({"q": query, "num": 10}), timeout=10)
             res_data = response.json()
-            if "credits" in str(res_data).lower() or response.status_code == 403:
+            if response.status_code != 200:
                 vault.rotate_serper()
                 continue
             return res_data.get('organic', [])
