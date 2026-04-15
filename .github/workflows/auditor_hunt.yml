@@ -4,7 +4,6 @@ on:
   schedule:
     # Trigger every 1 hour
     - cron: '0 * * * *'
-on:
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
