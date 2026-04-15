@@ -58,24 +58,40 @@ async def get_state():
 
 @app.get("/api/usage")
 async def get_usage():
-    """Returns the real usage statistics and live engine status."""
+    """Returns real usage statistics, live status, and daily lead counts."""
     if not supabase:
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Offline", "last_run": "Never"}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}
     
     try:
-        res = supabase.table("system_stats").select("*").eq("id", 1).execute()
-        if res.data:
-            stats = res.data[0]
+        # Get general stats
+        usage_res = supabase.table("system_stats").select("*").eq("id", 1).execute()
+        
+        # Get total lead count
+        total_res = supabase.table("uae_leads").select("id", count="exact").execute()
+        total_leads = total_res.count if total_res else 0
+        
+        # Get today's lead count (last 24 hours)
+        # Using a simple RPC or raw query via restful API
+        import datetime
+        yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).isoformat()
+        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gt", yesterday).execute()
+        today_count = today_res.count if today_res else 0
+
+        if usage_res.data:
+            stats = usage_res.data[0]
             return {
                 "Serper": stats.get("serper_calls", 0),
                 "Gemini": stats.get("gemini_calls", 0),
                 "Groq": stats.get("groq_calls", 0),
+                "total_scans": stats.get("total_scans", 0),
                 "status": stats.get("status", "Sleeping 💤"),
-                "last_run": stats.get("last_run_at", "Recently")
+                "last_run": stats.get("last_run_at", "Recently"),
+                "today_count": today_count,
+                "total_leads": total_leads
             }
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "last_run": "N/A"}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
     except Exception as e:
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Setup Required", "last_run": "N/A"}
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():

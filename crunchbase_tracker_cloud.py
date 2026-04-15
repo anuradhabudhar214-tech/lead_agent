@@ -87,9 +87,13 @@ def track_cloud_usage(call_type):
         logger.debug(f"Usage tracking failed: {e}")
 
 def update_agent_status(status):
-    """Updates the live engine status (Hunting/Sleeping) in the DB."""
+    """Updates the live engine status (Hunting/Sleeping) and scan count."""
     if not supabase: return
     try:
+        # Increment total scans if starting a new hunt
+        if "Hunting" in status:
+            supabase.rpc("increment_total_scans", {"row_id": 1}).execute()
+            
         data = {"id": 1, "status": status, "last_run_at": "now()"}
         supabase.table("system_stats").upsert(data, on_conflict="id").execute()
         logger.info(f"📡 AGENT STATUS: {status}")
@@ -169,10 +173,12 @@ def serper_search(query):
             payload = {"q": query, "num": 10, "tbs": "qdr:w"}
             response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             res_data = response.json()
-            if response.status_code != 200:
-                vault.rotate_serper()
-                continue
-            return res_data.get('organic', [])
+            organic = res_data.get('organic', [])
+            
+            # Enrich organic results with their publish dates if available
+            for item in organic:
+                item['published_date'] = item.get('date', 'Recently')
+            return organic
         except:
             vault.rotate_serper()
             continue
@@ -193,7 +199,8 @@ def save_to_supabase(leads):
                 "integration_opportunity": lead.get("integration_opportunity"),
                 "registry_status": lead.get("registry_status"),
                 "url": lead.get("url"),
-                "status": lead.get("status", "Pending")
+                "status": lead.get("status", "Pending"),
+                "published_date": lead.get("published_date", "Recently")
             }
             supabase.table("uae_leads").upsert(data, on_conflict="company").execute()
             logger.info(f"✅ SYNC: {lead.get('company')} to Cloud DB.")
@@ -220,12 +227,13 @@ def run_tracker():
         if not link or link in seen_urls: continue
         
         # Pass the full discovery context to the AI for extraction
-        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link}"
+        discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link} | Published: {item.get('published_date')}"
         logger.info(f"🔍 AUDITING DISCOVERY: {item.get('title')[:50]}...")
         intel = compile_auditor_intel(discovery_package)
         
         if isinstance(intel, dict):
             intel['url'] = link
+            intel['published_date'] = item.get('published_date')
             company = intel.get('company')
             logger.info(f"💎 FOUND CLEAR LEAD: {company} | Score: {intel.get('confidence_score')}%")
             save_to_supabase([intel])

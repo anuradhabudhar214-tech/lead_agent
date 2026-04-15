@@ -253,13 +253,17 @@
                 <span class="label">Auto-Hunt Frequency</span>
                 <span class="value" style="color: var(--accent);">HOURLY</span>
             </div>
-            <div class="card stats-card" style="border-bottom: 3px solid var(--green);">
-                <span class="label">Last Intelligent Scan</span>
-                <span id="last-update" class="value" style="font-size: 1rem;">Analyzing...</span>
+            <div class="card stats-card" style="border-bottom: 3px solid #60a5fa; background: rgba(96, 165, 250, 0.05);">
+                <span class="label">📅 Found Today</span>
+                <span id="today-insights" class="value" style="color: #60a5fa;">0</span>
             </div>
-            <div class="card stats-card">
+            <div class="card stats-card" style="border-bottom: 3px solid var(--green);">
                 <span class="label">Total Insights</span>
                 <span id="total-updates" class="value">0</span>
+            </div>
+            <div class="card stats-card stats-half" style="border-left: 2px solid var(--accent);">
+                <span class="label">🤖 Total Scan Cycles</span>
+                <span id="total-scans" class="value" style="color: var(--accent); font-size: 1.2rem;">0</span>
             </div>
             <div class="card stats-card stats-half">
                 <span class="label">Serper Search Queries</span>
@@ -341,7 +345,7 @@
                 const response = await fetch('/api/updates');
                 const updates = await response.json();
                 
-                document.getElementById('total-updates').innerText = updates.length;
+                // document.getElementById('total-updates').innerText = updates.length; // Handled by usage API now
                 
                 const table = document.getElementById('updates-table');
                 table.innerHTML = '';
@@ -403,7 +407,10 @@
                                 <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-bright);">${item.company}</div>
                                 ${auditBadge}
                             </div>
-                            <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 4px 0;">Registry: ${registryStatus}</div>
+                            <div style="display: flex; gap: 10px; margin: 4px 0;">
+                                <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Registry: ${registryStatus}</div>
+                                <div style="color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">📰 Source: ${item.published_date || 'Live Signal'}</div>
+                            </div>
                             <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.2); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; margin-top: 8px;">
                                 <strong style="color: var(--green); font-size: 0.7rem; display: block; margin-bottom: 2px; letter-spacing: 1px;">⚡ INTEGRATION OPPORTUNITY</strong>
                                 ${item.integration_opportunity}
@@ -478,6 +485,9 @@
                 document.getElementById('serper-usage').innerText = usage.Serper || 0;
                 document.getElementById('gemini-usage').innerText = usage.Gemini || 0;
                 document.getElementById('groq-usage').innerText = usage.Groq || 0;
+                document.getElementById('total-scans').innerText = usage.total_scans || 0;
+                document.getElementById('today-insights').innerText = usage.today_count || 0;
+                document.getElementById('total-updates').innerText = usage.total_leads || 0;
 
                 // Update Live Cloud Hunter Status
                 const statusDot = document.getElementById('status-dot');
