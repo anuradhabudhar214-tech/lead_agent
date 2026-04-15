@@ -66,15 +66,15 @@ async def get_usage():
         res = supabase.table("system_stats").select("*").eq("id", 1).execute()
         if res.data:
             stats = res.data[0]
-            # Map column names if they differ
             return {
                 "Serper": stats.get("serper_calls", 0),
                 "Gemini": stats.get("gemini_calls", 0),
                 "Groq": stats.get("groq_calls", 0)
             }
         return {"Serper": 0, "Gemini": 0, "Groq": 0}
-    except:
-        return {"Serper": "Err", "Gemini": "Err", "Groq": "Err"}
+    except Exception as e:
+        # Fallback for when the table doesn't exist yet
+        return {"Serper": 0, "Gemini": 0, "Groq": 0}
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():

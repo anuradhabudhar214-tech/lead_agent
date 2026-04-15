@@ -108,9 +108,15 @@ def compile_auditor_intel(discovery_package):
             )
             
             data = json.loads(response.text)
-            if data.get("confidence_score", 0) < 75: return "SKIP"
+            conf = data.get("confidence_score", 0)
+            
+            # Yesterday's Logic: 50%+ is a lead (Pending), 85%+ is Audited/Active
+            if conf < 50: return "SKIP"
+            
             # Ensure we have a company name
             if not data.get("company") or data.get("company").lower().startswith("top "): return "SKIP"
+            
+            data["status"] = "Active" if conf >= 85 else "Pending"
             return data
         except Exception as e:
             if "429" in str(e) or "limit" in str(e).lower():
@@ -124,7 +130,7 @@ def compile_auditor_intel(discovery_package):
     groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
     if groq_key:
         try:
-            logger.info(f"⚡ FALLBACK: Groq Pro Brain for '{company_name}'")
+            logger.info(f"⚡ FALLBACK: Groq Pro Brain for '{company_name if 'company_name' in locals() else 'package'}'")
             track_cloud_usage("Groq")
             client_groq = Groq(api_key=groq_key)
             chat_completion = client_groq.chat.completions.create(
@@ -133,7 +139,9 @@ def compile_auditor_intel(discovery_package):
                 response_format={"type": "json_object"}
             )
             data = json.loads(chat_completion.choices[0].message.content)
-            if data.get("confidence_score", 0) < 75: return "SKIP"
+            conf = data.get("confidence_score", 0)
+            if conf < 50: return "SKIP"
+            data["status"] = "Active" if conf >= 85 else "Pending"
             return data
         except Exception as e:
             logger.error(f"❌ Final Fallback Error: {e}")

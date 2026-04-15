@@ -349,88 +349,88 @@
                 let lastDate = "";
 
                 updates.forEach((item, index) => {
-                    const fullDate = item.discovered_at || 'Recently';
-                    const dayOnly = fullDate.split(' ')[0];
+                    // Extract Date and Format (e.g., April 15, 2026)
+                    const rawDate = item.discovered_at || '';
+                    const dateObj = new Date(rawDate);
+                    const groupDate = !isNaN(dateObj) ? dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently Discovered';
 
-                    // Inject Date Divider if day changes
-                    if (dayOnly !== lastDate) {
+                    // Inject High-Contrast Date Divider if day changes
+                    if (groupDate !== lastDate) {
                         const divider = document.createElement('tr');
-                        divider.style.background = "rgba(99, 102, 241, 0.05)";
+                        divider.className = "date-header-row";
                         divider.innerHTML = `
-                            <td colspan="7" style="padding: 20px; border-bottom: 2px solid var(--accent);">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--accent); letter-spacing: 1px;">📅 ${dayOnly}</span>
-                                    <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">— New Intelligence Cycle Initiated</span>
+                            <td colspan="7" style="padding: 30px 20px 10px 20px; border-bottom: none;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div style="height: 2px; flex: 1; background: linear-gradient(to right, var(--accent), transparent);"></div>
+                                    <span style="font-size: 1.2rem; font-weight: 900; color: var(--text-bright); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(99, 102, 241, 0.3);">📅 ${groupDate}</span>
+                                    <div style="height: 2px; flex: 1; background: linear-gradient(to left, var(--accent), transparent);"></div>
                                 </div>
                             </td>
                         `;
                         table.appendChild(divider);
-                        lastDate = dayOnly;
+                        lastDate = groupDate;
                     }
 
                     const row = document.createElement('tr');
-                    let confidence = item.confidence_score || item.score || 0;
-                    let isVerified = confidence >= 85;
+                    let confidence = item.confidence_score || 0;
+                    let isVerified = item.status === "Active" || confidence >= 85;
                     let scoreColor = isVerified ? "var(--green)" : "#fbbf24";
                     
                     let scoreDisplay = `<div style="font-size: 1.5rem; font-weight: 800; color: ${scoreColor}; text-align: center;">${confidence}%</div><div style="font-size: 0.65rem; color: var(--text-dim); text-align: center; text-transform: uppercase;">Confidence</div>`;
 
                     const financials = item.financials || '—';
                     const finColor = (financials.includes('UNVERIFIED')) ? '#fbbf24' : 'var(--text-bright)';
-                    const registryStatus = item.registry_status || 'Unknown';
-                    const regColor = (registryStatus === 'Active' || registryStatus === 'Verified') ? 'var(--green)' : '#fbbf24';
+                    const registryStatus = item.registry_status || 'Checking...';
+                    const regColor = (registryStatus.includes('Verified')) ? 'var(--green)' : '#fbbf24';
                     
                     const auditBadge = isVerified ? 
                         `<span style="color: var(--green); border: 1px solid var(--green); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">AUDITED</span>` :
                         `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">PENDING</span>`;
 
-                    const actionBtns = !isVerified ? `
+                    const actionBtns = (item.status === "Pending") ? `
                         <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
                             <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
-                            <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--red); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2);" onclick="discardLead('${item.company}')">❌ Discard</button>
                         </div>
-                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.75rem; font-weight: 700;">✓ IN CSV</div>`;
+                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.75rem; font-weight: 700;">✓ IN MASTER</div>`;
 
-                    row.style.background = isVerified ? 'transparent' : 'rgba(251, 191, 36, 0.02)';
-
+                    row.style.background = isVerified ? 'transparent' : 'rgba(251, 191, 36, 0.01)';
                     row.innerHTML = `
-                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; font-size: 0.85rem;">
-                            #${index + 1}
+                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; font-size: 0.9rem; width: 60px;">
+                            #${updates.length - index}
                         </td>
                         <td>
                             <div style="display: flex; align-items: center;">
-                                <div style="font-weight: 700; font-size: 1rem;">${item.company}</div>
+                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-bright);">${item.company}</div>
                                 ${auditBadge}
                             </div>
-                            <div style="font-size: 0.65rem; color: var(--text-dim); margin: 4px 0;">📅 Discovered: ${item.discovered_at || 'Recently'}</div>
-                            <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Registry: ${registryStatus}</div>
-                            <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.2); padding: 8px; border-radius: 6px; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; margin-top: 8px;">
-                                <strong style="color: var(--green); font-size: 0.7rem; display: block; margin-bottom: 2px;">⚡ INTEGRATION OPPORTUNITY</strong>
+                            <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 4px 0;">Registry: ${registryStatus}</div>
+                            <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.2); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; margin-top: 8px;">
+                                <strong style="color: var(--green); font-size: 0.7rem; display: block; margin-bottom: 2px; letter-spacing: 1px;">⚡ INTEGRATION OPPORTUNITY</strong>
                                 ${item.integration_opportunity}
                             </div>
                         </td>
                         <td>
-                            <div style="font-size: 0.9rem; font-weight: 700; color: ${finColor};">${financials}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 6px;">
+                            <div style="font-size: 0.95rem; font-weight: 700; color: ${finColor};">${financials}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">
                                 <strong style="color: var(--accent);">Industry:</strong> ${item.industry || 'Tech/AI'}
                             </div>
                         </td>
                         <td>
-                            <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4;">
-                                <span style="display: block; color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">🚀 2026 STRATEGIC SIGNAL</span>
-                                ${item.strategic_signal || 'Searching...'}
+                            <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">
+                                <span style="display: block; color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">🚀 2026 STRATEGIC SIGNAL</span>
+                                ${item.strategic_signal || 'Processing...'}
                             </div>
                         </td>
                         <td>
                             ${scoreDisplay}
                         </td>
                         <td>
-                            <div style="margin-bottom: 8px; background: rgba(251, 191, 36, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid #fbbf24; font-size: 0.8rem;">
-                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim);">Patron / Chairman</span>
-                                👤 ${item.patron_chairman || '—'}
+                            <div style="margin-bottom: 8px; background: rgba(251, 191, 36, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid #fbbf24; font-size: 0.85rem;">
+                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px;">Patron / Chairman</span>
+                                👤 ${item.patron_chairman || 'Checking...'}
                             </div>
-                            <div style="background: rgba(16, 185, 129, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid var(--green); font-size: 0.85rem; font-weight: 600;">
-                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim);">CEO / Founder (Unmasked)</span>
+                            <div style="background: rgba(16, 185, 129, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid var(--green); font-size: 0.9rem; font-weight: 600; color: var(--text-bright);">
+                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px;">CEO / Founder (Unmasked)</span>
                                 👤 ${item.ceo_founder || 'Hunting...'}
                             </div>
                         </td>
