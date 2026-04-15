@@ -242,8 +242,10 @@
                 <div id="status-dot" class="dot"></div>
                 <span id="status-text">Disconnected</span>
                 <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
-                    <button class="btn" style="background: var(--accent); font-size: 0.75rem; padding: 0.3rem 0.8rem;" onclick="window.location.href='/api/download/master'">📊 Download ALL (70%+)</button>
-                    <button class="btn" style="background: var(--green); font-size: 0.75rem; padding: 0.3rem 0.8rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="window.location.href='/api/download/verified'">🥇 Download VERIFIED Only</button>
+                    <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); border: 1px solid var(--green);" onclick="startEngine()">▶️ Start</button>
+                    <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--red, #ef4444); border: 1px solid #ef4444;" onclick="stopEngine()">⏸️ Stop</button>
+                    <button class="btn" style="background: var(--accent); font-size: 0.75rem; padding: 0.3rem 0.8rem;" onclick="window.location.href='/api/download/master'">📊 Export ALL</button>
+                    <button class="btn" style="background: var(--green); font-size: 0.75rem; padding: 0.3rem 0.8rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="window.location.href='/api/download/verified'">🥇 Export AUDITED</button>
                 </div>
             </div>
         </header>
@@ -451,6 +453,24 @@
                 const lastUpdateEl = document.getElementById('last-update');
                 if (lastUpdateEl) lastUpdateEl.innerText = usage.last_run || 'Recently';
             } catch (error) { console.error('Usage Tracking Error:', error); }
+        }
+
+        async function startEngine() {
+            if (!confirm('Start hunting right now?')) return;
+            try {
+                await fetch('/api/control', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'start' }) });
+                document.getElementById('status-text').innerText = 'Cloud Engine: Waking Up 🌅';
+                refreshData();
+            } catch (e) { alert('Failed to start engine'); }
+        }
+
+        async function stopEngine() {
+            if (!confirm('Pause the autonomous agent?')) return;
+            try {
+                await fetch('/api/control', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'stop' }) });
+                document.getElementById('status-text').innerText = 'Cloud Engine: Paused ⏸️';
+                refreshData();
+            } catch (e) { alert('Failed to stop engine'); }
         }
 
         async function verifyLead(company) {

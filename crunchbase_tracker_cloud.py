@@ -210,6 +210,16 @@ def serper_search_broad(query):
     return []
 
 def run_tracker():
+    # Check if manually paused
+    if supabase:
+        try:
+            res = supabase.table("system_stats").select("status").eq("id", 1).execute()
+            if res.data and res.data[0].get("status") == "Paused ⏸️":
+                logger.info("Agent is manually paused. Skipping hunt.")
+                return
+        except Exception as e:
+            pass
+
     update_agent_status("Hunting 🔴")
     niches = [
         "Dubai AI and Blockchain startups investment news 2026",

@@ -49,12 +49,40 @@ async def verify_lead(request: Request):
 
 @app.get("/api/state")
 async def get_state():
-    """Provides the live status of the 24/7 Cloud Worker."""
-    return {
-        "status": "Active (Cloud Engine)",
-        "current_task": "Background Niche Automation",
-        "last_update": "Recently"
-    }
+    return {"status": "Active (Cloud Engine)", "current_task": "Background Niche Automation"}
+
+@app.post("/api/control")
+async def control_agent(request: Request):
+    """Manually start or stop the cloud engine."""
+    data = await request.json()
+    action = data.get("action")
+    if not supabase: return {"status": "Error", "message": "No DB connection"}
+    
+    try:
+        if action == "stop":
+            supabase.table("system_stats").update({"status": "Paused ⏸️"}).eq("id", 1).execute()
+            return {"status": "Success", "message": "Engine Paused"}
+        elif action == "start":
+            supabase.table("system_stats").update({"status": "Waking Up 🌅"}).eq("id", 1).execute()
+            
+            # Fire the GitHub Action to instantly start hunting if requests is available
+            try:
+                import requests
+                gh_pat = os.getenv("GH_PAT")
+                if gh_pat:
+                    h = {
+                        "Authorization": f"Bearer {gh_pat}",
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                    requests.post(
+                        "https://api.github.com/repos/anuradhabudhar214-tech/lead_agent/actions/workflows/auditor_hunt.yml/dispatches",
+                        json={"ref": "main"}, headers=h, timeout=5
+                    )
+            except: pass
+            
+            return {"status": "Success", "message": "Engine Started"}
+    except Exception as e:
+        return {"status": "Error", "message": str(e)}
 
 @app.get("/api/usage")
 async def get_usage():
