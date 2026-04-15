@@ -70,11 +70,10 @@ async def get_usage():
         total_res = supabase.table("uae_leads").select("id", count="exact").execute()
         total_leads = total_res.count if total_res else 0
         
-        # Get today's lead count (last 24 hours)
-        # Using a simple RPC or raw query via restful API
+        # Get today's lead count (Since 00:00 UTC)
         import datetime
-        yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).isoformat()
-        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gt", yesterday).execute()
+        today_start = datetime.datetime.now(datetime.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gt", today_start).execute()
         today_count = today_res.count if today_res else 0
 
         if usage_res.data:

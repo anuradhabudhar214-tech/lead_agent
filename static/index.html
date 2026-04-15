@@ -317,25 +317,26 @@
     </div>
 
     <script>
-        // --- DATA FETCHING ---
+        // --- DATA FETCHING & RENDERING ---
         async function fetchUpdates() {
             try {
                 const response = await fetch('/api/updates');
-                const updates = await response.json();
+                if (!response.ok) throw new Error('API Error');
                 
+                const updates = await response.json();
                 const table = document.getElementById('updates-table');
                 if (!table) return;
                 
                 table.innerHTML = '';
                 
+                // Safety check: ensure we have an array
                 if (!Array.isArray(updates)) {
-                    console.error('Leads feed in Setup Mode or offline:', updates);
                     table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">📡 Agent is initializing or Database is not connected...</td></tr>`;
                     return;
                 }
 
                 if (updates.length === 0) {
-                    table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">🔍 No intelligence found for this niche yet. Hunting continues...</td></tr>`;
+                    table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">🔍 No new intelligence discovered since midnight. Hunting continues...</td></tr>`;
                     return;
                 }
 
@@ -398,7 +399,7 @@
                     `;
                     table.appendChild(row);
                 });
-            } catch (error) { console.error('Error fetching updates:', error); }
+            } catch (error) { console.error('Intelligence Feed Broken:', error); }
         }
 
         async function fetchUsage() {
@@ -434,8 +435,8 @@
                 }
 
                 const lastUpdateEl = document.getElementById('last-update');
-                if (lastUpdateEl && usage.last_run) lastUpdateEl.innerText = usage.last_run;
-            } catch (error) { console.error('Error fetching usage:', error); }
+                if (lastUpdateEl) lastUpdateEl.innerText = usage.last_run || 'Recently';
+            } catch (error) { console.error('Usage Tracking Error:', error); }
         }
 
         async function verifyLead(company) {
