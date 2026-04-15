@@ -1,167 +1,136 @@
 import os
-import json
 import time
+import json
 import logging
 import requests
-import smtplib
-import sys
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from datetime import datetime
-from groq import Groq
+from datetime import datetime, timezone, timedelta
 from supabase import create_client, Client
-from google import genai
+from groq import Groq
+import google.generativeai as genai
 
-# Force UTF-8 output
-try:
-    if sys.stdout.encoding.lower() != 'utf-8':
-        import io
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-except Exception:
-    pass
-
+# --- CONFIGURATION & LOGGING ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# --- SMART CREDENTIAL VAULT ---
-class CredentialVault:
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
+
+class Vault:
     def __init__(self):
-        self.config = self.load_config()
-        self.serper_keys = self.config.get("SERPER_API_KEYS", [])
-        self.gemini_keys = self.config.get("GEMINI_API_KEYS", [])
+        # Load from config.json if available locally, otherwise env
+        self.config = {}
+        if os.path.exists("config.json"):
+            with open("config.json", "r") as f:
+                self.config = json.load(f)
+        
+        self.serper_keys = os.getenv("SERPER_API_KEYS", "").split(",") or self.config.get("SERPER_API_KEYS", [])
+        self.gemini_keys = os.getenv("GEMINI_API_KEYS", "").split(",") or self.config.get("GEMINI_API_KEYS", [])
         self.serper_idx = 0
         self.gemini_idx = 0
 
-    def load_config(self):
-        # Load from Env first (Cloud), then local config
-        config = {}
-        if os.path.exists("config.json"):
-            with open("config.json", "r") as f:
-                config = json.load(f)
-        
-        # Override with Env Vars if present
-        env_serper = os.getenv("SERPER_API_KEYS")
-        if env_serper: config["SERPER_API_KEYS"] = env_serper.split(",")
-        
-        env_gemini = os.getenv("GEMINI_API_KEYS")
-        if env_gemini: config["GEMINI_API_KEYS"] = env_gemini.split(",")
-        
-        return config
-
     def get_serper_key(self):
-        if not self.serper_keys: return None
-        return self.serper_keys[self.serper_idx % len(self.serper_keys)].strip()
-
+        return self.serper_keys[self.serper_idx % len(self.serper_keys)] if self.serper_keys else None
+    
     def rotate_serper(self):
         self.serper_idx += 1
-        logger.warning(f"🔄 SERPER ROTATION: Switching to Key #{self.serper_idx % len(self.serper_keys) + 1}")
+        logger.info(f"🔄 Rotated Serper Key to index {self.serper_idx % len(self.serper_keys)}")
 
     def get_gemini_key(self):
-        if not self.gemini_keys: return None
-        return self.gemini_keys[self.gemini_idx % len(self.gemini_keys)].strip()
+        return self.gemini_keys[self.gemini_idx % len(self.gemini_keys)] if self.gemini_keys else None
 
     def rotate_gemini(self):
         self.gemini_idx += 1
-        logger.warning(f"🔄 GEMINI ROTATION: Switching to Identity #{self.gemini_idx % len(self.gemini_keys) + 1}")
+        logger.info(f"🔄 Rotated Gemini Key to index {self.gemini_idx % len(self.gemini_keys)}")
 
-vault = CredentialVault()
-
-# Initialize Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL") or vault.config.get("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY") or vault.config.get("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
+vault = Vault()
 
 def track_cloud_usage(api_name):
-    """Increments the usage counters in Supabase for the dashboard."""
-def track_cloud_usage(call_type):
-    """Updates the statistics and live status in the cloud DB."""
+    """Increments token usage in Supabase 'system_stats' table."""
     if not supabase: return
     try:
-        if call_type == "Serper":
-            supabase.rpc("increment_serper", {"row_id": 1}).execute()
-        elif call_type == "Gemini":
-            supabase.rpc("increment_gemini", {"row_id": 1}).execute()
-        elif call_type == "Groq":
-            supabase.rpc("increment_groq", {"row_id": 1}).execute()
+        col = f"{api_name.lower()}_calls"
+        res = supabase.table("system_stats").select(col).eq("id", 1).execute()
+        if res.data:
+            new_val = (res.data[0].get(col) or 0) + 1
+            supabase.table("system_stats").update({col: new_val, "last_updated": datetime.now(timezone.utc).isoformat()}).eq("id", 1).execute()
     except Exception as e:
-        logger.debug(f"Usage tracking failed: {e}")
+        logger.error(f"⚠️ Usage Tracking Error: {e}")
 
 def update_agent_status(status):
-    """Updates the live engine status (Hunting/Sleeping) and scan count."""
+    """Updates the live status heartbeat on the dashboard."""
     if not supabase: return
     try:
-        # Increment total scans if starting a new hunt
-        if "Hunting" in status:
-            supabase.rpc("increment_total_scans", {"row_id": 1}).execute()
-            
-        data = {"id": 1, "status": status, "last_run_at": "now()"}
-        supabase.table("system_stats").upsert(data, on_conflict="id").execute()
-        logger.info(f"📡 AGENT STATUS: {status}")
+        data = {
+            "status": status,
+            "last_run_at": datetime.now(timezone.utc).isoformat()
+        }
+        if status == "Hunting 🔴":
+            res = supabase.table("system_stats").select("total_scans").eq("id", 1).execute()
+            if res.data and "total_scans" in res.data[0]:
+                data["total_scans"] = (res.data[0]["total_scans"] or 0) + 1
+        
+        supabase.table("system_stats").update(data).eq("id", 1).execute()
     except Exception as e:
-        logger.debug(f"Status update failed: {e}")
+        logger.error(f"⚠️ Status Sync Error: {e}")
 
 def compile_auditor_intel(discovery_package):
-    """Deep Auditor with Auto-Extraction. discovery_package contains title, snippet, link."""
-    prompt = f"ROLE: Senior UAE Auditor. OBJ: Deep Audit this discovery: {discovery_package}. Instructions: 1. Identify the SINGLE most promising UAE startup. 2. Extract verified signals from WAM.ae, LinkedIn patterns, and 2026 Dubai registry news. 3. Return full JSON. fields: company, industry, financials, strategic_signal (2026 Focus), integration_opportunity, registry_status (Verified via WAM/LinkedIn), ceo_founder (Unmasked), patron_chairman, confidence_score (80-100 for clear leads). OUT: JSON."
+    """Uses Gemini 2.0 Flash to extract executive intelligence."""
+    prompt = f"""
+    AUDIT MISSION: Extract UAE Tech Intelligence from this discovery.
+    CONTEXT: {discovery_package}
     
-    # Try all Gemini Keys before giving up
+    REQUIREMENTS:
+    1. Identify the Company Name.
+    2. Extract Industry (e.g. AI, FinTech, GreenTech).
+    3. Assign Confidence Score (0-100) based on how clearly this is a real UAE 2026/2027 business signal.
+    4. Strategic Signal: News summary.
+    5. Integration Opportunity: For an auditor.
+    6. Executive Unmasking: Find CEO/Founder.
+    7. Financials: Funding or revenue.
+    8. Registry Status: Verified if official.
+    
+    RETURN JSON ONLY:
+    {{
+        "company": "string",
+        "industry": "string",
+        "confidence_score": int,
+        "strategic_signal": "string",
+        "integration_opportunity": "string",
+        "patron_chairman": "string",
+        "ceo_founder": "string",
+        "financials": "string",
+        "registry_status": "string"
+    }}
+    Low info? score: 0.
+    """
+    
     for _ in range(len(vault.gemini_keys)):
         key = vault.get_gemini_key()
         if not key: break
         try:
-            logger.info(f"💎 DEEP AUDIT: Analyzing discovery package with Gemini 2.0...")
-            client = genai.Client(api_key=key)
             track_cloud_usage("Gemini")
-            
-            response = client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=prompt,
-                config={'response_mime_type': 'application/json'}
-            )
+            genai.configure(api_key=key)
+            model = genai.GenerativeModel('gemini-2.0-flash')
+            response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
             
             data = json.loads(response.text)
             conf = data.get("confidence_score", 0)
-            
-            # Yesterday's Logic: 50%+ is a lead (Pending), 85%+ is Audited/Active
             if conf < 50: return "SKIP"
-            
-            # Ensure we have a company name
             if not data.get("company") or data.get("company").lower().startswith("top "): return "SKIP"
             
             data["status"] = "Active" if conf >= 85 else "Pending"
             return data
         except Exception as e:
-            if "429" in str(e) or "limit" in str(e).lower():
-                logger.warning(f"⚠️ Key Rate Limit. Rotating...")
+            if "429" in str(e):
                 vault.rotate_gemini()
                 continue
             logger.error(f"❌ Gemini Error: {e}")
             break
-
-    # FALLBACK: GROQ (Optimized for 'Clear' results)
-    groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
-    if groq_key:
-        try:
-            logger.info(f"⚡ FALLBACK: Groq Pro Brain for '{company_name if 'company_name' in locals() else 'package'}'")
-            track_cloud_usage("Groq")
-            client_groq = Groq(api_key=groq_key)
-            chat_completion = client_groq.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
-                model="llama-3.3-70b-versatile",
-                response_format={"type": "json_object"}
-            )
-            data = json.loads(chat_completion.choices[0].message.content)
-            conf = data.get("confidence_score", 0)
-            if conf < 50: return "SKIP"
-            data["status"] = "Active" if conf >= 85 else "Pending"
-            return data
-        except Exception as e:
-            logger.error(f"❌ Final Fallback Error: {e}")
-    
-    return "RETRY"
+    return "SKIP"
 
 def serper_search(query):
-    """Infinite Search with Auto-Rotation."""
+    """Infinite Search with Auto-Rotation and 24h Freshness."""
     for _ in range(len(vault.serper_keys)):
         key = vault.get_serper_key()
         if not key: return []
@@ -169,15 +138,13 @@ def serper_search(query):
         headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
         try:
             track_cloud_usage("Serper")
-            # Added tbs: qdr:w to ensure results from the last 7 days only
-            payload = {"q": query, "num": 10, "tbs": "qdr:w"}
+            # qdr:d = Past 24 hours to ensure freshness
+            payload = {"q": query, "num": 10, "tbs": "qdr:d"}
             response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             res_data = response.json()
             organic = res_data.get('organic', [])
-            
-            # Enrich organic results with their publish dates if available
             for item in organic:
-                item['published_date'] = item.get('date', 'Recently')
+                item['published_date'] = item.get('date', 'Live Signal')
             return organic
         except:
             vault.rotate_serper()
@@ -200,7 +167,8 @@ def save_to_supabase(leads):
                 "registry_status": lead.get("registry_status"),
                 "url": lead.get("url"),
                 "status": lead.get("status", "Pending"),
-                "published_date": lead.get("published_date", "Recently")
+                "published_date": lead.get("published_date", "Recently"),
+                "discovered_at": datetime.now(timezone.utc).isoformat()
             }
             supabase.table("uae_leads").upsert(data, on_conflict="company").execute()
             logger.info(f"✅ SYNC: {lead.get('company')} to Cloud DB.")
@@ -215,45 +183,35 @@ def run_tracker():
             seen_urls = [r['url'] for r in res.data] if res.data else []
         except: pass
 
-    # --- HIGH VELOCITY UAE 2026 NICHES ---
+    # --- AGGRESSIVE NICHES ---
     niches = [
-        "Dubai AI and Blockchain startups investment news April 2026",
-        "UAE Venture Capital funding rounds 2026 list",
-        "Abu Dhabi Hub71 startups funding announcements April 2026",
-        "DIFC FinTech hive new startups funding 2026",
-        "UAE Tech startups hiring CEO April 2026",
-        "Dubai Digital Transformation new projects funding 2026",
-        "Abu Dhabi HealthTech new investments 2026",
-        "UAE CyberSecurity startups expansion Dubai 2026",
-        "MENA Region tech startups series A funding 2026",
-        "Dubai Digital Economy expansion news April 2026",
-        "UAE new software house launch Dubai 2026",
-        "Top AI companies in UAE raising funds 2026"
+        "Dubai tech startups funding news April 2026",
+        "Abu Dhabi Hub71 startups news April 2026",
+        "UAE new VC funding April 2026",
+        "Dubai Silicon Oasis startup hiring 2026",
+        "UAE Ministry of Economy tech grants 2026",
+        "Abu Dhabi crypto funding news 2026",
+        "Dubai Internet City expansion startups 2026",
+        "UAE SpaceTech startup funding 2026"
     ]
-    # Rotate niche based on the current hour to ensure 24/7 diversity
-    niche = niches[int(time.time() / 3600) % len(niches)]
-    # Target specific Crunchbase profiles for "Clear" results
-    target_query = f"site:crunchbase.com organization UAE {niche} 2026"
-    logger.info(f"🚀 24/7 HUNT: Targeting 'Clear' {niche} profiles...")
+    
+    niche = niches[int(time.time() / 600) % len(niches)] 
+    target_query = f"site:crunchbase.com organization UAE {niche}"
+    logger.info(f"🚀 DEEP HUNT: '{niche}'...")
     
     raw_results = serper_search(target_query)
     for item in raw_results:
         link = item.get('link')
         if not link or link in seen_urls: continue
         
-        # Pass the full discovery context to the AI for extraction
         discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Link: {link} | Published: {item.get('published_date')}"
-        logger.info(f"🔍 AUDITING DISCOVERY: {item.get('title')[:50]}...")
+        logger.info(f"🔍 AUDITING: {item.get('title')[:30]}...")
         intel = compile_auditor_intel(discovery_package)
         
         if isinstance(intel, dict):
             intel['url'] = link
             intel['published_date'] = item.get('published_date')
-            company = intel.get('company')
-            logger.info(f"💎 FOUND CLEAR LEAD: {company} | Score: {intel.get('confidence_score')}%")
             save_to_supabase([intel])
-        elif intel == "SKIP":
-            logger.info(f"⏭️ SKIPPING: Discovery (Low Signal Strength)")
             
 if __name__ == "__main__":
     update_agent_status("Hunting 🔴")
