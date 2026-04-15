@@ -72,63 +72,40 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY") or vault.config.get("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
 
 def compile_auditor_intel(company_name):
-    """Infinite Audit Engine with Auto-Rotation using modern google-genai SDK."""
-    prompt = f"ROLE: Senior UAE Auditor. OBJ: Verify '{company_name}'. Rules: Zero-Trust Founders, GCC Only, No Rupees, Score 1-100. Min 70. OUT: JSON object."
+    """Infinite Audit Engine with Auto-Rotation using confirmed available cloud models."""
+    prompt = f"ROLE: Senior UAE Auditor. OBJ: Verify '{company_name}'. Rules: GCC Only, No Rupees, Full JSON details (industry, financials, strategic_signal, integration_opportunity, registry_status, ceo_founder, patron_chairman, confidence_score 1-100). Min Score 70. OUT: JSON."
     
     # Try all Gemini Keys before giving up
     for _ in range(len(vault.gemini_keys)):
         key = vault.get_gemini_key()
         if not key: break
         try:
-            logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini...")
+            logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini 2.0...")
             client = genai.Client(api_key=key)
             
-            # Try a couple of model variants to avoid 404
-            model_to_use = 'gemini-1.5-flash'
-            try:
-                response = client.models.generate_content(
-                    model=model_to_use,
-                    contents=prompt,
-                    config={'response_mime_type': 'application/json'}
-                )
-            except Exception as e:
-                if "404" in str(e):
-                    logger.warning("⚠️ Model variant 404. Listing available models for key...")
-                    try:
-                        avail = [m.name for m in client.models.list()]
-                        logger.info(f"📋 AVAILABLE MODELS: {avail}")
-                        # Automatically pick the first flash model available
-                        flash_models = [m for m in avail if 'flash' in m.lower()]
-                        if flash_models:
-                            model_to_use = flash_models[0].replace('models/', '')
-                            logger.info(f"♻️ AUTO-PICKED: {model_to_use}")
-                            response = client.models.generate_content(
-                                model=model_to_use,
-                                contents=prompt,
-                                config={'response_mime_type': 'application/json'}
-                            )
-                        else:
-                            raise e
-                    except:
-                        raise e
-                else:
-                    raise e
+            # Use Gemini 2.0 Flash as the primary brain (Confirmed available via Diag)
+            response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config={'response_mime_type': 'application/json'}
+            )
             
             data = json.loads(response.text)
             if data.get("confidence_score", 0) < 70: return "SKIP"
             return data
         except Exception as e:
             if "429" in str(e) or "limit" in str(e).lower():
+                logger.warning(f"⚠️ Key Rate Limit. Rotating...")
                 vault.rotate_gemini()
                 continue
             logger.error(f"❌ Gemini Error: {e}")
             break
 
-    # FALLBACK: GROQ (If all Gemini fail)
+    # FALLBACK: GROQ (Optimized for 'Clear' results)
     groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
     if groq_key:
         try:
-            logger.info(f"⚡ FALLBACK: Groq Llama 3.3 Audit for '{company_name}'")
+            logger.info(f"⚡ FALLBACK: Groq Llama 3.3 Pro Brain for '{company_name}'")
             client_groq = Groq(api_key=groq_key)
             chat_completion = client_groq.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
@@ -194,13 +171,17 @@ def run_tracker():
 
     niches = vault.config.get("NICHES", ["UAE AI startups 2026"])
     niche = niches[int(time.time() / 3600) % len(niches)]
-    logger.info(f"🚀 24/7 HUNT: Scanning '{niche}'")
+    target_query = f"new company registration UAE {niche} April 2026"
+    logger.info(f"🚀 24/7 HUNT: Targeting new {niche} companies...")
     
-    raw_results = serper_search(niche)
+    raw_results = serper_search(target_query)
     for item in raw_results:
         link = item.get('link')
         if not link or link in seen_urls: continue
+        
+        # Extract potential company name from snippet
         company = item.get('title', '').split("-")[0].strip()
+        logger.info(f"🔍 AUDITING: {company}...")
         intel = compile_auditor_intel(company)
         
         if isinstance(intel, dict):
