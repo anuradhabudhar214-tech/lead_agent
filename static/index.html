@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crunchbase Tracker | Insight Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --green: #10b981;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+        }
+
+        .dot.active {
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .stats-card {
+            grid-column: span 4;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stats-card .label {
+            color: var(--text-dim);
+            font-size: 0.875rem;
+        }
+
+        .stats-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stats-half {
+            grid-column: span 6;
+        }
+
+        .controls-card {
+            grid-column: span 12;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: scale(1.02);
+        }
+
+        .btn-stop {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-stop:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .updates-card {
+            grid-column: span 12;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            font-size: 0.875rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .company-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .badge-round {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--card-bg); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Crunchbase Insight Agent</h1>
+                <p style="color: var(--text-dim); font-size: 0.875rem; margin-top: 0.25rem;">Autonomous Market Intelligence</p>
+            </div>
+            <div id="agent-status-badge" class="status-badge">
+                <div id="status-dot" class="dot"></div>
+                <span id="status-text">Disconnected</span>
+                <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
+                    <button class="btn" style="background: var(--accent); font-size: 0.75rem; padding: 0.3rem 0.8rem;" onclick="window.location.href='/api/download/master'">📊 Download ALL (70%+)</button>
+                    <button class="btn" style="background: var(--green); font-size: 0.75rem; padding: 0.3rem 0.8rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="window.location.href='/api/download/verified'">🥇 Download VERIFIED Only</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card stats-card">
+                <span class="label">Current Task</span>
+                <span id="current-task" class="value">Idle</span>
+            </div>
+            <div class="card stats-card">
+                <span class="label">Last Scan</span>
+                <span id="last-update" class="value">Never</span>
+            </div>
+            <div class="card stats-card">
+                <span class="label">Total Insights</span>
+                <span id="total-updates" class="value">0</span>
+            </div>
+            <div class="card stats-card stats-half">
+                <span class="label">Serper API Calls (Total)</span>
+                <span id="serper-usage" class="value" style="color: var(--accent);">0</span>
+            </div>
+            <div class="card stats-card stats-half">
+                <span class="label">Serper API Calls (Total)</span>
+                <span id="serper-usage" class="value" style="color: var(--accent);">0</span>
+            </div>
+            <div class="card stats-card stats-half">
+                <span class="label">Groq API Calls (Total)</span>
+                <span id="groq-usage" class="value" style="color: var(--accent);">0</span>
+            </div>
+
+            <div class="card controls-card" style="background: rgba(16, 185, 129, 0.05); border: 1px dashed var(--green);">
+                <div class="info">
+                    <h3 style="font-weight: 600; color: var(--green);">🛡️ Credit Preservation Mode: Active</h3>
+                    <p style="color: var(--text-dim); font-size: 0.875rem;">1-Hour Scan Interval | Rotating Niche Discovery</p>
+                </div>
+                <div class="actions">
+                    <span id="current-niche" class="badge-round" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; padding: 0.5rem 1rem;">Niche: Analyzing...</span>
+                </div>
+            </div>
+
+            <div class="card updates-card">
+                <div class="card-header">
+                    <h3 style="font-weight: 600;">2026 Advanced Intelligence Reports</h3>
+                    <button class="btn" style="background: transparent; color: var(--accent); padding: 0;" onclick="refreshData()">Refresh</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;"># NO.</th>
+                                <th>COMPANY & AUDIT</th>
+                                <th>FINANCIALS</th>
+                                <th>2026 STRATEGIC SIGNAL</th>
+                                <th style="text-align: center;">CONFIDENCE</th>
+                                <th>DECISION MAKERS (UNMASKED)</th>
+                                <th style="text-align: right;">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="updates-table">
+                            <!-- Data will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchState() {
+            try {
+                const response = await fetch('/api/state');
+                const data = await response.json();
+                
+                document.getElementById('status-text').innerText = data.status;
+                document.getElementById('current-task').innerText = data.current_task;
+                document.getElementById('last-update').innerText = data.last_update;
+
+                if (data.current_task.includes('Niche')) {
+                    document.getElementById('current-niche').innerText = data.current_task;
+                }
+
+                const dot = document.getElementById('status-dot');
+                if (data.status === 'Running') {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            } catch (error) {
+                console.error('Error fetching state:', error);
+            }
+        }
+
+        async function fetchUpdates() {
+            try {
+                const response = await fetch('/api/updates');
+                const updates = await response.json();
+                
+                document.getElementById('total-updates').innerText = updates.length;
+                
+                const table = document.getElementById('updates-table');
+                table.innerHTML = '';
+                
+                let lastDate = "";
+
+                updates.forEach((item, index) => {
+                    const fullDate = item.discovered_at || 'Recently';
+                    const dayOnly = fullDate.split(' ')[0];
+
+                    // Inject Date Divider if day changes
+                    if (dayOnly !== lastDate) {
+                        const divider = document.createElement('tr');
+                        divider.style.background = "rgba(99, 102, 241, 0.05)";
+                        divider.innerHTML = `
+                            <td colspan="7" style="padding: 20px; border-bottom: 2px solid var(--accent);">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-size: 1.5rem; font-weight: 900; color: var(--accent); letter-spacing: 1px;">📅 ${dayOnly}</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">— New Intelligence Cycle Initiated</span>
+                                </div>
+                            </td>
+                        `;
+                        table.appendChild(divider);
+                        lastDate = dayOnly;
+                    }
+
+                    const row = document.createElement('tr');
+                    let confidence = item.confidence_score || item.score || 0;
+                    let isVerified = confidence >= 85;
+                    let scoreColor = isVerified ? "var(--green)" : "#fbbf24";
+                    
+                    let scoreDisplay = `<div style="font-size: 1.5rem; font-weight: 800; color: ${scoreColor}; text-align: center;">${confidence}%</div><div style="font-size: 0.65rem; color: var(--text-dim); text-align: center; text-transform: uppercase;">Confidence</div>`;
+
+                    const financials = item.financials || '—';
+                    const finColor = (financials.includes('UNVERIFIED')) ? '#fbbf24' : 'var(--text-bright)';
+                    const registryStatus = item.registry_status || 'Unknown';
+                    const regColor = (registryStatus === 'Active' || registryStatus === 'Verified') ? 'var(--green)' : '#fbbf24';
+                    
+                    const auditBadge = isVerified ? 
+                        `<span style="color: var(--green); border: 1px solid var(--green); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">AUDITED</span>` :
+                        `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">PENDING</span>`;
+
+                    const actionBtns = !isVerified ? `
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                            <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
+                            <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--red); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2);" onclick="discardLead('${item.company}')">❌ Discard</button>
+                        </div>
+                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.75rem; font-weight: 700;">✓ IN CSV</div>`;
+
+                    row.style.background = isVerified ? 'transparent' : 'rgba(251, 191, 36, 0.02)';
+
+                    row.innerHTML = `
+                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; font-size: 0.85rem;">
+                            #${index + 1}
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <div style="font-weight: 700; font-size: 1rem;">${item.company}</div>
+                                ${auditBadge}
+                            </div>
+                            <div style="font-size: 0.65rem; color: var(--text-dim); margin: 4px 0;">📅 Discovered: ${item.discovered_at || 'Recently'}</div>
+                            <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Registry: ${registryStatus}</div>
+                            <div style="background: rgba(16, 185, 129, 0.05); border: 1px dashed rgba(16, 185, 129, 0.2); padding: 8px; border-radius: 6px; font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; margin-top: 8px;">
+                                <strong style="color: var(--green); font-size: 0.7rem; display: block; margin-bottom: 2px;">⚡ INTEGRATION OPPORTUNITY</strong>
+                                ${item.integration_opportunity}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem; font-weight: 700; color: ${finColor};">${financials}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 6px;">
+                                <strong style="color: var(--accent);">Industry:</strong> ${item.industry || 'Tech/AI'}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem; color: var(--text-dim); line-height: 1.4;">
+                                <span style="display: block; color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">🚀 2026 STRATEGIC SIGNAL</span>
+                                ${item.strategic_signal || 'Searching...'}
+                            </div>
+                        </td>
+                        <td>
+                            ${scoreDisplay}
+                        </td>
+                        <td>
+                            <div style="margin-bottom: 8px; background: rgba(251, 191, 36, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid #fbbf24; font-size: 0.8rem;">
+                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim);">Patron / Chairman</span>
+                                👤 ${item.patron_chairman || '—'}
+                            </div>
+                            <div style="background: rgba(16, 185, 129, 0.05); padding: 8px; border-radius: 6px; border-left: 2px solid var(--green); font-size: 0.85rem; font-weight: 600;">
+                                <span style="display: block; font-size: 0.6rem; text-transform: uppercase; color: var(--text-dim);">CEO / Founder (Unmasked)</span>
+                                👤 ${item.ceo_founder || 'Hunting...'}
+                            </div>
+                        </td>
+                        <td>
+                            ${actionBtns}
+                        </td>
+                    `;
+                    table.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching updates:', error);
+            }
+        }
+
+        async function verifyLead(company) {
+            if (!confirm(`Move ${company} to Master Verified List?`)) return;
+            try {
+                const response = await fetch('/api/verify', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ company })
+                });
+                if (response.ok) refreshData();
+            } catch (e) { alert('Verify failed'); }
+        }
+
+        async function discardLead(company) {
+            if (!confirm(`Discard ${company}?`)) return;
+            try {
+                const response = await fetch('/api/discard', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ company })
+                });
+                if (response.ok) refreshData();
+            } catch (e) { alert('Discard failed'); }
+        }
+
+        async function fetchUsage() {
+            try {
+                const response = await fetch('/api/usage');
+                const usage = await response.json();
+                document.getElementById('serper-usage').innerText = usage.Serper || 0;
+                document.getElementById('groq-usage').innerText = usage.Groq || 0;
+            } catch (error) {
+                console.error('Error fetching usage:', error);
+            }
+        }
+
+        async function startAgent() {
+            await fetch('/api/start', { method: 'POST' });
+            setTimeout(refreshData, 1000);
+        }
+
+        async function stopAgent() {
+            await fetch('/api/stop', { method: 'POST' });
+            setTimeout(refreshData, 1000);
+        }
+
+        function refreshData() {
+            fetchState();
+            fetchUpdates();
+            fetchUsage();
+        }
+
+        // Auto-refresh
+        setInterval(refreshData, 5000);
+        refreshData();
+    </script>
+</body>
+</html>

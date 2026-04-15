@@ -1,0 +1,7 @@
+supabase
+groq
+requests
+fastapi
+uvicorn
+python-multipart
+python-dotenv
