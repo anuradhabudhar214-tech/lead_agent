@@ -36,6 +36,7 @@ class Vault:
         self.serper_idx = 0
         self.gemini_idx = 0
         self.groq_idx = 0
+        self.dead_keys = set()
 
     def get_serper_key(self):
         return self.serper_keys[self.serper_idx % len(self.serper_keys)] if self.serper_keys else None
@@ -45,7 +46,15 @@ class Vault:
         logger.info(f"🔄 Rotated Serper Key")
 
     def get_gemini_key(self):
-        return self.gemini_keys[self.gemini_idx % len(self.gemini_keys)] if self.gemini_keys else None
+        for _ in range(len(self.gemini_keys)):
+            key = self.gemini_keys[self.gemini_idx % len(self.gemini_keys)]
+            if key not in self.dead_keys: return key
+            self.gemini_idx += 1
+        return None
+
+    def mark_key_dead(self, key):
+        self.dead_keys.add(key)
+        logger.warning(f"💀 KEY BLACKLISTED: {key[:8]}... marked as dead/invalid.")
 
     def rotate_gemini(self):
         self.gemini_idx += 1
@@ -190,6 +199,8 @@ def compile_auditor_intel_extreme(discovery_package):
         data["status"] = "Active" if data.get("confidence_score", 0) >= 85 else "Pending"
         return data
     except Exception as e:
+        if "API key not valid" in str(e) or "400" in str(e):
+            vault.mark_key_dead(key)
         logger.error(f"⚠️ Gemini Exhausted/Error: {e}")
         vault.rotate_gemini()
         # FALLBACK: GROQ
@@ -249,18 +260,14 @@ def run_tracker():
             pass
 
     update_agent_status("Hunting 🔴")
-    niches = [
-        # Deep Database Profiling (For detailed funding and decision-makers)
-        "site:crunchbase.com/organization UAE Series A funding 2026",
-        "site:apollo.io/companies Dubai technology hiring 2026",
-        "site:crunchbase.com/organization Abu Dhabi startups 2026",
-        "site:apollo.io/companies UAE artificial intelligence",
-        
-        # High-Velocity Live News (For breaking signals)
-        "Dubai AI and Blockchain startups investment news 2026",
-        "UAE Tech ecosystem expansion recruitment 2026",
-        "UAE Venture Capital funding rounds today",
-        "Abu Dhabi Hub71 startups funding announcements April 2026"
+    # --- AGGRESSIVE DISCOVERY NICHES ---
+    current_niches = [
+        "site:crunchbase.com/organization UAE technology funding 2026",
+        "site:apollo.io/companies Dubai technology hiring HQ",
+        "UAE startup funding news last 24 hours",
+        "Abu Dhabi tech company expansion signals 2026",
+        "Dubai AI and Fintech funding announcements",
+        "site:linkedin.com/company UAE startup Hiring CEO Founder"
     ]
     
     # Process 2 niches per run to stay under your 3000/day target velocity
