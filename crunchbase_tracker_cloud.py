@@ -10,7 +10,7 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from groq import Groq
 from supabase import create_client, Client
-import google.generativeai as genai
+from google import genai
 
 # Force UTF-8 output
 try:
@@ -72,7 +72,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY") or vault.config.get("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
 
 def compile_auditor_intel(company_name):
-    """Infinite Audit Engine with Auto-Rotation."""
+    """Infinite Audit Engine with Auto-Rotation using modern google-genai SDK."""
     prompt = f"ROLE: Senior UAE Auditor. OBJ: Verify '{company_name}'. Rules: Zero-Trust Founders, GCC Only, No Rupees, Score 1-100. Min 70. OUT: JSON object."
     
     # Try all Gemini Keys before giving up
@@ -81,9 +81,13 @@ def compile_auditor_intel(company_name):
         if not key: break
         try:
             logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini...")
-            genai.configure(api_key=key)
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+            client = genai.Client(api_key=key)
+            response = client.models.generate_content(
+                model='gemini-1.5-flash',
+                contents=prompt,
+                config={'response_mime_type': 'application/json'}
+            )
+            
             data = json.loads(response.text)
             if data.get("confidence_score", 0) < 70: return "SKIP"
             return data
@@ -99,8 +103,8 @@ def compile_auditor_intel(company_name):
     if groq_key:
         try:
             logger.info(f"⚡ FALLBACK: Groq Llama 3.3 Audit for '{company_name}'")
-            client = Groq(api_key=groq_key)
-            chat_completion = client.chat.completions.create(
+            client_groq = Groq(api_key=groq_key)
+            chat_completion = client_groq.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
                 model="llama-3.3-70b-versatile",
                 response_format={"type": "json_object"}
