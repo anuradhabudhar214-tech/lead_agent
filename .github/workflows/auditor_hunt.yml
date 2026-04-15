@@ -1,9 +1,10 @@
 name: 🇦🇪 UAE Auditor - Hourly Hunt Cycle
 
+# on:
+#   schedule:
+#     # Trigger every 1 hour
+#     - cron: '0 * * * *'
 on:
-  schedule:
-    # Trigger every 1 hour
-    - cron: '0 * * * *'
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
