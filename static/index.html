@@ -371,31 +371,45 @@
                     const financials = item.financials || '—';
                     const finColor = (financials.includes('UNVERIFIED')) ? '#fbbf24' : 'var(--text-bright)';
                     const registryStatus = item.registry_status || 'Checking...';
-                    const regColor = (registryStatus.includes('Verified')) ? 'var(--green)' : '#fbbf24';
+                    const regColor = (registryStatus.includes('VERIFIED')) ? 'var(--green)' : '#fbbf24';
                     
                     const auditBadge = isVerified ? 
-                        `<span style="color: var(--green); border: 1px solid var(--green); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">AUDITED</span>` :
-                        `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 700; margin-left: 8px;">PENDING</span>`;
+                        `<span style="color: var(--green); border: 1px solid var(--green); padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 8px; opacity: 0.9;">AUDITED</span>` :
+                        `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 8px; opacity: 0.9;">PENDING</span>`;
 
                     const actionBtns = (item.status === "Pending") ? `
                         <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
-                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.75rem; font-weight: 700;">✓ IN MASTER</div>`;
+                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px;">✓ IN MASTER</div>`;
 
                     row.innerHTML = `
                         <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; width: 60px;">#${updates.length - index}</td>
                         <td>
-                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-bright);">${item.company} ${auditBadge}</div>
-                            <div style="display: flex; gap: 10px; margin: 4px 0;">
-                                <div style="color: ${regColor}; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Registry: ${registryStatus}</div>
-                                <div style="color: var(--accent); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">📰 Source: ${item.published_date || 'Live Signal'}</div>
+                            <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center;">
+                                <div style="color: ${regColor}; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">REGISTRY: ${registryStatus}</div>
+                                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 2px 8px; display: flex; align-items: center; gap: 6px;">
+                                    <span style="font-size: 0.8rem;">📄</span>
+                                    <span style="color: var(--accent); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;">SOURCE: LIVE SIGNAL</span>
+                                </div>
                             </div>
-                            <div style="background: rgba(16, 185, 129, 0.05); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: var(--text-dim); margin-top: 8px;">${item.integration_opportunity}</div>
+                            <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-bright); margin-bottom: 8px;">
+                                ${item.company} ${auditBadge}
+                            </div>
+                            <div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; border-left: 3px solid var(--accent);">
+                                ${item.integration_opportunity}
+                            </div>
                         </td>
-                        <td><div style="font-size: 0.95rem; font-weight: 700; color: ${finColor};">${financials}</div></td>
-                        <td><div style="background: rgba(99, 102, 241, 0.05); padding: 12px; border-radius: 8px; font-size: 0.9rem;">${item.strategic_signal}</div></td>
-                        <td><div style="font-size: 1.5rem; font-weight: 800; color: ${scoreColor}; text-align: center;">${confidence}%</div></td>
-                        <td>👤 ${item.ceo_founder || 'Hunting...'}</td>
-                        <td>${actionBtns}</td>
+                        <td style="width: 200px;"><div style="font-size: 1rem; font-weight: 800; color: ${finColor}; line-height: 1.4;">${financials}</div></td>
+                        <td><div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-bright); font-weight: 600;">${item.strategic_signal}</div></td>
+                        <td>
+                            <div style="font-size: 1.75rem; font-weight: 900; color: ${scoreColor}; text-align: center; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);">${confidence}%</div>
+                        </td>
+                        <td style="min-width: 250px;">
+                            <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-bright); font-size: 1.05rem;">
+                                <span style="font-size: 1.2rem; opacity: 0.7;">👤</span> 
+                                <span>${item.ceo_founder || 'Hunting...'}</span>
+                            </div>
+                        </td>
+                        <td style="text-align: right; width: 120px;">${actionBtns}</td>
                     `;
                     table.appendChild(row);
                 });
