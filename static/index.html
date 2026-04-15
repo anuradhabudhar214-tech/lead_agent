@@ -460,14 +460,17 @@
                         let timeStr = runDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         
                         if (cloudStatus.includes('Hunting') || cloudStatus.includes('Waking')) {
-                            lastUpdateEl.innerText = `Woke up at ${timeStr} (Hunting...)`;
+                            lastUpdateEl.innerText = `${cloudStatus} (Started: ${timeStr})`;
                         } else if (cloudStatus.includes('Paused')) {
                             lastUpdateEl.innerText = `Paused manually at ${timeStr}`;
                         } else {
                             let nextDate = new Date(runDate);
                             nextDate.setMinutes(nextDate.getMinutes() + 20);
+                            let maxDate = new Date(nextDate);
+                            maxDate.setMinutes(maxDate.getMinutes() + 15);
                             let nextTimeStr = nextDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Wake: ${nextTimeStr} (~20 min)`;
+                            let maxTimeStr = maxDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Next Harvest: ${nextTimeStr} - ${maxTimeStr} (Server Window)`;
                         }
                     } catch(e) {
                          lastUpdateEl.innerText = usage.last_run;

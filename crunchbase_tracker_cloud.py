@@ -270,12 +270,16 @@ def run_tracker():
         "site:linkedin.com/company UAE startup Hiring CEO Founder"
     ]
     
-    # Process 2 niches per run to stay under your 3000/day target velocity
-    selected_niches = [current_niches[int(time.time() / 300) % len(current_niches)], 
-                       current_niches[(int(time.time() / 300) + 1) % len(current_niches)]]
+    # Pick 2 niches based on the current hour to ensure a rotating variety every 24h
+    hour = datetime.now(timezone.utc).hour
+    selected_niches = [current_niches[hour % len(current_niches)], 
+                       current_niches[(hour + 1) % len(current_niches)]]
                       
-    for niche in selected_niches:
+    for idx_n, niche in enumerate(selected_niches):
+        source = niche.split(".")[1] if "." in niche else "Web"
+        update_agent_status(f"Hunting 🔴 ({idx_n+1}/2: {source.title()} Scan)")
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
+
         results = serper_search_broad(niche)
         
         for idx, item in enumerate(results):
