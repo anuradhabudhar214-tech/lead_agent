@@ -71,9 +71,26 @@ SUPABASE_URL = os.getenv("SUPABASE_URL") or vault.config.get("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY") or vault.config.get("SUPABASE_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
 
+def track_cloud_usage(api_name):
+    """Increments the usage counters in Supabase for the dashboard."""
+    if not supabase: return
+    try:
+        # Use RPC if available, or fetch-then-update
+        column = "serper_calls" if api_name == "Serper" else "gemini_calls" if api_name == "Gemini" else "groq_calls"
+        
+        # Atomically increment in Supabase using a raw RPC or just a sequence of read-write
+        # For simplicity in this setup, we'll do an update with a subquery-like logic if possible, 
+        # but since we want it 100% reliable, we'll do a simple increment.
+        res = supabase.table("system_stats").select(column).eq("id", 1).execute()
+        if res.data:
+            current_val = res.data[0].get(column, 0)
+            supabase.table("system_stats").update({column: current_val + 1, "last_updated": "now()"}).eq("id", 1).execute()
+    except Exception as e:
+        logger.debug(f"Usage tracking failed: {e}")
+
 def compile_auditor_intel(company_name):
     """Infinite Audit Engine with Auto-Rotation using confirmed available cloud models."""
-    prompt = f"ROLE: Senior UAE Auditor. OBJ: Verify '{company_name}'. Rules: GCC Only, No Rupees, Full JSON details (industry, financials, strategic_signal, integration_opportunity, registry_status, ceo_founder, patron_chairman, confidence_score 1-100). Min Score 70. OUT: JSON."
+    prompt = f"ROLE: Senior UAE Auditor. OBJ: Deep Audit '{company_name}'. Instructions: Extract verified signals from WAM.ae, LinkedIn patterns, and 2026 Dubai registry news. Rules: GCC Only, No Rupees, Full JSON. fields: industry, financials, strategic_signal (2026 Focus), integration_opportunity, registry_status (Verified via WAM/LinkedIn), ceo_founder (Unmasked), patron_chairman, confidence_score (80-100 for clear leads). OUT: JSON."
     
     # Try all Gemini Keys before giving up
     for _ in range(len(vault.gemini_keys)):
@@ -82,8 +99,9 @@ def compile_auditor_intel(company_name):
         try:
             logger.info(f"💎 AUDIT: Analyzing '{company_name}' with Gemini 2.0...")
             client = genai.Client(api_key=key)
+            track_cloud_usage("Gemini")
             
-            # Use Gemini 2.0 Flash as the primary brain (Confirmed available via Diag)
+            # Use Gemini 2.0 Flash (Confirmed available via Diag)
             response = client.models.generate_content(
                 model='gemini-2.0-flash',
                 contents=prompt,
@@ -91,7 +109,7 @@ def compile_auditor_intel(company_name):
             )
             
             data = json.loads(response.text)
-            if data.get("confidence_score", 0) < 70: return "SKIP"
+            if data.get("confidence_score", 0) < 75: return "SKIP"
             return data
         except Exception as e:
             if "429" in str(e) or "limit" in str(e).lower():
@@ -105,7 +123,8 @@ def compile_auditor_intel(company_name):
     groq_key = os.getenv("GROQ_API_KEY") or vault.config.get("GROQ_API_KEY")
     if groq_key:
         try:
-            logger.info(f"⚡ FALLBACK: Groq Llama 3.3 Pro Brain for '{company_name}'")
+            logger.info(f"⚡ FALLBACK: Groq Pro Brain for '{company_name}'")
+            track_cloud_usage("Groq")
             client_groq = Groq(api_key=groq_key)
             chat_completion = client_groq.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
@@ -113,7 +132,7 @@ def compile_auditor_intel(company_name):
                 response_format={"type": "json_object"}
             )
             data = json.loads(chat_completion.choices[0].message.content)
-            if data.get("confidence_score", 0) < 70: return "SKIP"
+            if data.get("confidence_score", 0) < 75: return "SKIP"
             return data
         except Exception as e:
             logger.error(f"❌ Final Fallback Error: {e}")
@@ -128,6 +147,7 @@ def serper_search(query):
         url = "https://google.serper.dev/search"
         headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
         try:
+            track_cloud_usage("Serper")
             response = requests.post(url, headers=headers, data=json.dumps({"q": query, "num": 10}), timeout=10)
             res_data = response.json()
             if response.status_code != 200:
@@ -189,7 +209,8 @@ def run_tracker():
             logger.info(f"💎 FOUND: {company} | Score: {intel.get('confidence_score')}%")
             save_to_supabase([intel])
         elif intel == "SKIP":
-            save_to_supabase([{"company": company, "url": link, "status": "Discarded"}])
+            # STOP: Don't clutter Supabase with low-quality Discarded leads anymore
+            logger.info(f"⏭️ SKIPPING: {company} (Low Signal Strength)")
             
 if __name__ == "__main__":
     run_tracker()

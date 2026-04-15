@@ -262,15 +262,15 @@
                 <span id="total-updates" class="value">0</span>
             </div>
             <div class="card stats-card stats-half">
-                <span class="label">Serper API Calls (Total)</span>
+                <span class="label">Serper Search Queries</span>
                 <span id="serper-usage" class="value" style="color: var(--accent);">0</span>
             </div>
             <div class="card stats-card stats-half">
-                <span class="label">Serper API Calls (Total)</span>
-                <span id="serper-usage" class="value" style="color: var(--accent);">0</span>
+                <span class="label">Gemini AI Brain Calls</span>
+                <span id="gemini-usage" class="value" style="color: var(--accent);">0</span>
             </div>
             <div class="card stats-card stats-half">
-                <span class="label">Groq API Calls (Total)</span>
+                <span class="label">Groq Fallback Logic</span>
                 <span id="groq-usage" class="value" style="color: var(--accent);">0</span>
             </div>
 
@@ -474,6 +474,7 @@
                 const response = await fetch('/api/usage');
                 const usage = await response.json();
                 document.getElementById('serper-usage').innerText = usage.Serper || 0;
+                document.getElementById('gemini-usage').innerText = usage.Gemini || 0;
                 document.getElementById('groq-usage').innerText = usage.Groq || 0;
             } catch (error) {
                 console.error('Error fetching usage:', error);
