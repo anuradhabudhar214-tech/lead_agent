@@ -14,6 +14,31 @@ supabase: Client = None
 if SUPABASE_URL and SUPABASE_KEY:
     supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+import io
+import csv
+from fastapi.responses import Response
+
+@app.get("/api/download/{type}")
+async def download_csv(type: str):
+    """Downloads leads as a CSV file."""
+    if not supabase: return JSONResponse(content={"error": "Database error"}, status_code=500)
+    try:
+        # Verified gives 85+ certainty, Master gives 70+
+        threshold = 85 if type == "verified" else 70
+        res = supabase.table("uae_leads").select("*").gte("confidence_score", threshold).order("discovered_at", desc=True).execute()
+        
+        output = io.StringIO()
+        if res.data:
+            headers = ["company", "industry", "confidence_score", "strategic_signal", "integration_opportunity", "patron_chairman", "ceo_founder", "financials", "registry_status", "status", "url", "discovered_at"]
+            writer = csv.DictWriter(output, fieldnames=headers, extrasaction='ignore')
+            writer.writeheader()
+            writer.writerows(res.data)
+            
+        csv_data = output.getvalue()
+        return Response(content=csv_data, media_type="text/csv", headers={"Content-Disposition": f"attachment; filename=uae_leads_{type}.csv"})
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
 @app.get("/api/updates")
 async def get_leads():
     """Fetches leads from the professional cloud database."""
