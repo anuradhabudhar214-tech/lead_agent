@@ -1,6 +1,8 @@
 name: 🇦🇪 UAE Auditor - Diagnostic Cycle
 
 on:
+  push:
+    branches: [ main ]
   schedule:
     # Trigger every 1 hour
     - cron: '0 * * * *'

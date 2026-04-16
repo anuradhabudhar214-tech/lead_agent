@@ -1,9 +1,15 @@
 name: 🇦🇪 UAE Auditor - Hourly Hunt Cycle
 
 on:
+  push:
+    branches: [ main ]
   schedule:
     # Trigger every 20 minutes for high-velocity 3000+ daily harvest
     - cron: '*/20 * * * *'
+  workflow_run:
+    workflows: ["🇦🇪 UAE Auditor - Diagnostic Cycle"]
+    types:
+      - completed
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
