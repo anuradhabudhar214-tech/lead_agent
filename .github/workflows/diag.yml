@@ -36,5 +36,4 @@ jobs:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
         run: |
-          python diag_gemini.py
           python crunchbase_tracker_cloud.py
