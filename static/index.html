@@ -407,9 +407,15 @@
                             <div style="font-size: 1.75rem; font-weight: 900; color: ${scoreColor}; text-align: center; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);">${confidence}%</div>
                         </td>
                         <td style="min-width: 250px;">
-                            <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-bright); font-size: 1.05rem;">
-                                <span style="font-size: 1.2rem; opacity: 0.7;">👤</span> 
-                                <span>${item.ceo_founder || 'Hunting...'}</span>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-bright); font-size: 1.05rem;">
+                                    <span style="font-size: 1.2rem; opacity: 0.7;">👤</span> 
+                                    <span>${item.contact_name || item.ceo_founder || 'Hunting...'}</span>
+                                </div>
+                                ${item.contact_role ? `<div style="color: var(--text-dim); font-size: 0.8rem; font-weight: 600; margin-left: 28px;">💼 ${item.contact_role}</div>` : ''}
+                                <div style="font-size: 0.85rem; font-weight: 800; font-family: monospace; letter-spacing: 0.5px; margin-left: 28px; color: ${item.contact_email && item.contact_email !== 'Not Found' ? 'var(--green)' : '#fbbf24'};">
+                                    ${item.contact_email && item.contact_email !== 'Not Found' ? '📧 ' + item.contact_email : (item.contact_email === 'Not Found' ? '❌ No Email Found' : '⏳ Awaiting Enrichment...')}
+                                </div>
                             </div>
                         </td>
                         <td style="text-align: right; width: 120px;">${actionBtns}</td>

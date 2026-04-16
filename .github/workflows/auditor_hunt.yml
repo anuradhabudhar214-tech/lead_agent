@@ -46,6 +46,14 @@ jobs:
         run: |
           python crunchbase_tracker_cloud.py
 
+      - name: 🔎 Execute Apollo Contact Enrichment
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          APOLLO_API_KEYS: ${{ secrets.APOLLO_API_KEYS }}
+        run: |
+          python apollo_enrichment.py
+
       - name: 📁 Persist Local Intelligence (CSV Backup)
         run: |
           git config --global user.name "Desert Intel Bot"

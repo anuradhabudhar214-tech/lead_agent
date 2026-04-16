@@ -17,3 +17,9 @@ CREATE TABLE IF NOT EXISTS uae_leads (
 
 -- Index for faster dashboard loading
 CREATE INDEX IF NOT EXISTS idx_discovered_at ON uae_leads (discovered_at DESC);
+
+-- PHASE 2: Sales Agent Enrichment Columns
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_name TEXT;
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_email TEXT;
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_role TEXT;
+
