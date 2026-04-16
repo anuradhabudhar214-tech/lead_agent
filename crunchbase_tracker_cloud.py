@@ -102,15 +102,21 @@ def update_agent_status(status):
         now = datetime.now(timezone.utc)
         data = {"status": status, "last_run_at": now.isoformat()}
         
-        # --- DAILY RESET LOGIC ---
-        res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans"})
+        # --- PRECISION QUOTA ARCHITECTURE ---
+        res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans,serper_calls"})
         if res_stats:
             last_run_at = res_stats[0].get("last_run_at")
             if last_run_at:
-                last_date = datetime.fromisoformat(last_run_at.replace("Z", "+00:00")).date()
-                if last_date < now.date():
-                    logger.info("🌅 NEW DAY DETECTED: Resetting daily quota counters.")
-                    data.update({"gemini_calls": 0, "groq_calls": 0, "serper_calls": 0})
+                last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                # 🔄 DAILY RESET (Gemini + Groq + Scans)
+                if last_dt.date() < now.date():
+                    logger.info("🌅 DAILY RESET: Fresh counters for the new day.")
+                    data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
+                
+                # 📅 MONTHLY RESET (Serper - 10,000 Limit)
+                if last_dt.month < now.month or last_dt.year < now.year:
+                    logger.info("📅 MONTHLY RESET: Clearing monthly Serper quota.")
+                    data.update({"serper_calls": 0})
             
             if status == "Hunting 🔴":
                 data["total_scans"] = (res_stats[0].get("total_scans") or 0) + 1
