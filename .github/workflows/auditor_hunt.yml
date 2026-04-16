@@ -46,11 +46,12 @@ jobs:
         run: |
           python crunchbase_tracker_cloud.py
 
-      - name: 🔎 Execute Apollo Contact Enrichment
+      - name: 🔎 Execute Contact Enrichment (Gemini + Serper)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          APOLLO_API_KEYS: ${{ secrets.APOLLO_API_KEYS }}
+          GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
+          SERPER_API_KEYS: ${{ secrets.SERPER_API_KEYS }}
         run: |
           python apollo_enrichment.py
 
