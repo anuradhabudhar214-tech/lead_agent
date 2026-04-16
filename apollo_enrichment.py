@@ -173,7 +173,7 @@ def run_enrichment():
             supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
             
         time.sleep(2)
-pectful pacing
+
 
 if __name__ == "__main__":
     run_enrichment()
