@@ -98,32 +98,30 @@ def track_cloud_usage(api_name):
     except: pass
 
 def update_agent_status(status):
+    """Updates the cloud dashboard status with extreme reliability."""
     try:
         now = datetime.now(timezone.utc)
         data = {"status": status, "last_run_at": now.isoformat()}
         
-        # --- PRECISION QUOTA ARCHITECTURE ---
-        res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans,serper_calls"})
-        if res_stats:
-            last_run_at = res_stats[0].get("last_run_at")
-            if last_run_at:
-                last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
-                # 🔄 DAILY RESET (Gemini + Groq + Scans)
-                if last_dt.date() < now.date():
-                    logger.info("🌅 DAILY RESET: Fresh counters for the new day.")
-                    data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
+        # Only do the 'Reset' and 'Scan Count' logic when waking up or starting a hunt
+        if "Hunting" in status or "Waking" in status:
+            res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans"})
+            if res_stats:
+                last_run_at = res_stats[0].get("last_run_at")
+                if last_run_at:
+                    last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                    if last_dt.date() < now.date():
+                        data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
+                    if last_dt.month < now.month or last_dt.year < now.year:
+                        data.update({"serper_calls": 0})
                 
-                # 📅 MONTHLY RESET (Serper - 10,000 Limit)
-                if last_dt.month < now.month or last_dt.year < now.year:
-                    logger.info("📅 MONTHLY RESET: Clearing monthly Serper quota.")
-                    data.update({"serper_calls": 0})
-            
-            if status == "Hunting 🔴":
-                data["total_scans"] = (res_stats[0].get("total_scans") or 0) + 1
+                if "Hunting" in status:
+                    data["total_scans"] = (res_stats[0].get("total_scans") or 0) + 1
         
+        # NUCLEAR PATCH: Straight to the point
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
-    except Exception as e:
-        logger.error(f"Failed to update status: {e}")
+    except:
+        logger.warning("⚠️ Status Heartbeat Blinked (but hunt continues)")
 
 def save_to_csv(lead):
     """Saves lead to local CSV backup matching your format."""
