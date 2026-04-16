@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 # --- CONFIGURATION ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-GEMINI_API_KEYS_STR = os.environ.get("GEMINI_API_KEYS", os.environ.get("GEMINI_API_KEY", ""))
-SERPER_API_KEYS_STR = os.environ.get("SERPER_API_KEYS", "")
+GEMINI_API_KEYS_STR = os.environ.get("GEMINI_API_KEYS", "") or os.environ.get("GEMINI_API_KEY", "")
+SERPER_API_KEYS_STR = os.environ.get("SERPER_API_KEYS", "") or os.environ.get("SERPER_API_KEY", "")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     logger.error("Supabase credentials missing.")
