@@ -110,9 +110,9 @@ def guess_email_format(name, domain):
     ]
 
 def run_enrichment():
-    logger.info("=== Apollo Enrichment Engine v2 (Gemini-Powered) Starting ===")
+    logger.info("=== Contact Enrichment Engine v3 (Serper-First) Starting ===")
     
-    # Fetch any leads missing contact email (no status filter - catch all leads)
+    # Fetch any leads missing contact email
     res = supabase.table("uae_leads").select("*").is_("contact_email", "null").limit(8).execute()
     leads = res.data
     
@@ -120,57 +120,60 @@ def run_enrichment():
         logger.info("No leads require enrichment right now.")
         return
         
-    logger.info(f"🎯 Found {len(leads)} leads to enrich. Starting deep contact search...")
+    logger.info(f"Targeting {len(leads)} leads for contact enrichment...")
     
     for lead in leads:
         company = lead.get("company", "")
         lead_id = lead.get("id")
-        context = f"Industry: {lead.get('industry', '')}, Signal: {lead.get('strategic_signal', '')}, Financials: {lead.get('financials', '')}"
+        found_email = None
+        found_name = None
+        found_role = None
         
-        logger.info(f"\n🔍 Enriching: {company}")
+        logger.info(f"Searching contacts for: {company}")
         
-        # Step 1: Ask Gemini to find the contact
-        contact = ask_gemini_for_contact(company, context)
+        # STRATEGY 1: Serper - direct email extraction from web search
+        queries = [
+            f'"{company}" CEO email site:linkedin.com OR site:crunchbase.com',
+            f'"{company}" founder CTO email UAE contact',
+            f'"{company}" "@" CEO OR founder OR CTO UAE',
+        ]
         
-        if contact and contact.get("name") and contact.get("email") != "not_found":
-            name = contact.get("name")
-            role = contact.get("role")
-            email = contact.get("email")
-            confidence = contact.get("confidence", "low")
-            
-            logger.info(f"✅ Found: {name} | {role} | {email} (confidence: {confidence})")
-            
+        for query in queries:
+            results = search_serper(query)
+            for result in results:
+                snippet = result.get("snippet", "") + " " + result.get("title", "")
+                email_match = re.search(r'[\w.+-]+@[\w-]+\.[a-z]{2,4}', snippet)
+                if email_match:
+                    found_email = email_match.group(0)
+                    logger.info(f"Email found via Serper: {found_email}")
+                    break
+            if found_email:
+                break
+        
+        # STRATEGY 2: Gemini fallback with strict JSON prompt
+        if not found_email:
+            contact = ask_gemini_for_contact(company, lead.get("strategic_signal", ""))
+            if contact:
+                found_name = contact.get("name")
+                found_role = contact.get("role")
+                email = contact.get("email", "")
+                if email and email != "not_found" and "@" in email:
+                    found_email = email
+        
+        # Write result to Supabase
+        if found_email:
+            logger.info(f"SUCCESS: {company} -> {found_email}")
             supabase.table("uae_leads").update({
-                "contact_name": name,
-                "contact_email": email,
-                "contact_role": role
+                "contact_name": found_name,
+                "contact_email": found_email,
+                "contact_role": found_role
             }).eq("id", lead_id).execute()
         else:
-            # Step 2: Fallback — use Serper to find a name, then guess email format
-            logger.info(f"Gemini search inconclusive. Trying Serper fallback...")
-            results = search_serper(f'{company} CEO founder email LinkedIn UAE')
+            logger.info(f"No email found for {company} - marking as Not Found")
+            supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
             
-            if results:
-                snippet = results[0].get("snippet", "")
-                logger.info(f"  Serper snippet: {snippet[:100]}")
-                # Try to extract email from snippet
-                email_match = re.search(r'[\w.+-]+@[\w-]+\.[a-z]{2,}', snippet)
-                if email_match:
-                    email = email_match.group(0)
-                    logger.info(f"✅ Email extracted from search: {email}")
-                    supabase.table("uae_leads").update({
-                        "contact_email": email,
-                        "contact_name": contact.get("name") if contact else None,
-                        "contact_role": contact.get("role") if contact else None
-                    }).eq("id", lead_id).execute()
-                else:
-                    logger.info(f"❌ No verified email found for {company}")
-                    supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
-            else:
-                logger.info(f"❌ No data found for {company}")
-                supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
-        
-        time.sleep(3)  # Respectful pacing
+        time.sleep(2)
+pectful pacing
 
 if __name__ == "__main__":
     run_enrichment()
