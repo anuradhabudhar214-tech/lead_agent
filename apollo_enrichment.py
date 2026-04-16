@@ -112,14 +112,9 @@ def guess_email_format(name, domain):
 def run_enrichment():
     logger.info("=== Apollo Enrichment Engine v2 (Gemini-Powered) Starting ===")
     
-    # Fetch leads missing contact email
-    res = supabase.table("uae_leads").select("*").is_("contact_email", "null").eq("status", "Pending").gte("confidence_score", 70).limit(8).execute()
+    # Fetch any leads missing contact email (no status filter - catch all leads)
+    res = supabase.table("uae_leads").select("*").is_("contact_email", "null").limit(8).execute()
     leads = res.data
-    
-    if not leads:
-        # Also try leads where contact_email is not set at all
-        res2 = supabase.table("uae_leads").select("*").is_("contact_email", "null").limit(8).execute()
-        leads = res2.data
     
     if not leads:
         logger.info("No leads require enrichment right now.")
