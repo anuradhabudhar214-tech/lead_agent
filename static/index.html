@@ -269,8 +269,9 @@
                 <span id="total-scans" class="value" style="color: var(--accent); font-size: 1.2rem;">0</span>
             </div>
             <div class="card stats-card stats-half">
-                <span class="label">Serper Search Queries</span>
-                <span id="serper-usage" class="value" style="color: var(--accent);">0</span>
+                <span class="label">Serper Quota (Used/Total)</span>
+                <span id="serper-usage-display" class="value" style="color: var(--accent); font-size: 1.1rem;">0 / 10,000</span>
+                <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 5px;" id="serper-percent">0% Used</div>
             </div>
             <div class="card stats-card stats-half">
                 <span class="label">Gemini AI Brain Calls</span>
@@ -422,13 +423,21 @@
             try {
                 const response = await fetch('/api/usage');
                 const usage = await response.json();
-                
-                const updateEl = (id, val) => {
+                                const updateEl = (id, val) => {
                     const el = document.getElementById(id);
                     if (el) el.innerText = val || 0;
                 };
+                
+                const serperUsed = usage.Serper || 0;
+                const serperTotal = 10000; // 4 Keys x 2500 per month
+                const serperPercent = ((serperUsed / serperTotal) * 100).toFixed(1);
+                
+                const serperEl = document.getElementById('serper-usage-display');
+                if (serperEl) serperEl.innerText = `${serperUsed.toLocaleString()} / 10,000`;
+                
+                const serperPctEl = document.getElementById('serper-percent');
+                if (serperPctEl) serperPctEl.innerText = `${serperPercent}% of Monthly Quota Used`;
 
-                updateEl('serper-usage', usage.Serper);
                 updateEl('gemini-usage', usage.Gemini);
                 updateEl('groq-usage', usage.Groq);
                 updateEl('total-scans', usage.total_scans);
