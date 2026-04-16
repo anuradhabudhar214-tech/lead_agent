@@ -260,7 +260,8 @@ def serper_search_broad(query):
         try:
             track_cloud_usage("Serper")
             # num: 50 for max results per credit spent
-            payload = {"q": query, "num": 50, "tbs": "qdr:d"} 
+            # tbs: qdr:m for past month (MAX VOLUME BOOST)
+            payload = {"q": query, "num": 50, "tbs": "qdr:m"} 
             r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
             res_data = r.json()
             if 'organic' in res_data:
@@ -341,6 +342,17 @@ def run_tracker():
                 except: pass
 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Date: {item.get('date')}"
+            link = item.get('link')
+            
+            # --- SMART FILTER: Prevent Wasting AI Credits on Existing Leads ---
+            if supabase:
+                try:
+                    # check by URL or Title to avoid AI costs for items we already found
+                    existing = supabase.table("uae_leads").select("id").or_(f"url.eq.{link},company.ilike.%{item.get('title','UNKNOWN')[:15]}%").execute()
+                    if existing.data:
+                        continue # Already in HQ, save Gemini call
+                except: pass
+
             intel = compile_auditor_intel_extreme(discovery_package)
             
             if isinstance(intel, dict) and intel.get("company"):
