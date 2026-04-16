@@ -473,13 +473,7 @@
                         } else if (cloudStatus.includes('Paused')) {
                             lastUpdateEl.innerText = `Paused manually at ${timeStr}`;
                         } else {
-                            let nextDate = new Date(runDate);
-                            nextDate.setMinutes(nextDate.getMinutes() + 20);
-                            let maxDate = new Date(nextDate);
-                            maxDate.setMinutes(maxDate.getMinutes() + 15);
-                            let nextTimeStr = nextDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            let maxTimeStr = maxDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Next Harvest: ${nextTimeStr} - ${maxTimeStr} (Server Window)`;
+                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Waiting for Automated GitHub Trigger`;
                         }
                     } catch(e) {
                          lastUpdateEl.innerText = usage.last_run;

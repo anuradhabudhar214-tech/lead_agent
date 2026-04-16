@@ -106,18 +106,25 @@ def update_agent_status(status):
         # Only do the 'Reset' and 'Scan Count' logic when waking up or starting a hunt
         if "Hunting" in status or "Waking" in status:
             res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans"})
-            if res_stats:
+            if isinstance(res_stats, list) and len(res_stats) > 0:
                 last_run_at = res_stats[0].get("last_run_at")
                 if last_run_at:
-                    last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
-                    if last_dt.date() < now.date():
-                        data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
-                    if last_dt.month < now.month or last_dt.year < now.year:
-                        data.update({"serper_calls": 0})
+                    try:
+                        last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                        if last_dt.date() < now.date():
+                            data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
+                        if last_dt.month < now.month or last_dt.year < now.year:
+                            data.update({"serper_calls": 0})
+                    except: pass
                 
                 if "Hunting" in status:
                     data["total_scans"] = (res_stats[0].get("total_scans") or 0) + 1
         
+        # Dashboard Status Message Cleanup
+        if status == "Sleeping 💤":
+            status = "Sleeping 💤 | Waiting for GitHub Trigger"
+
+        data["status"] = status
         # NUCLEAR PATCH: Straight to the point
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
     except:
@@ -281,10 +288,12 @@ def run_tracker():
     current_niches = [
         "site:crunchbase.com/organization UAE technology funding 2026",
         "site:apollo.io/companies Dubai technology hiring HQ",
-        "UAE startup funding news last 24 hours",
-        "Abu Dhabi tech company expansion signals 2026",
-        "Dubai AI and Fintech funding announcements",
-        "site:linkedin.com/company UAE startup Hiring CEO Founder"
+        "Dubai tech startup expansion news last 48 hours",
+        "Abu Dhabi AI Fintech investment rounds 2026",
+        "Dubai Future Foundation accelerator companies",
+        "DIFC Innovation Hub new company members",
+        "site:linkedin.com/company UAE startup Hiring CEO Founder",
+        "site:magniitt.com UAE venture capital funding"
     ]
     
     # Pick 2 niches based on the current hour to ensure a rotating variety every 24h
