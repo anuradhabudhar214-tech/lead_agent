@@ -448,7 +448,7 @@
                 const statusText = document.getElementById('status-text');
                 const cloudStatus = usage.status || 'Sleeping 💤';
                 
-                if (statusText) statusText.innerText = cloudStatus.includes('Sleeping') ? `Automation Armed 🛡️` : `Cloud Engine: ${cloudStatus}`;
+                if (statusText) statusText.innerText = cloudStatus.includes('Sleeping') ? `Automation Armed (Sleeping) 🛡️💤` : `Cloud Engine: ${cloudStatus}`;
                 if (statusDot) {
                     if (cloudStatus.includes('Hunting')) {
                         statusDot.classList.add('active');
