@@ -22,4 +22,5 @@ CREATE INDEX IF NOT EXISTS idx_discovered_at ON uae_leads (discovered_at DESC);
 ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_name TEXT;
 ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_email TEXT;
 ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_role TEXT;
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_linkedin TEXT;
 

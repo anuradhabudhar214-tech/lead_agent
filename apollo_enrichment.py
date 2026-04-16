@@ -54,23 +54,21 @@ def search_serper(query):
     except:
         return []
 
-def ask_gemini_for_contact(company_name, company_context=""):
-    """Ask Gemini to find CEO/CTO name and the email for a company via web search."""
+def ask_gemini_for_linkedin(company_name, company_context=""):
+    """Ask Gemini to find the LinkedIn profile of the CEO/CTO."""
     key = get_gemini_key()
     if not key: return None
     
     prompt = f"""You are a B2B contact researcher. Search the web deeply and find:
     1. The CEO, CTO, Founder, or VP Engineering of company: "{company_name}"
-    2. Their real verified work email address
+    2. Then, search for: "[Their Name] {company_name} LinkedIn profile"
     
     Context about the company: {company_context}
     
-    Search their official website (About, Team, Contact pages), LinkedIn, Crunchbase, press releases.
-    
     Return ONLY a JSON object (no markdown, no extra text) in this format:
-    {{"name": "Full Name", "role": "CEO", "email": "name@company.com", "confidence": "high/medium/low"}}
+    {{"name": "Full Name", "role": "CEO", "linkedin": "linkedin.com/in/firstname-lastname", "confidence": "high/medium/low"}}
     
-    If no verified email found, return: {{"name": "Name if found", "role": "Role if found", "email": "not_found", "confidence": "low"}}
+    If no LinkedIn profile is found, return: {{"name": "Name if found", "role": "Role if found", "linkedin": "not_found", "confidence": "low"}}
     """
     
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
@@ -110,67 +108,71 @@ def guess_email_format(name, domain):
     ]
 
 def run_enrichment():
-    logger.info("=== Contact Enrichment Engine v3 (Serper-First) Starting ===")
+    logger.info("=== Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===")
     
-    # Fetch any leads missing contact email
-    res = supabase.table("uae_leads").select("*").is_("contact_email", "null").limit(8).execute()
+    # Fetch leads missing a linkedin URL
+    res = supabase.table("uae_leads").select("*").is_("contact_linkedin", "null").limit(8).execute()
     leads = res.data
     
     if not leads:
-        logger.info("No leads require enrichment right now.")
+        logger.info("No leads require LinkedIn enrichment right now.")
         return
         
-    logger.info(f"Targeting {len(leads)} leads for contact enrichment...")
+    logger.info(f"Targeting {len(leads)} leads for LinkedIn enrichment...")
     
     for lead in leads:
         company = lead.get("company", "")
         lead_id = lead.get("id")
-        found_email = None
+        found_linkedin = None
         found_name = None
         found_role = None
         
-        logger.info(f"Searching contacts for: {company}")
+        logger.info(f"Searching LinkedIn profile for: {company}")
         
-        # STRATEGY 1: Serper - direct email extraction from web search
+        # STRATEGY 1: Serper - direct LinkedIn extraction
         queries = [
-            f'"{company}" CEO email site:linkedin.com OR site:crunchbase.com',
-            f'"{company}" founder CTO email UAE contact',
-            f'"{company}" "@" CEO OR founder OR CTO UAE',
+            f'"{company}" CEO OR Founder OR CTO site:linkedin.com/in/',
         ]
         
         for query in queries:
             results = search_serper(query)
             for result in results:
-                snippet = result.get("snippet", "") + " " + result.get("title", "")
-                email_match = re.search(r'[\w.+-]+@[\w-]+\.[a-z]{2,4}', snippet)
-                if email_match:
-                    found_email = email_match.group(0)
-                    logger.info(f"Email found via Serper: {found_email}")
+                link = result.get("link", "")
+                if "linkedin.com/in/" in link:
+                    found_linkedin = link
+                    # Extract name from title like "John Doe - CEO - Company | LinkedIn"
+                    title = result.get("title", "")
+                    found_name = title.split("-")[0].strip()
+                    logger.info(f"LinkedIn found via Serper: {found_linkedin}")
                     break
-            if found_email:
+            if found_linkedin:
                 break
         
-        # STRATEGY 2: Gemini fallback with strict JSON prompt
-        if not found_email:
-            contact = ask_gemini_for_contact(company, lead.get("strategic_signal", ""))
+        # STRATEGY 2: Gemini strict formatting fallback
+        if not found_linkedin:
+            contact = ask_gemini_for_linkedin(company, lead.get("strategic_signal", ""))
             if contact:
-                found_name = contact.get("name")
+                found_name = contact.get("name") if not found_name else found_name
                 found_role = contact.get("role")
-                email = contact.get("email", "")
-                if email and email != "not_found" and "@" in email:
-                    found_email = email
+                lnk = contact.get("linkedin", "")
+                if lnk and lnk != "not_found" and "linkedin" in lnk.lower():
+                    found_linkedin = lnk if "http" in lnk else "https://www." + lnk
         
+        # Ensure proper URL formatting
+        if found_linkedin and not found_linkedin.startswith("http"):
+            found_linkedin = "https://" + found_linkedin
+            
         # Write result to Supabase
-        if found_email:
-            logger.info(f"SUCCESS: {company} -> {found_email}")
+        if found_linkedin:
+            logger.info(f"SUCCESS: {company} -> {found_linkedin}")
             supabase.table("uae_leads").update({
                 "contact_name": found_name,
-                "contact_email": found_email,
+                "contact_linkedin": found_linkedin,
                 "contact_role": found_role
             }).eq("id", lead_id).execute()
         else:
-            logger.info(f"No email found for {company} - marking as Not Found")
-            supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
+            logger.info(f"No LinkedIn found for {company} - marking as Not Found")
+            supabase.table("uae_leads").update({"contact_linkedin": "Not Found"}).eq("id", lead_id).execute()
             
         time.sleep(2)
 

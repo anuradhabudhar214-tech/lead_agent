@@ -29,7 +29,7 @@ async def download_csv(type: str):
         
         output = io.StringIO()
         if res.data:
-            headers = ["company", "industry", "confidence_score", "strategic_signal", "integration_opportunity", "patron_chairman", "ceo_founder", "financials", "registry_status", "status", "url", "discovered_at"]
+            headers = ["company", "industry", "confidence_score", "strategic_signal", "integration_opportunity", "patron_chairman", "ceo_founder", "financials", "registry_status", "status", "url", "contact_name", "contact_role", "contact_email", "contact_linkedin", "discovered_at"]
             writer = csv.DictWriter(output, fieldnames=headers, extrasaction='ignore')
             writer.writeheader()
             writer.writerows(res.data)
