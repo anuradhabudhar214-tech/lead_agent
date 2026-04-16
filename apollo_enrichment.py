@@ -3,6 +3,7 @@ import time
 import requests
 import json
 import logging
+import re
 from supabase import create_client, Client
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -11,115 +12,171 @@ logger = logging.getLogger(__name__)
 # --- CONFIGURATION ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-APOLLO_API_KEYS_STR = os.environ.get("APOLLO_API_KEYS", "yD4WPjUpffUdIlSq-Y52xw,_3nLDK3dz0dAJxW6xkXIiQ,bzdlDsyOn1EpXSZGAo767g")
+GEMINI_API_KEYS_STR = os.environ.get("GEMINI_API_KEYS", os.environ.get("GEMINI_API_KEY", ""))
+SERPER_API_KEYS_STR = os.environ.get("SERPER_API_KEYS", "")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     logger.error("Supabase credentials missing.")
     exit(1)
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-apollo_keys = [k.strip() for k in APOLLO_API_KEYS_STR.split(",") if k.strip()]
+gemini_keys = [k.strip() for k in GEMINI_API_KEYS_STR.split(",") if k.strip()]
+serper_keys = [k.strip() for k in SERPER_API_KEYS_STR.split(",") if k.strip()]
+gemini_idx = 0
+serper_idx = 0
 
-class ApolloVault:
-    def __init__(self, keys):
-        self.keys = keys
-        self.current_idx = 0
-        
-    def get_key(self):
-        if not self.keys: return None
-        return self.keys[self.current_idx]
-        
-    def rotate(self):
-        self.current_idx += 1
-        if self.current_idx >= len(self.keys):
-            logger.error("🚨 All Apollo keys exhausted!")
-            return False
-        logger.warning(f"🔄 Rotated to Apollo Key #{self.current_idx + 1}")
-        return True
+def get_gemini_key():
+    global gemini_idx
+    if not gemini_keys: return None
+    key = gemini_keys[gemini_idx % len(gemini_keys)]
+    gemini_idx += 1
+    return key
 
-vault = ApolloVault(apollo_keys)
+def get_serper_key():
+    global serper_idx  
+    if not serper_keys: return None
+    key = serper_keys[serper_idx % len(serper_keys)]
+    serper_idx += 1
+    return key
 
-def search_apollo_person(company_name):
-    titles = ["ceo", "founder", "cto", "managing director", "chief executive"]
-    for attempt in range(len(vault.keys)):
-        api_key = vault.get_key()
-        if not api_key: return None
+def search_serper(query):
+    """Use Serper to search web for person's info."""
+    key = get_serper_key()
+    if not key: return []
+    try:
+        r = requests.post(
+            "https://google.serper.dev/search",
+            headers={"X-API-KEY": key, "Content-Type": "application/json"},
+            json={"q": query, "num": 5},
+            timeout=10
+        )
+        return r.json().get("organic", [])
+    except:
+        return []
+
+def ask_gemini_for_contact(company_name, company_context=""):
+    """Ask Gemini to find CEO/CTO name and the email for a company via web search."""
+    key = get_gemini_key()
+    if not key: return None
+    
+    prompt = f"""You are a B2B contact researcher. Search the web deeply and find:
+    1. The CEO, CTO, Founder, or VP Engineering of company: "{company_name}"
+    2. Their real verified work email address
+    
+    Context about the company: {company_context}
+    
+    Search their official website (About, Team, Contact pages), LinkedIn, Crunchbase, press releases.
+    
+    Return ONLY a JSON object (no markdown, no extra text) in this format:
+    {{"name": "Full Name", "role": "CEO", "email": "name@company.com", "confidence": "high/medium/low"}}
+    
+    If no verified email found, return: {{"name": "Name if found", "role": "Role if found", "email": "not_found", "confidence": "low"}}
+    """
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 256}
+    }
+    
+    try:
+        r = requests.post(url, json=payload, timeout=20)
+        if r.status_code == 429:
+            logger.warning("Gemini quota hit, retrying with next key.")
+            key = get_gemini_key()
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+            r = requests.post(url, json=payload, timeout=20)
         
-        url = "https://api.apollo.io/v1/mixed_people/search"
-        headers = {
-            "Cache-Control": "no-cache",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "api_key": api_key,
-            "q_organization_name": company_name,
-            "person_titles": titles,
-            "page": 1,
-            "per_page": 3
-        }
-        
-        try:
-            r = requests.post(url, headers=headers, json=data)
-            if r.status_code == 429 or r.status_code == 401: # Limit hit or invalid
-                logger.warning(f"Apollo API Limit hit on key ending in {api_key[-4:]}")
-                if vault.rotate(): continue
-                else: break
-            
-            res = r.json()
-            people = res.get("people", [])
-            
-            # Find the best match with an email
-            for p in people:
-                if p.get("email"):
-                    return {
-                        "name": f"{p.get('first_name', '')} {p.get('last_name', '')}".strip(),
-                        "email": p.get("email"),
-                        "title": p.get("title")
-                    }
-            return None # No one found with email
-        except Exception as e:
-            logger.error(f"Error querying Apollo: {e}")
-            break
-            
-    return None
+        text = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+        # Strip markdown code fences if present
+        text = re.sub(r"```json|```", "", text).strip()
+        data = json.loads(text)
+        return data
+    except Exception as e:
+        logger.warning(f"Gemini contact search failed: {e}")
+        return None
+
+def guess_email_format(name, domain):
+    """Generate common email format guesses based on name and domain."""
+    if not name or not domain: return []
+    parts = name.lower().split()
+    if len(parts) < 2: return [f"{parts[0]}@{domain}"]
+    first, last = parts[0], parts[-1]
+    return [
+        f"{first}.{last}@{domain}",
+        f"{first[0]}{last}@{domain}",
+        f"{first}@{domain}",
+        f"{first}_{last}@{domain}",
+    ]
 
 def run_enrichment():
-    logger.info("Starting Apollo Enrichment Cycle...")
+    logger.info("=== Apollo Enrichment Engine v2 (Gemini-Powered) Starting ===")
     
-    # 1. Fetch leads missing contact info
-    res = supabase.table("uae_leads").select("*").is_("contact_email", "null").eq("status", "Pending").limit(10).execute()
+    # Fetch leads missing contact email
+    res = supabase.table("uae_leads").select("*").is_("contact_email", "null").eq("status", "Pending").gte("confidence_score", 70).limit(8).execute()
     leads = res.data
     
     if not leads:
-        logger.info("No new leads require enrichment at this time.")
+        # Also try leads where contact_email is not set at all
+        res2 = supabase.table("uae_leads").select("*").is_("contact_email", "null").limit(8).execute()
+        leads = res2.data
+    
+    if not leads:
+        logger.info("No leads require enrichment right now.")
         return
         
-    logger.info(f"🔍 Found {len(leads)} leads requiring enrichment. Connecting to Apollo...")
+    logger.info(f"🎯 Found {len(leads)} leads to enrich. Starting deep contact search...")
     
     for lead in leads:
-        company = lead.get("company")
+        company = lead.get("company", "")
         lead_id = lead.get("id")
-        logger.info(f"Hunting contacts for: {company}")
+        context = f"Industry: {lead.get('industry', '')}, Signal: {lead.get('strategic_signal', '')}, Financials: {lead.get('financials', '')}"
         
-        contact = search_apollo_person(company)
+        logger.info(f"\n🔍 Enriching: {company}")
         
-        if contact:
-            logger.info(f"✅ Found! {contact['name']} - {contact['title']} | {contact['email']}")
-            # Update Supabase
+        # Step 1: Ask Gemini to find the contact
+        contact = ask_gemini_for_contact(company, context)
+        
+        if contact and contact.get("name") and contact.get("email") != "not_found":
+            name = contact.get("name")
+            role = contact.get("role")
+            email = contact.get("email")
+            confidence = contact.get("confidence", "low")
+            
+            logger.info(f"✅ Found: {name} | {role} | {email} (confidence: {confidence})")
+            
             supabase.table("uae_leads").update({
-                "contact_name": contact["name"],
-                "contact_email": contact["email"],
-                "contact_role": contact["title"]
+                "contact_name": name,
+                "contact_email": email,
+                "contact_role": role
             }).eq("id", lead_id).execute()
         else:
-            logger.info(f"❌ No verifiable contact found with email for {company}.")
-            # Mark as not found to avoid infinite retrying using a placeholder
-            supabase.table("uae_leads").update({
-                "contact_email": "Not Found"
-            }).eq("id", lead_id).execute()
+            # Step 2: Fallback — use Serper to find a name, then guess email format
+            logger.info(f"Gemini search inconclusive. Trying Serper fallback...")
+            results = search_serper(f'{company} CEO founder email LinkedIn UAE')
             
-        time.sleep(2) # Safe API pacing
+            if results:
+                snippet = results[0].get("snippet", "")
+                logger.info(f"  Serper snippet: {snippet[:100]}")
+                # Try to extract email from snippet
+                email_match = re.search(r'[\w.+-]+@[\w-]+\.[a-z]{2,}', snippet)
+                if email_match:
+                    email = email_match.group(0)
+                    logger.info(f"✅ Email extracted from search: {email}")
+                    supabase.table("uae_leads").update({
+                        "contact_email": email,
+                        "contact_name": contact.get("name") if contact else None,
+                        "contact_role": contact.get("role") if contact else None
+                    }).eq("id", lead_id).execute()
+                else:
+                    logger.info(f"❌ No verified email found for {company}")
+                    supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
+            else:
+                logger.info(f"❌ No data found for {company}")
+                supabase.table("uae_leads").update({"contact_email": "Not Found"}).eq("id", lead_id).execute()
+        
+        time.sleep(3)  # Respectful pacing
 
 if __name__ == "__main__":
     run_enrichment()
-    logger.info("Enrichment Cycle Complete.")
+    logger.info("=== Enrichment Cycle Complete ===")
