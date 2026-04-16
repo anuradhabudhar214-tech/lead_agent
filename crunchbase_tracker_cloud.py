@@ -273,18 +273,36 @@ def serper_search_broad(query):
     return []
 
 def run_tracker():
-    # Check if manually paused
+    # 1. Smart Overlap & Pause Protection
     if supabase:
         try:
-            res = supabase.table("system_stats").select("status").eq("id", 1).execute()
-            if res.data and res.data[0].get("status") == "Paused ⏸️":
-                logger.info("Agent is manually paused. Skipping hunt.")
-                return
-        except Exception as e:
-            pass
+            res = supabase.table("system_stats").select("status,last_run_at").eq("id", 1).execute()
+            if res.data:
+                current_status = res.data[0].get("status")
+                if current_status == "Paused ⏸️":
+                    logger.info("Agent is manually paused. Skipping hunt.")
+                    return
+                if "Hunting" in current_status:
+                    logger.info("🛡️ OVERLAP PREVENTION: Another hunt is already active. Skipping.")
+                    return
+                
+                # 2. Catch-Up Logic: If gap > 40 mins, double the harvest
+                last_run_at = res.data[0].get("last_run_at")
+                if last_run_at:
+                    last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                    gap_mins = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
+                    if gap_mins > 40:
+                        logger.warning(f"🚀 CATCH-UP MODE: Detected {int(gap_mins)}m gap. Doubling harvest velocity.")
+                        num_niches_to_scan = 4
+                    else:
+                        num_niches_to_scan = 2
+                else:
+                    num_niches_to_scan = 2
+        except:
+            num_niches_to_scan = 2
 
     update_agent_status("Hunting 🔴")
-    # --- AGGRESSIVE DISCOVERY NICHES ---
+    # --- DEEP DISCOVERY NICHES ---
     current_niches = [
         "site:crunchbase.com/organization UAE technology funding 2026",
         "site:apollo.io/companies Dubai technology hiring HQ",
@@ -293,13 +311,17 @@ def run_tracker():
         "Dubai Future Foundation accelerator companies",
         "DIFC Innovation Hub new company members",
         "site:linkedin.com/company UAE startup Hiring CEO Founder",
-        "site:magniitt.com UAE venture capital funding"
+        "site:magniitt.com UAE venture capital funding",
+        "Dubai Chamber of Digital Economy new companies",
+        "Abu Dhabi Hub71 startup list update 2026"
     ]
     
-    # Pick 2 niches based on the current hour to ensure a rotating variety every 24h
+    # Pick niches based on the current hour and catch-up requirement
     hour = datetime.now(timezone.utc).hour
-    selected_niches = [current_niches[hour % len(current_niches)], 
-                       current_niches[(hour + 1) % len(current_niches)]]
+    selected_niches = []
+    for i in range(num_niches_to_scan):
+        idx = (hour + i) % len(current_niches)
+        selected_niches.append(current_niches[idx])
                       
     for idx_n, niche in enumerate(selected_niches):
         source = niche.split(".")[1] if "." in niche else "Web"

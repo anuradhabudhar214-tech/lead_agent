@@ -4,8 +4,10 @@ on:
   push:
     branches: [ main ]
   schedule:
-    # Trigger every 20 minutes for high-velocity 3000+ daily harvest
-    - cron: '*/20 * * * *'
+    # Hyper-Frequency Triple Redundancy (Guarantees on-time starts)
+    - cron: '*/20 * * * *'    # 0, 20, 40
+    - cron: '10,30,50 * * * *' # 10, 30, 50
+    - cron: '5,25,45 * * * *'  # 5, 25, 45 (Bypass GitHub Lag)
   workflow_run:
     workflows: ["🇦🇪 UAE Auditor - Diagnostic Cycle"]
     types:

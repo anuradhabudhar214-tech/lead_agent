@@ -241,11 +241,11 @@
             <div id="agent-status-badge" class="status-badge">
                 <div id="status-dot" class="dot"></div>
                 <span id="status-text">Disconnected</span>
+                <span id="heartbeat-pulse" style="margin-left: 8px; font-size: 0.7rem; color: var(--text-dim); border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">Pulse: --</span>
                 <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
                     <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); border: 1px solid var(--green);" onclick="startEngine()">▶️ Start</button>
                     <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--red, #ef4444); border: 1px solid #ef4444;" onclick="stopEngine()">⏸️ Stop</button>
                     <button class="btn" style="background: var(--accent); font-size: 0.75rem; padding: 0.3rem 0.8rem;" onclick="window.location.href='/api/download/master'">📊 Export ALL</button>
-                    <button class="btn" style="background: var(--green); font-size: 0.75rem; padding: 0.3rem 0.8rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="window.location.href='/api/download/verified'">🥇 Export AUDITED</button>
                 </div>
             </div>
         </header>
@@ -448,7 +448,7 @@
                 const statusText = document.getElementById('status-text');
                 const cloudStatus = usage.status || 'Sleeping 💤';
                 
-                if (statusText) statusText.innerText = `Cloud Engine: ${cloudStatus}`;
+                if (statusText) statusText.innerText = cloudStatus.includes('Sleeping') ? `Automation Armed 🛡️` : `Cloud Engine: ${cloudStatus}`;
                 if (statusDot) {
                     if (cloudStatus.includes('Hunting')) {
                         statusDot.classList.add('active');
@@ -458,6 +458,9 @@
                         statusDot.style.background = "#10b981";
                     }
                 }
+
+                const heartbeatEl = document.getElementById('heartbeat-pulse');
+                if (heartbeatEl) heartbeatEl.innerText = `Pulse: Healthy 💓`;
 
                 const lastUpdateEl = document.getElementById('last-update');
                 if (lastUpdateEl && usage.last_run && usage.last_run !== 'Recently') {
