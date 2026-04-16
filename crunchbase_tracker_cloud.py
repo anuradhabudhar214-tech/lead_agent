@@ -99,12 +99,25 @@ def track_cloud_usage(api_name):
 
 def update_agent_status(status):
     try:
-        data = {"status": status, "last_run_at": datetime.now(timezone.utc).isoformat()}
-        if status == "Hunting 🔴":
-            res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "total_scans"})
-            if res: data["total_scans"] = (res[0].get("total_scans") or 0) + 1
+        now = datetime.now(timezone.utc)
+        data = {"status": status, "last_run_at": now.isoformat()}
+        
+        # --- DAILY RESET LOGIC ---
+        res_stats = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "last_run_at,total_scans"})
+        if res_stats:
+            last_run_at = res_stats[0].get("last_run_at")
+            if last_run_at:
+                last_date = datetime.fromisoformat(last_run_at.replace("Z", "+00:00")).date()
+                if last_date < now.date():
+                    logger.info("🌅 NEW DAY DETECTED: Resetting daily quota counters.")
+                    data.update({"gemini_calls": 0, "groq_calls": 0, "serper_calls": 0})
+            
+            if status == "Hunting 🔴":
+                data["total_scans"] = (res_stats[0].get("total_scans") or 0) + 1
+        
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
-    except: pass
+    except Exception as e:
+        logger.error(f"Failed to update status: {e}")
 
 def save_to_csv(lead):
     """Saves lead to local CSV backup matching your format."""
