@@ -129,34 +129,40 @@ def run_enrichment():
         
         logger.info(f"Searching LinkedIn profile for: {company}")
         
-        # STRATEGY 1: Serper - direct LinkedIn extraction
-        queries = [
-            f'"{company}" CEO OR Founder OR CTO site:linkedin.com/in/',
-        ]
+        # STRATEGY: Two-Step Target Acquisition
+        # Step 1: Identify the Name via Gemini
+        contact = ask_gemini_for_linkedin(company, lead.get("strategic_signal", ""))
         
-        for query in queries:
+        if contact and contact.get("name") and contact.get("name") != "Name if found":
+            found_name = contact.get("name")
+            found_role = contact.get("role", "CEO")
+            logger.info(f"Target Identified: {found_name} ({found_role})")
+            
+            # Step 2: Precision Serper Search using Exact Name
+            query = f'"{found_name}" "{company}" site:linkedin.com/in/'
             results = search_serper(query)
-            for result in results:
-                link = result.get("link", "")
-                if "linkedin.com/in/" in link:
-                    found_linkedin = link
-                    # Extract name from title like "John Doe - CEO - Company | LinkedIn"
-                    title = result.get("title", "")
-                    found_name = title.split("-")[0].strip()
-                    logger.info(f"LinkedIn found via Serper: {found_linkedin}")
-                    break
-            if found_linkedin:
-                break
-        
-        # STRATEGY 2: Gemini strict formatting fallback
-        if not found_linkedin:
-            contact = ask_gemini_for_linkedin(company, lead.get("strategic_signal", ""))
-            if contact:
-                found_name = contact.get("name") if not found_name else found_name
-                found_role = contact.get("role")
+            
+            if results:
+                for result in results:
+                    link = result.get("link", "")
+                    title = result.get("title", "").lower()
+                    # Verify it's actually their profile and not an article
+                    if "linkedin.com/in/" in link and "/dir/" not in link and "pub/" not in link:
+                        # Extra check: make sure part of their name is in the title to avoid rogue pages
+                        first_name = found_name.split()[0].lower()
+                        if first_name in title or company.lower() in title:
+                            found_linkedin = link
+                            logger.info(f"Verified Profile Found: {found_linkedin}")
+                            break
+                            
+            # Fallback if Serper failed but Gemini guessed a URL
+            if not found_linkedin:
                 lnk = contact.get("linkedin", "")
-                if lnk and lnk != "not_found" and "linkedin" in lnk.lower():
+                if lnk and lnk != "not_found" and "linkedin.com/in" in lnk.lower():
                     found_linkedin = lnk if "http" in lnk else "https://www." + lnk
+                    logger.info(f"Using Gemini Fallback URL: {found_linkedin}")
+        else:
+            logger.info("Could not identify specific leader name.")
         
         # Ensure proper URL formatting
         if found_linkedin and not found_linkedin.startswith("http"):
