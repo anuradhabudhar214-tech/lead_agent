@@ -4,10 +4,8 @@ on:
   push:
     branches: [ main ]
   schedule:
-    # Hyper-Frequency Triple Redundancy (Guarantees on-time starts)
-    - cron: '*/20 * * * *'    # 0, 20, 40
-    - cron: '10,30,50 * * * *' # 10, 30, 50
-    - cron: '5,25,45 * * * *'  # 5, 25, 45 (Bypass GitHub Lag)
+    # Safe 20-minute interval (Preserves 2,000 min/mo free quota)
+    - cron: '*/20 * * * *'
   workflow_run:
     workflows: ["🇦🇪 UAE Auditor - Diagnostic Cycle"]
     types:
