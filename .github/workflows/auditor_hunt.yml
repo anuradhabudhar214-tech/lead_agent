@@ -47,7 +47,7 @@ jobs:
         run: |
           python crunchbase_tracker_cloud.py
 
-      - name: 🔎 Execute Contact Enrichment (Gemini + Serper)
+      - name: 🔎 Execute Contact Enrichment (LinkedIn)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
@@ -57,6 +57,17 @@ jobs:
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: |
           python apollo_enrichment.py
+          
+      - name: 💰 Execute Retroactive Crunchbase Audit
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SERPER_API_KEYS: ${{ secrets.SERPER_API_KEYS }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
+        run: |
+          python crunchbase_sweeper.py
 
       - name: 📁 Persist Local Intelligence (CSV Backup)
         run: |
