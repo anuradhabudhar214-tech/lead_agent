@@ -20,32 +20,47 @@ class CrunchbaseSweeper:
         if not self.gemini_key:
             return {"amount": "Undisclosed", "round": "Unknown Round", "financials_summary": context}
 
-        prompt = f"""You are a financial data extractor. Given Crunchbase search results for '{company}', extract funding info.
+        prompt = f"""You are a financial data extractor. Given search results for '{company}', extract funding info.
 
-Search results: "{context}"
+Search results: "{context[:1500]}"
 
-Rules:
-- Look for phrases like "raised $X", "secured $X", "Series A", "Seed round", "$X million", etc.
-- amount: exact dollar amount with symbol (e.g. "$5M", "$2.5M", "AED 10M"). If none found, return "Undisclosed".
-- round: the funding round stage (e.g. "Seed", "Series A", "Series B", "Pre-Seed"). If none found, return "Unknown Round".
+Look for phrases like: "raised $X", "secured $X", "Series A", "Seed round", "$X million", "funding round".
+- amount: exact dollar amount (e.g. "$5M", "$2.5M", "AED 10M"). If none found, use "Undisclosed".
+- round: round stage ("Seed", "Series A", "Series B", "Pre-Seed", "Venture"). If none, use "Unknown Round".
+- financials_summary: one sentence about the funding.
 
-RETURN ONLY valid JSON, no markdown:
-{{"amount": "$5M", "round": "Series A", "financials_summary": "Raised $5M Series A led by XYZ."}}"""
+Return ONLY this JSON with no extra text:
+{{"amount": "$5M", "round": "Series A", "financials_summary": "Raised $5M Series A."}}"""
 
-        payload = {"contents": [{"parts": [{"text": prompt}]}]}
-        try:
-            r = requests.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={self.gemini_key}",
-                json=payload, timeout=15
-            )
-            text = r.json()['candidates'][0]['content']['parts'][0]['text']
-            text = re.sub(r"```json|```", "", text).strip()
-            data = json.loads(text)
-            print(f"  Gemini extracted: {data.get('amount')} | {data.get('round')}")
-            return data
-        except Exception as e:
-            print(f"  Gemini error: {e}")
-            return {"amount": "Undisclosed", "round": "Unknown Round", "financials_summary": context[:200]}
+        for model in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]:
+            try:
+                payload = {"contents": [{"parts": [{"text": prompt}]}],
+                           "generationConfig": {"temperature": 0.1}}
+                r = requests.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}",
+                    json=payload, timeout=20
+                )
+                resp = r.json()
+                if 'error' in resp:
+                    print(f"  {model} error: {resp['error'].get('message', 'unknown')}")
+                    continue
+                candidates = resp.get('candidates', [])
+                if not candidates:
+                    print(f"  {model}: no candidates in response")
+                    continue
+                text = candidates[0]['content']['parts'][0]['text']
+                text = re.sub(r"```json|```", "", text).strip()
+                # Extract JSON even if there's surrounding text
+                match = re.search(r'\{.*\}', text, re.DOTALL)
+                if match:
+                    data = json.loads(match.group())
+                    print(f"  {model} extracted: {data.get('amount')} | {data.get('round')}")
+                    return data
+            except Exception as e:
+                print(f"  {model} exception: {e}")
+                continue
+
+        return {"amount": "Undisclosed", "round": "Unknown Round", "financials_summary": context[:200]}
 
     def search_crunchbase(self, company):
         """Search Crunchbase via Google Serper for funding data."""
