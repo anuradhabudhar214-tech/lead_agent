@@ -83,10 +83,14 @@ RETURN ONLY valid JSON, no markdown:
             print("No Supabase connection")
             return
 
-        # BUG FIX: Fetch ALL records, then filter locally to catch NULL, "Undisclosed", "None"
-        res = self.supabase.table("uae_leads").select("id, company, funding_amount, funding_round") \
-            .limit(50).execute()
-        all_leads = res.data
+        # BUG FIX: Fetch ALL 200 records, then filter locally to catch NULL, "Undisclosed", "None"
+        all_leads = []
+        for page in range(4):  # Fetch up to 200 records (4 pages x 50)
+            res = self.supabase.table("uae_leads").select("id, company, funding_amount, funding_round") \
+                .range(page * 50, page * 50 + 49).execute()
+            if not res.data:
+                break
+            all_leads.extend(res.data)
 
         # Filter only those that still need sweeping
         leads = [
@@ -99,7 +103,7 @@ RETURN ONLY valid JSON, no markdown:
             print("All leads already have funding data!")
             return
 
-        for lead in leads[:15]:  # Process 15 per run to stay within GitHub Action time limits
+        for lead in leads[:50]:  # Process up to 50 per run
             company = lead['company']
             print(f"\nSearching Crunchbase for: {company}")
             snippets = self.search_crunchbase(company)
