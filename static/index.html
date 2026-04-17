@@ -420,7 +420,17 @@
                                 ${item.integration_opportunity}
                             </div>
                         </td>
-                        <td style="width: 200px;"><div style="font-size: 1rem; font-weight: 800; color: ${finColor}; line-height: 1.4;">${financials}</div></td>
+                        <td style="width: 220px;">
+                            ${item.funding_amount && item.funding_amount !== 'Undisclosed' ? 
+                                `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); color: var(--green); padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; display: inline-block; margin-bottom: 6px; box-shadow: 0 0 10px rgba(16,185,129,0.1);">💰 ${item.funding_amount}</div>`
+                                : `<div style="font-weight: 800; font-size: 0.9rem; color: #fbbf24; margin-bottom: 6px;">💰 Undisclosed Amount</div>`
+                            }
+                            ${item.funding_round && item.funding_round !== 'Unknown Round' ? 
+                                `<br><div style="background: rgba(99, 102, 241, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 8px;">🔄 ${item.funding_round}</div>`
+                                : `<br><div style="font-weight: 600; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">🔄 Unknown Round</div>`
+                            }
+                            <div style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.05);">${financials}</div>
+                        </td>
                         <td><div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-bright); font-weight: 600;">${item.strategic_signal}</div></td>
                         <td>
                             <div style="font-size: 1.75rem; font-weight: 900; color: ${scoreColor}; text-align: center; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);">${confidence}%</div>

@@ -24,3 +24,7 @@ ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_email TEXT;
 ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_role TEXT;
 ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS contact_linkedin TEXT;
 
+-- PHASE 3: Exact Funding Extractions (Crunchbase/Magnitt)
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS funding_amount TEXT;
+ALTER TABLE uae_leads ADD COLUMN IF NOT EXISTS funding_round TEXT;
+

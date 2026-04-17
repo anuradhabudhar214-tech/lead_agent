@@ -133,7 +133,7 @@ def update_agent_status(status):
 def save_to_csv(lead):
     """Saves lead to local CSV backup matching your format."""
     file_exists = os.path.exists(CSV_FILE)
-    headers = ["Confidence", "Company", "Industry", "Patron/Chairman", "CEO/Founder", "Financials", "2026 Strategic Signal", "Integration Opportunity", "Registry Status", "URL", "Discovered At"]
+    headers = ["Confidence", "Company", "Industry", "Patron/Chairman", "CEO/Founder", "Funding Amount", "Funding Round", "Financials", "2026 Strategic Signal", "Integration Opportunity", "Registry Status", "URL", "Discovered At"]
     try:
         with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
@@ -145,6 +145,8 @@ def save_to_csv(lead):
                 "Industry": lead.get("industry"),
                 "Patron/Chairman": lead.get("patron_chairman"),
                 "CEO/Founder": lead.get("ceo_founder"),
+                "Funding Amount": lead.get("funding_amount", "Undisclosed"),
+                "Funding Round": lead.get("funding_round", "Unknown Round"),
                 "Financials": lead.get("financials"),
                 "2026 Strategic Signal": lead.get("strategic_signal"),
                 "Integration Opportunity": lead.get("integration_opportunity"),
@@ -174,8 +176,10 @@ def compile_auditor_intel_extreme(discovery_package):
     2. GCC ONLY: Must be a real UAE/Dubai/Abu Dhabi entity. If not, score: 0.
     3. NO Indian/Pakistani rupee companies. UAE-based only.
     4. ceo_founder: Give real name and role. Format: 'Name (Title)'. 
-    5. financials: State actual funding round if known (e.g. $5M Series A, AED 2M seed). 
-    6. registry_status: Check if registered in UAE registries:
+    5. funding_amount: Extract ONLY the exact money amount explicitly stated (e.g., "$5M", "AED 10.5M"). If not stated, return "Undisclosed".
+    6. funding_round: Extract ONLY the funding round stage (e.g., "Seed", "Series A", "Pre-seed", "Venture"). If not stated, return "Unknown Round".
+    7. financials: A 1-sentence summary of their overall financial state or investor names behind the round.
+    8. registry_status: Check if registered in UAE registries:
        - DED Dubai (Dubai Economy & Tourism)  
        - DCAI (Dubai Chamber of AI)
        - ADBC Abu Dhabi Business Centre
@@ -184,9 +188,9 @@ def compile_auditor_intel_extreme(discovery_package):
        - "Active Entity - Master Registry" if confirmed active
        - "Financial Register - Verified" if funding is confirmed
        If unsure: "PROBING..."
-    7. patron_chairman: UAE government patron or board chairman if known.
-    8. integration_opportunity: Specific IT service they would need from an IT solutions vendor.
-    9. RETURN JSON ONLY. No markdown.
+    9. patron_chairman: UAE government patron or board chairman if known.
+    10. integration_opportunity: Specific IT service they would need from an IT solutions vendor.
+    11. RETURN JSON ONLY. No markdown.
 
     FORMAT:
     {{
@@ -197,7 +201,9 @@ def compile_auditor_intel_extreme(discovery_package):
         "integration_opportunity": "string (specific IT service opportunity)",
         "patron_chairman": "string",
         "ceo_founder": "string (Name and Role)",
-        "financials": "string (exact funding amount or stage if known)",
+        "funding_amount": "string",
+        "funding_round": "string",
+        "financials": "string",
         "registry_status": "string (UAE registry classification)"
     }}
     Not a UAE tech company or score below 70? Return: {{"confidence_score": 0}}
