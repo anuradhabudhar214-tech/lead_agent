@@ -16,51 +16,57 @@ class CrunchbaseSweeper:
         self.serper_key = SERPER_API_KEYS.split(',')[0].strip() if SERPER_API_KEYS else None
         self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
 
-    def ask_gemini_funding(self, company, context):
-        if not self.gemini_key:
-            return {"amount": "Undisclosed", "round": "Unknown Round", "financials_summary": context}
-
-        prompt = f"""You are a financial data extractor. Given search results for '{company}', extract funding info.
-
-Search results: "{context[:1500]}"
-
-Look for phrases like: "raised $X", "secured $X", "Series A", "Seed round", "$X million", "funding round".
-- amount: exact dollar amount (e.g. "$5M", "$2.5M", "AED 10M"). If none found, use "Undisclosed".
-- round: round stage ("Seed", "Series A", "Series B", "Pre-Seed", "Venture"). If none, use "Unknown Round".
-- financials_summary: one sentence about the funding.
-
-Return ONLY this JSON with no extra text:
-{{"amount": "$5M", "round": "Series A", "financials_summary": "Raised $5M Series A."}}"""
-
-        for model in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]:
-            try:
-                payload = {"contents": [{"parts": [{"text": prompt}]}],
-                           "generationConfig": {"temperature": 0.1}}
-                r = requests.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_key}",
-                    json=payload, timeout=20
-                )
-                resp = r.json()
-                if 'error' in resp:
-                    print(f"  {model} error: {resp['error'].get('message', 'unknown')}")
-                    continue
-                candidates = resp.get('candidates', [])
-                if not candidates:
-                    print(f"  {model}: no candidates in response")
-                    continue
-                text = candidates[0]['content']['parts'][0]['text']
-                text = re.sub(r"```json|```", "", text).strip()
-                # Extract JSON even if there's surrounding text
-                match = re.search(r'\{.*\}', text, re.DOTALL)
-                if match:
-                    data = json.loads(match.group())
-                    print(f"  {model} extracted: {data.get('amount')} | {data.get('round')}")
-                    return data
-            except Exception as e:
-                print(f"  {model} exception: {e}")
-                continue
-
-        return {"amount": "Undisclosed", "round": "Unknown Round", "financials_summary": context[:200]}
+    def extract_funding_from_text(self, company, context):
+        """Regex-based extraction - no AI quota needed. Reads Crunchbase text directly."""
+        amount = "Undisclosed"
+        round_name = "Unknown Round"
+        
+        # Match dollar/AED amounts: $5M, $2.5 million, AED 10M, USD 100M etc.
+        amt_patterns = [
+            r'\$([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+            r'([\d\.]+)\s*(billion|million)\s*(?:USD|AED|dollars?)',
+            r'AED\s*([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+            r'USD\s*([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+            r'raised\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+            r'secured\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+            r'funding\s+of\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+        ]
+        
+        for pattern in amt_patterns:
+            match = re.search(pattern, context, re.IGNORECASE)
+            if match:
+                num = match.group(1)
+                unit = match.group(2).upper()
+                if unit in ['MILLION', 'M', 'MN']: unit = 'M'
+                elif unit in ['BILLION', 'B', 'BN']: unit = 'B'
+                amount = f"${num}{unit}"
+                break
+        
+        # Match funding round keywords
+        round_patterns = [
+            (r'pre[\-\s]?seed', 'Pre-Seed'),
+            (r'seed\s+round|seed\s+funding|seed\s+stage|raised.*seed', 'Seed'),
+            (r'series\s+a\b', 'Series A'),
+            (r'series\s+b\b', 'Series B'),
+            (r'series\s+c\b', 'Series C'),
+            (r'series\s+d\b', 'Series D'),
+            (r'series\s+e\b', 'Series E'),
+            (r'venture\s+round|venture\s+capital\s+round', 'Venture'),
+            (r'ipo|initial\s+public\s+offering', 'IPO'),
+            (r'angel\s+round|angel\s+investment', 'Angel'),
+            (r'grant', 'Grant'),
+        ]
+        
+        for pattern, label in round_patterns:
+            if re.search(pattern, context, re.IGNORECASE):
+                round_name = label
+                break
+        
+        # Build summary from first 200 chars of context
+        summary = context[:200].strip() if context else f"No public funding data found for {company}"
+        
+        print(f"  Regex extracted: {amount} | {round_name}")
+        return {"amount": amount, "round": round_name, "financials_summary": summary}
 
     def search_crunchbase(self, company):
         """Search Crunchbase via Google Serper for funding data."""
@@ -124,8 +130,8 @@ Return ONLY this JSON with no extra text:
             snippets = self.search_crunchbase(company)
 
             if snippets and len(snippets) > 30:
-                print(f"  Found context ({len(snippets)} chars), asking Gemini...")
-                data = self.ask_gemini_funding(company, snippets)
+                print(f"  Found context ({len(snippets)} chars), parsing text...")
+                data = self.extract_funding_from_text(company, snippets)
             else:
                 print(f"  No Crunchbase funding data found for {company}")
                 data = {
