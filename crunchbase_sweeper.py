@@ -45,16 +45,23 @@ class CrunchbaseSweeper:
         # Match funding round keywords
         round_patterns = [
             (r'pre[\-\s]?seed', 'Pre-Seed'),
-            (r'seed\s+round|seed\s+funding|seed\s+stage|raised.*seed', 'Seed'),
+            (r'seed\s+round|seed\s+funding|seed\s+stage|raised.*seed|seed\binvestment', 'Seed'),
             (r'series\s+a\b', 'Series A'),
             (r'series\s+b\b', 'Series B'),
             (r'series\s+c\b', 'Series C'),
             (r'series\s+d\b', 'Series D'),
             (r'series\s+e\b', 'Series E'),
-            (r'venture\s+round|venture\s+capital\s+round', 'Venture'),
-            (r'ipo|initial\s+public\s+offering', 'IPO'),
-            (r'angel\s+round|angel\s+investment', 'Angel'),
+            (r'venture\s+round|(?<!early\s)venture\b|venture\s+capital\b', 'Venture'),
+            (r'early[\-\s]stage[\-\s]venture', 'Early Stage Venture'),
+            (r'late[\-\s]stage[\-\s]venture', 'Late Stage Venture'),
+            (r'ipo|initial\s+public\s+offering|public\s+listing', 'IPO'),
+            (r'angel\s+round|angel\s+investment|angel\s+funded', 'Angel'),
+            (r'private\s+equity', 'Private Equity'),
+            (r'debt\s+financing|debt\s+round', 'Debt'),
+            (r'convertible\s+note', 'Convertible Note'),
             (r'grant', 'Grant'),
+            (r'equity\s+crowdfunding', 'Crowdfunding'),
+            (r'non[\-\s]equity\s+assistance', 'Non-Equity Assistance'),
         ]
         
         for pattern, label in round_patterns:
@@ -76,6 +83,7 @@ class CrunchbaseSweeper:
         queries = [
             f'site:crunchbase.com "{company}" funding raised million',
             f'"{company}" UAE startup funding round raised crunchbase',
+            f'"{company}" "funding round" site:crunchbase.com',
         ]
 
         all_snippets = []
