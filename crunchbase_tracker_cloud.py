@@ -254,43 +254,34 @@ def compile_auditor_intel_extreme(discovery_package):
         return "SKIP"
     
     prompt = f"""
-    ROLE: Senior UAE Market Intelligence Auditor.
-    MISSION: Perform a deep verification audit on '{company_name}'.
-    SIGNAL SOURCE: {discovery_package}
+    ROLE: Senior UAE Market Intelligence Auditor reading a REAL Crunchbase.com company profile.
+    MISSION: Extract precise funding intelligence for '{company_name}'.
+    CRUNCHBASE SOURCE: {discovery_package}
 
     AUDIT RULES:
-    1. Use ALL your knowledge about this company. Do NOT just read the snippet.
+    1. This is a REAL Crunchbase profile. Extract all funding data visible in the snippet.
     2. GCC ONLY: Must be a real UAE/Dubai/Abu Dhabi entity. If not, score: 0.
-    3. NO Indian/Pakistani rupee companies. UAE-based only.
-    4. ceo_founder: Give real name and role. Format: 'Name (Title)'. 
-    5. funding_amount: Extract ONLY the exact money amount explicitly stated (e.g., "$5M", "AED 10.5M"). If not stated, return "Undisclosed".
-    6. funding_round: Extract ONLY the funding round stage (e.g., "Seed", "Series A", "Pre-seed", "Venture"). If not stated, return "Unknown Round".
-    7. financials: A 1-sentence summary of their overall financial state or investor names behind the round.
-    8. registry_status: Check if registered in UAE registries:
-       - DED Dubai (Dubai Economy & Tourism)  
-       - DCAI (Dubai Chamber of AI)
-       - ADBC Abu Dhabi Business Centre
-       - DIFC (Dubai International Financial Centre)
-       - WAM.ae (UAE State Registry)
-       - "Active Entity - Master Registry" if confirmed active
-       - "Financial Register - Verified" if funding is confirmed
-       If unsure: "PROBING..."
-    9. patron_chairman: UAE government patron or board chairman if known.
-    10. integration_opportunity: Specific IT service they would need from an IT solutions vendor.
-    11. RETURN JSON ONLY. No markdown.
+    3. funding_round: Extract the EXACT round type shown on Crunchbase (e.g. "Seed", "Series A", "Series B", "Pre-Seed", "Venture Round", "Angel", "IPO"). NEVER return "Unknown Round" if text mentions any funding event.
+    4. funding_amount: Extract ONLY the exact money amount (e.g., "$5M", "AED 10.5M", "$2.3B"). If not shown, return "Undisclosed".
+    5. financials: Name the actual investors or lead VC funds if mentioned. Otherwise describe the round briefly.
+    6. ceo_founder: Real full name and role, format: 'Name (Title)'.
+    7. registry_status: UAE registry from: DED Dubai, DCAI, ADBC, DIFC, WAM.ae, "Active Entity - Master Registry", "Financial Register - Verified". Default: "PROBING..."
+    8. patron_chairman: UAE government patron or board chairman if known, else "N/A".
+    9. integration_opportunity: Specific IT service this company needs from an IT solutions vendor.
+    10. RETURN JSON ONLY. No markdown. No extra text.
 
     FORMAT:
     {{
-        "company": "string",
+        "company": "string (exact company name as on Crunchbase)",
         "industry": "string",
         "confidence_score": int (0-100, min 70 to pass),
         "strategic_signal": "string (1 sentence: what they are doing in UAE right now)",
         "integration_opportunity": "string (specific IT service opportunity)",
         "patron_chairman": "string",
         "ceo_founder": "string (Name and Role)",
-        "funding_amount": "string",
-        "funding_round": "string",
-        "financials": "string",
+        "funding_amount": "string (exact amount or Undisclosed)",
+        "funding_round": "string (exact round type: Seed/Series A/Series B/Pre-Seed/Venture/Angel/IPO/etc)",
+        "financials": "string (investor names or round summary)",
         "registry_status": "string (UAE registry classification)"
     }}
     Not a UAE tech company or score below 70? Return: {{"confidence_score": 0}}
@@ -501,38 +492,38 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- MEGA-NICHES (Optimized for 3,000+ Leads/Day) ---
+    # --- CRUNCHBASE ONLY NICHES: Real funding round data ---
     current_niches = [
-        "site:crunchbase.com 'headquarters in Dubai'",
-        "site:crunchbase.com 'headquarters in Abu Dhabi'",
-        "site:crunchbase.com 'operating in United Arab Emirates'",
-        "site:crunchbase.com UAE technology funding",
-        "site:crunchbase.com Dubai AI startup investment",
-        "site:crunchbase.com Abu Dhabi Fintech funding",
-        "site:crunchbase.com Dubai Crypto blockchain",
-        "site:crunchbase.com UAE PropTech startups",
-        "site:crunchbase.com 'Venture capital' Dubai companies",
-        "site:crunchbase.com 'Series A' UAE technology",
-        "site:crunchbase.com 'Seed round' Dubai startup",
-        "site:crunchbase.com 'Pre-seed' Abu Dhabi tech",
-        "site:crunchbase.com Dubai E-commerce market",
-        "site:crunchbase.com UAE Logistics Tech list",
-        "site:crunchbase.com Dubai HealthTech companies",
-        "site:crunchbase.com UAE EdTech startup list",
-        "site:crunchbase.com Abu Dhabi CleanTech funding",
-        "site:crunchbase.com 'Founded in 2025' Dubai startup",
-        "site:crunchbase.com 'Founded in 2024' UAE tech",
-        "site:crunchbase.com Dubai CyberSecurity firm",
-        "site:crunchbase.com 'Acquired by' Dubai agency",
-        "site:crunchbase.com Dubai Gaming Esports developers",
-        "site:crunchbase.com UAE SaaS enterprise software",
-        "site:crunchbase.com 'Series B' Abu Dhabi companies",
-        "site:crunchbase.com Dubai Web3 decentralized finance",
-        "site:crunchbase.com Abu Dhabi BioTech research funding",
-        "site:crunchbase.com Dubai Robotics automation tech",
-        "site:crunchbase.com UAE Sustainability green tech",
-        "site:crunchbase.com Dubai Cloud Infrastructure startups",
-        "site:crunchbase.com UAE Agritech food security"
+        "site:crunchbase.com/organization UAE Series A funding round",
+        "site:crunchbase.com/organization Dubai Series B funding round",
+        "site:crunchbase.com/organization Abu Dhabi Seed funding round",
+        "site:crunchbase.com/organization UAE Pre-Seed funding round",
+        "site:crunchbase.com/organization Dubai Venture round raised",
+        "site:crunchbase.com/organization UAE tech startup raised million",
+        "site:crunchbase.com/organization Dubai AI startup funding raised",
+        "site:crunchbase.com/organization Abu Dhabi Fintech raised million",
+        "site:crunchbase.com/organization Dubai crypto blockchain funding",
+        "site:crunchbase.com/organization UAE PropTech raised funding",
+        "site:crunchbase.com/organization Dubai SaaS startup funding round",
+        "site:crunchbase.com/organization UAE HealthTech raised Series",
+        "site:crunchbase.com/organization Dubai EdTech funding round raised",
+        "site:crunchbase.com/organization Abu Dhabi CleanTech funding",
+        "site:crunchbase.com/organization Dubai logistics tech funding round",
+        "site:crunchbase.com/organization UAE cybersecurity funding raised",
+        "site:crunchbase.com/organization Dubai cloud infrastructure startup",
+        "site:crunchbase.com/organization UAE e-commerce startup raised",
+        "site:crunchbase.com/organization Dubai robotics automation funding",
+        "site:crunchbase.com/organization UAE Web3 DeFi funding round",
+        "site:crunchbase.com/organization Abu Dhabi gaming startup raised",
+        "site:crunchbase.com/organization UAE BioTech funding Series",
+        "site:crunchbase.com/organization Dubai AgriTech food tech raised",
+        "site:crunchbase.com/organization UAE insurtech legaltech funding",
+        "site:crunchbase.com/organization Dubai hired technology company",
+        "site:crunchbase.com/organization UAE 2024 2025 raised funding",
+        "site:crunchbase.com/organization Dubai founded 2023 2024 tech",
+        "site:crunchbase.com/organization Abu Dhabi investment capital tech",
+        "site:crunchbase.com/organization UAE HR TechSaaS B2B startup",
+        "site:crunchbase.com/organization Dubai smart mobility transport tech",
     ]
     
     # Pick niches based on the current hour and catch-up requirement
@@ -559,9 +550,15 @@ def run_tracker():
                         return
                 except: pass
 
-            # --- FLEXIBLE SHIELD: Require Crunchbase but allow profile variants ---
-            link = item.get('link', '')
-            if "crunchbase.com/" not in link.lower() or "/organization/" not in link.lower() and "/company/" not in link.lower():
+            # --- STRICT CRUNCHBASE-ONLY FILTER ---
+            link = item.get('link', '').lower()
+            # Must be on crunchbase.com AND must be an organization/company profile page
+            if 'crunchbase.com' not in link:
+                continue
+            if '/organization/' not in link and '/company/' not in link:
+                continue
+            # Block any blog, news, or non-profile pages on crunchbase
+            if any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/']):
                 continue
                 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
