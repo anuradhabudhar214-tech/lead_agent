@@ -388,6 +388,7 @@ def serper_search_broad(query):
 
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
+    num_niches_to_scan = 5
     if supabase:
         try:
             res = supabase.table("system_stats").select("status,last_run_at").eq("id", 1).execute()
@@ -407,10 +408,72 @@ def run_tracker():
                     gap_mins = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
                     if gap_mins > 40:
                         logger.warning(f"🚀 CATCH-UP MODE: Detected {int(gap_mins)}m gap. Doubling harvest velocity.")
-                # 2. Triple-Batch Logic: 5 niches per run by default
-                num_niches_to_scan = 5
+                        num_niches_to_scan = 10
         except:
-            num_niches_to_scan = 5
+            pass
+
+    # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
+    try:
+        res = supabase.table("uae_leads").select("count", count="exact").execute()
+        if res.count < 10: # If DB was wiped or very low, restore from Git
+            logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
+            import subprocess, csv, io
+            old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
+            reader = csv.DictReader(io.StringIO(old_csv_raw))
+            restore_list = []
+            for row in reader:
+                restore_list.append({
+                    "company": row.get("Company"),
+                    "industry": row.get("Industry"),
+                    "confidence_score": 85,
+                    "funding_amount": row.get("Financials", "Undisclosed"),
+                    "financials": row.get("Financials"),
+                    "strategic_signal": row.get("2026 Strategic Signal"),
+                    "integration_opportunity": row.get("Integration Opportunity"),
+                    "url": row.get("URL"),
+                    "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
+                })
+            if restore_list:
+                supabase.table("uae_leads").upsert(restore_list, on_conflict="company").execute()
+                logger.info(f"✅ Successfully Resurrected {len(restore_list)} historical leads!")
+    except Exception as e:
+        logger.warning(f"Resurrection skip: {e}")
+
+    # --- ATOMIC VELOCITY BOOST ---
+    num_niches_to_scan = 10
+    logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
+    try:
+        num_niches_to_scan = 10 
+        logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
+    except:
+        num_niches_to_scan = 10
+
+    # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
+    try:
+        res = supabase.table("uae_leads").select("count", count="exact").execute()
+        if res.count < 50: # If DB was wiped, restore from Git
+            logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
+            import subprocess, csv, io
+            old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
+            reader = csv.DictReader(io.StringIO(old_csv_raw))
+            restore_list = []
+            for row in reader:
+                restore_list.append({
+                    "company": row.get("Company"),
+                    "industry": row.get("Industry"),
+                    "confidence_score": 85,
+                    "funding_amount": row.get("Financials", "Undisclosed"),
+                    "financials": row.get("Financials"),
+                    "strategic_signal": row.get("2026 Strategic Signal"),
+                    "integration_opportunity": row.get("Integration Opportunity"),
+                    "url": row.get("URL"),
+                    "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
+                })
+            if restore_list:
+                supabase.table("uae_leads").upsert(restore_list, on_conflict="company").execute()
+                logger.info(f"✅ Successfully Resurrected {len(restore_list)} historical leads!")
+    except Exception as e:
+        logger.warning(f"Resurrection skip: {e}")
 
     # --- RETROACTIVE CLEANUP: Fix garbage and Purge KNOWN News ---
     try:
