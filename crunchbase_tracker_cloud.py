@@ -4,6 +4,7 @@ import json
 import logging
 import requests
 import csv
+import re
 from datetime import datetime, timezone
 from groq import Groq
 
