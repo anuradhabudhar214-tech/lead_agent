@@ -162,21 +162,21 @@ def clean_company_name(raw_name):
     """Deep scrubber to isolate company names and kill news headlines."""
     if not raw_name: return "Unknown Entity"
     
-    # 1. Reject if it starts with a digit (e.g. 2,709 new...)
-    if re.match(r'^\d', raw_name):
+    # 1. Skip if it looks like a news title prefix
+    if re.match(r'^\d', raw_name) or any(word in raw_name.lower() for word in ['joined', 'member', 'launches', 'announced', 'hiring']):
         return "FILTERED_HEADLINE"
         
-    # 2. Remove web site names and news outlets
-    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok|Google News|Reuters|Bloomberg|WAM\.ae|PR Newswire|Business Wire', '', raw_name, flags=re.I)
+    # 2. Extract pure company name (usually before the first dash or pipe)
+    clean = re.split(r' \-| \| | \/ | \.\.\.|\: ', raw_name)[0]
     
-    # 3. Split on headline 'Action' verbs or common separators
-    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined|member|partners|unveils|secures|hiring|job', clean, flags=re.I)[0]
+    # 3. Strip web site suffixes
+    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok|WAM\.ae|Reuters|Bloomberg|News', '', clean, flags=re.I)
     
-    # 4. Strip non-alphanumeric at ends
+    # 4. Clean non-alphanumeric at ends
     clean = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', clean).strip()
     
-    # 5. FINAL SAFETY: If it's still > 5 words or contains news-y verbs, it's a headline
-    if len(clean.split()) > 5 or any(word in clean.lower() for word in ['launches', 'joined', 'member', 'announced', 'leads', 'raised', 'funded']):
+    # 5. FINAL SAFETY: Name should be 1-4 words usually
+    if len(clean.split()) > 5:
         return "FILTERED_HEADLINE"
         
     return clean.strip()
@@ -412,49 +412,56 @@ def run_tracker():
         except:
             num_niches_to_scan = 5
 
-    # --- RETROACTIVE CLEANUP: Fix garbage company names already in DB ---
+    # --- RETROACTIVE CLEANUP: Fix garbage and Purge Non-Crunchbase ---
     try:
-        logger.info("🧹 RETROACTIVE CLEANUP: Scrubbing existing database names...")
-        res = supabase.table("uae_leads").select("id, company").execute()
+        logger.info("🧹 RETROACTIVE CLEANUP: Purging news headlines and non-Crunchbase entries...")
+        res = supabase.table("uae_leads").select("id, company, url").execute()
         for item in res.data:
             old_name = item.get("company", "")
+            url = item.get("url", "")
             cleaned = clean_company_name(old_name)
-            if cleaned == "FILTERED_HEADLINE" or len(old_name) > 100:
+            
+            # PURGE IF:
+            # 1. Headline detected
+            # 2. URL is not Crunchbase (Discovery Shield Enforcement)
+            # 3. Name is garbage/too long
+            if cleaned == "FILTERED_HEADLINE" or "crunchbase.com/organization" not in (url or "").lower() or len(old_name) > 60:
                 supabase.table("uae_leads").delete().eq("id", item["id"]).execute()
-                logger.info(f"🗑️ Purged Garbage: {old_name[:40]}...")
+                logger.info(f"🗑️ Purged Non-Crunchbase/Garbage: {old_name[:30]}...")
             elif cleaned != old_name:
                 supabase.table("uae_leads").update({"company": cleaned}).eq("id", item["id"]).execute()
                 logger.info(f"✨ Cleaned: {old_name[:20]} -> {cleaned}")
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- DEEP DISCOVERY NICHES (Expanded for 3,000 lead trajectory) ---
+    # --- DEEP DISCOVERY NICHES (100% Crunchbase Only - 3,000 lead trajectory) ---
     current_niches = [
+        "site:crunchbase.com/organization 'headquarters in Dubai'",
+        "site:crunchbase.com/organization 'headquarters in Abu Dhabi'",
+        "site:crunchbase.com/organization 'operating in United Arab Emirates'",
         "site:crunchbase.com/organization UAE technology funding 2026",
-        "site:apollo.io/companies Dubai technology hiring HQ",
-        "Dubai tech startup expansion news last 48 hours",
-        "Abu Dhabi AI Fintech investment rounds 2026",
-        "Dubai Future Foundation accelerator companies",
-        "DIFC Innovation Hub new company members",
-        "site:linkedin.com/company UAE startup Hiring CEO Founder",
-        "site:magniitt.com UAE venture capital funding",
-        "Dubai Chamber of Digital Economy new companies list",
-        "Abu Dhabi Hub71 startup list update 2026",
-        "Dubai AI venture debt funding 2026",
-        "Abu Dhabi semiconductor expansion announcements",
-        "Sharjah Research Technology and Innovation Park startup list",
-        "site:crunchbase.com/organization Abu Dhabi series A funding",
-        "Dubai cryptocurrency and blockchain company registration 2026",
-        "DIFC crypto license holders news",
-        "ADGM fintech sandbox active companies 2026",
-        "UAE Ministry of Economy patents tech startups",
-        "Dubai Silicon Oasis tech hiring news last 7 days",
-        "Khalifa Fund supported projects 2026 Abu Dhabi",
-        "Dubai Internet City new office setup companies",
-        "RAKEA Ras Al Khaimah tech expansion",
-        "site:wam.ae technology investment announcements",
-        "Dubai South logistics tech startups list",
-        "ADJD Abu Dhabi Judicial Department business registration AI"
+        "site:crunchbase.com/organization Dubai AI startup",
+        "site:crunchbase.com/organization Abu Dhabi Fintech investment",
+        "site:crunchbase.com/organization Dubai Crypto Blockchain 2026",
+        "site:crunchbase.com/organization UAE PropTech expansion",
+        "site:crunchbase.com/organization 'Venture capital backed' Dubai",
+        "site:crunchbase.com/organization 'Series A' UAE",
+        "site:crunchbase.com/organization 'Seed round' Dubai",
+        "site:crunchbase.com/organization 'Pre-seed' Abu Dhabi",
+        "site:crunchbase.com/organization Dubai E-commerce startup",
+        "site:crunchbase.com/organization UAE Logistics Tech innovation",
+        "site:crunchbase.com/organization Dubai HealthTech focus",
+        "site:crunchbase.com/organization UAE EdTech expansion",
+        "site:crunchbase.com/organization Abu Dhabi CleanTech",
+        "site:crunchbase.com/organization 'Founded in 2025' Dubai",
+        "site:crunchbase.com/organization 'Founded in 2026' UAE",
+        "site:crunchbase.com/organization Dubai CyberSecurity company profile",
+        "site:crunchbase.com/organization 'Acquired by' Dubai",
+        "site:crunchbase.com/organization Dubai Gaming Esports",
+        "site:crunchbase.com/organization UAE SaaS expansion 2026",
+        "site:crunchbase.com/organization 'Series B' Abu Dhabi",
+        "site:crunchbase.com/organization Dubai Web3 startup list",
+        "site:crunchbase.com/organization Abu Dhabi BioTech venture"
     ]
     
     # Pick niches based on the current hour and catch-up requirement
@@ -481,8 +488,12 @@ def run_tracker():
                         return
                 except: pass
 
-            discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | Date: {item.get('date')}"
-            link = item.get('link')
+            # --- CRUNCHBASE ONLY SHIELD: Reject anything not a profile ---
+            link = item.get('link', '')
+            if "crunchbase.com/organization" not in link.lower():
+                continue
+                
+            discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
             
             # --- SMART FILTER: Prevent Wasting AI Credits on Existing Leads ---
             if supabase:

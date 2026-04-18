@@ -409,25 +409,28 @@
                                 <div style="color: ${regColor}; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">REGISTRY: ${registryStatus}</div>
                                 <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 2px 8px; display: flex; align-items: center; gap: 6px;">
                                     <span style="font-size: 0.8rem;">📄</span>
-                                    <span style="color: var(--accent); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;">SOURCE: LIVE SIGNAL</span>
+                                    <span style="color: var(--accent); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;">SOURCE: CRUNCHBASE PROFILE</span>
                                 </div>
                             </div>
                             <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-bright); margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
                                 ${item.company} ${auditBadge}
-                                <button class="btn" style="background: rgba(99, 102, 241, 0.15); color: var(--accent); font-size: 0.7rem; padding: 0.3rem 0.6rem; border: 1px solid var(--accent); margin-left: auto;" onclick="copyPitch('${item.company.replace(/'/g, "\\'")}', '${contactPerson.replace(/'/g, "\\'")}', '${item.financials.replace(/'/g, "\\'")}', '${item.strategic_signal.replace(/'/g, "\\'")}')">📝 Copy Pitch</button>
+                                <div style="margin-left: auto; display: flex; gap: 8px;">
+                                    <button class="btn" style="background: rgba(99, 102, 241, 0.15); color: var(--accent); font-size: 0.7rem; padding: 0.4rem 0.8rem; border: 1px solid var(--accent);" onclick="copyPitch('${item.company.replace(/'/g, "\\'")}', '${contactPerson.replace(/'/g, "\\'")}', '${item.financials.replace(/'/g, "\\'")}', '${item.strategic_signal.replace(/'/g, "\\'")}')">📝 Pitch</button>
+                                    <button class="btn" style="background: rgba(10, 102, 194, 0.15); color: #0a66c2; font-size: 0.7rem; padding: 0.4rem 0.8rem; border: 1px solid #0a66c2;" onclick="openLinkedInSearch('${contactPerson.replace(/'/g, "\\'")}', '${item.company.replace(/'/g, "\\'")}')">in Search</button>
+                                </div>
                             </div>
                             <div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; border-left: 3px solid var(--accent);">
                                 ${item.integration_opportunity}
                             </div>
                         </td>
-                        <td style="width: 220px;">
+                        <td style="width: 200px;">
                             ${item.funding_amount && item.funding_amount !== 'Undisclosed' ? 
                                 `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); color: var(--green); padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; display: inline-block; margin-bottom: 6px; box-shadow: 0 0 10px rgba(16,185,129,0.1);">💰 ${item.funding_amount}</div>`
-                                : `<div style="font-weight: 800; font-size: 0.9rem; color: #fbbf24; margin-bottom: 6px;">💰 Undisclosed Amount</div>`
+                                : `<div style="font-weight: 800; font-size: 0.9rem; color: #fbbf24; margin-bottom: 6px;">💰 Undisclosed</div>`
                             }
                             ${item.funding_round && item.funding_round !== 'Unknown Round' ? 
                                 `<br><div style="background: rgba(99, 102, 241, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 8px;">🔄 ${item.funding_round}</div>`
-                                : `<br><div style="font-weight: 600; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">🔄 Unknown Round</div>`
+                                : `<br><div style="font-weight: 600; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">🔄 Unknown Stage</div>`
                             }
                             <div style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.05);">${financials}</div>
                         </td>
@@ -443,15 +446,15 @@
                                 </div>
                                 ${item.contact_role ? `<div style="color: var(--text-dim); font-size: 0.8rem; font-weight: 600; margin-left: 28px;">💼 ${item.contact_role}</div>` : ''}
                                 <div style="font-size: 0.85rem; font-weight: 800; font-family: monospace; letter-spacing: 0.5px; margin-left: 28px; color: ${item.contact_email && item.contact_email !== 'Not Found' ? 'var(--green)' : '#fbbf24'};">
-                                    ${item.contact_email && item.contact_email !== 'Not Found' ? '📧 ' + item.contact_email : (item.contact_email === 'Not Found' ? '❌ No Email Found' : '⏳ Awaiting Contact...')}
+                                    ${item.contact_email && item.contact_email !== 'Not Found' ? '📧 ' + item.contact_email : (item.contact_email === 'Not Found' ? '❌ No Email' : '⏳ Probing Contact...')}
                                 </div>
-                                ${item.contact_linkedin && item.contact_linkedin !== 'null' && item.contact_linkedin !== 'Not Found' ? 
+                                ${item.contact_linkedin && item.contact_linkedin.includes('http') ? 
                                     `<div style="margin-left: 28px; margin-top: 8px;">
                                         <a href="${item.contact_linkedin}" target="_blank" class="btn" style="background: #0a66c2; color: white; text-decoration: none; padding: 4px 12px; font-size: 0.75rem; border-radius: 4px; display: inline-block;">
-                                            in View Profile ↗
+                                            in Profile ↗
                                         </a>
                                     </div>` 
-                                    : `<div style="margin-left: 28px; margin-top: 8px; font-size: 0.75rem; color: #fbbf24; font-weight: 600;">⏳ Searching LinkedIn...</div>`}
+                                    : `<div style="margin-left: 28px; margin-top: 8px; font-size: 0.75rem; color: #fbbf24; font-weight: 600;">⏳ Searching...</div>`}
                             </div>
                         </td>
                         <td style="text-align: right; width: 150px;">
