@@ -1,0 +1,212 @@
+2026-04-18T17:56:00.0887636Z 2026-04-18 17:56:00,088 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:00.3362385Z 2026-04-18 17:56:00,335 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:00.5717563Z 2026-04-18 17:56:00,571 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:00.8044946Z 2026-04-18 17:56:00,804 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.0308290Z 2026-04-18 17:56:01,030 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.2708647Z 2026-04-18 17:56:01,270 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.5218745Z 2026-04-18 17:56:01,521 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.7731393Z 2026-04-18 17:56:01,772 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.0116693Z 2026-04-18 17:56:02,011 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:02.2478137Z 2026-04-18 17:56:02,247 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.4818507Z 2026-04-18 17:56:02,481 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:02.7205731Z 2026-04-18 17:56:02,720 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.9452766Z 2026-04-18 17:56:02,944 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.1724091Z 2026-04-18 17:56:03,172 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.4218148Z 2026-04-18 17:56:03,421 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.6504137Z 2026-04-18 17:56:03,650 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.8853137Z 2026-04-18 17:56:03,885 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.1159599Z 2026-04-18 17:56:04,115 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.3455038Z 2026-04-18 17:56:04,345 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.5688357Z 2026-04-18 17:56:04,568 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.8040495Z 2026-04-18 17:56:04,803 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:05.0388912Z 2026-04-18 17:56:05,038 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.2698685Z 2026-04-18 17:56:05,269 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.5005837Z 2026-04-18 17:56:05,500 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.7319123Z 2026-04-18 17:56:05,731 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:05.9641068Z 2026-04-18 17:56:05,963 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.9647478Z 2026-04-18 17:56:05,964 - INFO - ð DEEP RECONSTRUCTION COMPLETE: 51 leads restored!
+2026-04-18T17:56:05.9648880Z 2026-04-18 17:56:05,964 - INFO - ð ATOMIC VELOCITY: Scanning 10 niches to restore lead volume!
+2026-04-18T17:56:05.9649966Z 2026-04-18 17:56:05,964 - INFO - ð§¹ RETROACTIVE CLEANUP: Purging confirmed news junk...
+2026-04-18T17:56:06.2020901Z 2026-04-18 17:56:06,201 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=id%2Ccompany%2Curl "HTTP/2 200 OK"
+2026-04-18T17:56:06.4328064Z 2026-04-18 17:56:06,432 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1546 "HTTP/2 200 OK"
+2026-04-18T17:56:06.4333419Z 2026-04-18 17:56:06,433 - INFO - ðï¸ Purged Bad Entry: Glydways...
+2026-04-18T17:56:06.6653572Z 2026-04-18 17:56:06,664 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1569 "HTTP/2 200 OK"
+2026-04-18T17:56:06.6659749Z 2026-04-18 17:56:06,665 - INFO - ðï¸ Purged Bad Entry: SuperyachtNews.com...
+2026-04-18T17:56:06.8978290Z 2026-04-18 17:56:06,897 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1576 "HTTP/2 200 OK"
+2026-04-18T17:56:06.8983489Z 2026-04-18 17:56:06,898 - INFO - ðï¸ Purged Bad Entry: 42 Abu Dhabi...
+2026-04-18T17:56:07.1323659Z 2026-04-18 17:56:07,132 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1578 "HTTP/2 200 OK"
+2026-04-18T17:56:07.1329001Z 2026-04-18 17:56:07,132 - INFO - ðï¸ Purged Bad Entry: Mohammed Bin Rashid Innovation...
+2026-04-18T17:56:07.3685273Z 2026-04-18 17:56:07,368 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1588 "HTTP/2 200 OK"
+2026-04-18T17:56:07.3690891Z 2026-04-18 17:56:07,368 - INFO - ðï¸ Purged Bad Entry: Advanced Technology Research C...
+2026-04-18T17:56:07.5998907Z 2026-04-18 17:56:07,599 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1592 "HTTP/2 200 OK"
+2026-04-18T17:56:07.6009728Z 2026-04-18 17:56:07,600 - INFO - ðï¸ Purged Bad Entry: Sharjah Research Technology an...
+2026-04-18T17:56:08.9422734Z 2026-04-18 17:56:08,941 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE e-commerce startup raised'...
+2026-04-18T17:56:10.3851757Z 2026-04-18 17:56:10,384 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:11.8344190Z 2026-04-18 17:56:11,834 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:13.3459034Z 2026-04-18 17:56:13,345 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:13.9650889Z 2026-04-18 17:56:13,964 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:14.5179700Z 2026-04-18 17:56:14,517 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai robotics automation funding'...
+2026-04-18T17:56:15.1564991Z 2026-04-18 17:56:15,156 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:15.7660672Z 2026-04-18 17:56:15,765 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:16.4501083Z 2026-04-18 17:56:16,449 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:17.1555643Z 2026-04-18 17:56:17,155 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:17.7093232Z 2026-04-18 17:56:17,708 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE Web3 DeFi funding round'...
+2026-04-18T17:56:18.7972726Z 2026-04-18 17:56:18,796 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:19.4397996Z 2026-04-18 17:56:19,439 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:20.0606221Z 2026-04-18 17:56:20,060 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:20.6669712Z 2026-04-18 17:56:20,666 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:21.1920624Z 2026-04-18 17:56:21,191 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Abu Dhabi gaming startup raised'...
+2026-04-18T17:56:21.8232814Z 2026-04-18 17:56:21,823 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:22.4300713Z 2026-04-18 17:56:22,429 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:23.0441715Z 2026-04-18 17:56:23,043 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:23.6370807Z 2026-04-18 17:56:23,636 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:24.1612627Z 2026-04-18 17:56:24,160 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE BioTech funding Series'...
+2026-04-18T17:56:24.7655044Z 2026-04-18 17:56:24,765 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:25.4138933Z 2026-04-18 17:56:25,413 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:26.0313821Z 2026-04-18 17:56:26,031 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:26.6411780Z 2026-04-18 17:56:26,640 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:27.1607782Z 2026-04-18 17:56:27,160 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai AgriTech food tech raised'...
+2026-04-18T17:56:27.7868423Z 2026-04-18 17:56:27,786 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:28.3794128Z 2026-04-18 17:56:28,379 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:28.9919811Z 2026-04-18 17:56:28,991 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:29.5947886Z 2026-04-18 17:56:29,593 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:30.1195768Z 2026-04-18 17:56:30,119 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE insurtech legaltech funding'...
+2026-04-18T17:56:30.6994899Z 2026-04-18 17:56:30,699 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:31.3285727Z 2026-04-18 17:56:31,328 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:31.9430252Z 2026-04-18 17:56:31,942 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:32.5474670Z 2026-04-18 17:56:32,547 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:33.0581621Z 2026-04-18 17:56:33,057 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai hired technology company'...
+2026-04-18T17:56:33.6607573Z 2026-04-18 17:56:33,660 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:34.2971104Z 2026-04-18 17:56:34,296 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:34.9072804Z 2026-04-18 17:56:34,906 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:35.4962762Z 2026-04-18 17:56:35,495 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:36.0192583Z 2026-04-18 17:56:36,018 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE 2024 2025 raised funding'...
+2026-04-18T17:56:36.6306310Z 2026-04-18 17:56:36,630 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:37.2285766Z 2026-04-18 17:56:37,228 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:38.1738015Z 2026-04-18 17:56:38,173 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:38.7692541Z 2026-04-18 17:56:38,768 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:39.2851490Z 2026-04-18 17:56:39,284 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai founded 2023 2024 tech'...
+2026-04-18T17:56:39.8853996Z 2026-04-18 17:56:39,885 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:40.4938555Z 2026-04-18 17:56:40,493 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:41.1736285Z 2026-04-18 17:56:41,173 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:41.8024386Z 2026-04-18 17:56:41,802 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:42.1682787Z ##[group]Run python apollo_enrichment.py
+2026-04-18T17:56:42.1683127Z [36;1mpython apollo_enrichment.py[0m
+2026-04-18T17:56:42.1697895Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:56:42.1698159Z env:
+2026-04-18T17:56:42.1698445Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1698874Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:56:42.1699293Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1699676Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1700044Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1700423Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:56:42.1700875Z   SUPABASE_URL: ***
+2026-04-18T17:56:42.1701172Z   SUPABASE_KEY: ***
+2026-04-18T17:56:42.1701635Z   GEMINI_API_KEYS: ***
+2026-04-18T17:56:42.1701953Z   GEMINI_API_KEY: 
+2026-04-18T17:56:42.1702814Z   SERPER_API_KEYS: ***
+2026-04-18T17:56:42.1703026Z   SERPER_API_KEY: 
+2026-04-18T17:56:42.1703223Z ##[endgroup]
+2026-04-18T17:56:42.8314401Z 2026-04-18 17:56:42,831 - INFO - === Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===
+2026-04-18T17:56:43.0856468Z 2026-04-18 17:56:43,085 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=%2A&contact_linkedin=is.null&limit=20 "HTTP/2 200 OK"
+2026-04-18T17:56:43.0860195Z 2026-04-18 17:56:43,085 - INFO - No leads require LinkedIn enrichment right now.
+2026-04-18T17:56:43.0860934Z 2026-04-18 17:56:43,085 - INFO - === Enrichment Cycle Complete ===
+2026-04-18T17:56:43.1928640Z ##[group]Run python crunchbase_sweeper.py
+2026-04-18T17:56:43.1928979Z [36;1mpython crunchbase_sweeper.py[0m
+2026-04-18T17:56:43.1942773Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:56:43.1943036Z env:
+2026-04-18T17:56:43.1943309Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1943738Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:56:43.1944265Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1944645Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1945009Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1945384Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:56:43.1945826Z   SUPABASE_URL: ***
+2026-04-18T17:56:43.1946123Z   SUPABASE_KEY: ***
+2026-04-18T17:56:43.1946568Z   GEMINI_API_KEYS: ***
+2026-04-18T17:56:43.1946782Z   GEMINI_API_KEY: 
+2026-04-18T17:56:43.1947604Z   SERPER_API_KEYS: ***
+2026-04-18T17:56:43.1947818Z   SERPER_API_KEY: 
+2026-04-18T17:56:43.1948015Z ##[endgroup]
+2026-04-18T17:57:39.4979273Z Found 10 leads needing funding audit out of 49 total...
+2026-04-18T17:57:39.4980037Z 
+2026-04-18T17:57:39.4980319Z Searching Crunchbase for: Dubai Chambers
+2026-04-18T17:57:39.4981210Z   No Crunchbase funding data found for Dubai Chambers
+2026-04-18T17:57:39.4982315Z   Updated: Dubai Chambers -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4982984Z 
+2026-04-18T17:57:39.4983308Z Searching Crunchbase for: Emirates AI Albion
+2026-04-18T17:57:39.4984265Z   No Crunchbase funding data found for Emirates AI Albion
+2026-04-18T17:57:39.4985321Z   Updated: Emirates AI Albion -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4985999Z 
+2026-04-18T17:57:39.4986365Z Searching Crunchbase for: Khaleej Times Accelerator
+2026-04-18T17:57:39.4987455Z   No Crunchbase funding data found for Khaleej Times Accelerator
+2026-04-18T17:57:39.4988728Z   Updated: Khaleej Times Accelerator -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4989505Z 
+2026-04-18T17:57:39.4989788Z Searching Crunchbase for: Dubai Chamber
+2026-04-18T17:57:39.4990653Z   No Crunchbase funding data found for Dubai Chamber
+2026-04-18T17:57:39.4991643Z   Updated: Dubai Chamber -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4992404Z 
+2026-04-18T17:57:39.4992727Z Searching Crunchbase for: Wealth Tech Summit
+2026-04-18T17:57:39.4993701Z   No Crunchbase funding data found for Wealth Tech Summit
+2026-04-18T17:57:39.4994765Z   Updated: Wealth Tech Summit -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4995458Z 
+2026-04-18T17:57:39.4995730Z Searching Crunchbase for: Investopia
+2026-04-18T17:57:39.4996540Z   No Crunchbase funding data found for Investopia
+2026-04-18T17:57:39.4997500Z   Updated: Investopia -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4998133Z 
+2026-04-18T17:57:39.4998393Z Searching Crunchbase for: Seed Group
+2026-04-18T17:57:39.4999204Z   No Crunchbase funding data found for Seed Group
+2026-04-18T17:57:39.5000122Z   Updated: Seed Group -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5000703Z 
+2026-04-18T17:57:39.5001043Z Searching Crunchbase for: Fakhruddin Properties
+2026-04-18T17:57:39.5002160Z   No Crunchbase funding data found for Fakhruddin Properties
+2026-04-18T17:57:39.5003264Z   Updated: Fakhruddin Properties -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5003996Z 
+2026-04-18T17:57:39.5004238Z Searching Crunchbase for: DCDE
+2026-04-18T17:57:39.5004969Z   No Crunchbase funding data found for DCDE
+2026-04-18T17:57:39.5005806Z   Updated: DCDE -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5006375Z 
+2026-04-18T17:57:39.5006662Z Searching Crunchbase for: Prop-AI
+2026-04-18T17:57:39.5007450Z   No Crunchbase funding data found for Prop-AI
+2026-04-18T17:57:39.5008359Z   Updated: Prop-AI -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5923185Z ##[group]Run git config --global user.name "Desert Intel Bot"
+2026-04-18T17:57:39.5923640Z [36;1mgit config --global user.name "Desert Intel Bot"[0m
+2026-04-18T17:57:39.5924020Z [36;1mgit config --global user.email "bot@desertintel.ae"[0m
+2026-04-18T17:57:39.5924367Z [36;1mif [ -f enterprise_leads.csv ]; then[0m
+2026-04-18T17:57:39.5924667Z [36;1m  git add -f enterprise_leads.csv[0m
+2026-04-18T17:57:39.5925140Z [36;1m  git commit -m "ð Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"[0m
+2026-04-18T17:57:39.5925629Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T17:57:39.5926021Z [36;1melse[0m
+2026-04-18T17:57:39.5926297Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
+2026-04-18T17:57:39.5926608Z [36;1mfi[0m
+2026-04-18T17:57:39.5940204Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:57:39.5940455Z env:
+2026-04-18T17:57:39.5940723Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5941190Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:57:39.5941611Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942164Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942539Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942916Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:57:39.5943238Z ##[endgroup]
+2026-04-18T17:57:39.6053214Z On branch main
+2026-04-18T17:57:39.6053685Z Your branch is up to date with 'origin/main'.
+2026-04-18T17:57:39.6054098Z 
+2026-04-18T17:57:39.6054284Z nothing to commit, working tree clean
+2026-04-18T17:57:39.6054763Z No changes to commit
+2026-04-18T17:57:39.7664939Z Everything up-to-date
+2026-04-18T17:57:39.7760076Z Post job cleanup.
+2026-04-18T17:57:39.9375305Z Post job cleanup.
+2026-04-18T17:57:40.0031063Z [command]/usr/bin/git version
+2026-04-18T17:57:40.0063853Z git version 2.53.0
+2026-04-18T17:57:40.0095827Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/ac82ab25-f04e-436e-b9eb-3fa8169854a1/.gitconfig'
+2026-04-18T17:57:40.0103791Z Temporarily overriding HOME='/home/runner/work/_temp/ac82ab25-f04e-436e-b9eb-3fa8169854a1' before making global git config changes
+2026-04-18T17:57:40.0105063Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T17:57:40.0108104Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T17:57:40.0134987Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T17:57:40.0157320Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T17:57:40.0323849Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T17:57:40.0338648Z http.https://github.com/.extraheader
+2026-04-18T17:57:40.0348347Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-18T17:57:40.0373341Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T17:57:40.0639403Z Cleaning up orphan processes
+2026-04-18T17:57:40.0882959Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v3, actions/setup-python@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

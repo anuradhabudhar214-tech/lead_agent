@@ -366,27 +366,32 @@ def compile_auditor_intel_extreme(discovery_package):
     }
 
 def serper_search_broad(query):
-    """Max-Volume Serper discovery (50 results per call)."""
-    for _ in range(len(vault.serper_keys)):
-        key = vault.get_serper_key()
-        if not key: return []
-        url = "https://google.serper.dev/search"
-        headers = {'X-API-KEY': key, 'Content-Type': 'application/json'}
-        try:
-            track_cloud_usage("Serper")
-            # num: 50 for max results per credit spent
-            # tbs: qdr:m for past month (MAX VOLUME BOOST)
-            payload = {"q": query, "num": 50, "tbs": "qdr:m"} 
-            r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
-            res_data = r.json()
-            if 'organic' in res_data:
-                return res_data['organic']
-            # If no organic results, it might be an error or quota exceeded.
+    """Crunchbase-targeted Serper discovery (50 results per call)."""
+    key = vault.get_serper_key()
+    if not key:
+        logger.error("No Serper keys available!")
+        return []
+    url = "https://google.serper.dev/search"
+    headers = {"X-API-KEY": key, "Content-Type": "application/json"}
+    try:
+        track_cloud_usage("Serper")
+        payload = {"q": query, "num": 50, "tbs": "qdr:m"}
+        r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+        res_data = r.json()
+        if r.status_code == 403 or r.status_code == 429:
+            logger.warning(f"Serper key quota hit ({r.status_code}), rotating...")
             vault.rotate_serper()
-        except:
-            vault.rotate_serper()
-            continue
-    return []
+            return []
+        if 'organic' in res_data:
+            results = res_data['organic']
+            logger.info(f"  Serper returned {len(results)} results for query")
+            return results
+        logger.warning(f"Serper no organic results. Response keys: {list(res_data.keys())}")
+        return []
+    except Exception as e:
+        logger.error(f"Serper request failed: {e}")
+        vault.rotate_serper()
+        return []
 
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
@@ -492,38 +497,39 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- CRUNCHBASE ONLY NICHES: Real funding round data ---
+    # --- CRUNCHBASE ONLY NICHES: Funding round data ---
     current_niches = [
-        "site:crunchbase.com/organization UAE Series A funding round",
-        "site:crunchbase.com/organization Dubai Series B funding round",
-        "site:crunchbase.com/organization Abu Dhabi Seed funding round",
-        "site:crunchbase.com/organization UAE Pre-Seed funding round",
-        "site:crunchbase.com/organization Dubai Venture round raised",
-        "site:crunchbase.com/organization UAE tech startup raised million",
-        "site:crunchbase.com/organization Dubai AI startup funding raised",
-        "site:crunchbase.com/organization Abu Dhabi Fintech raised million",
-        "site:crunchbase.com/organization Dubai crypto blockchain funding",
-        "site:crunchbase.com/organization UAE PropTech raised funding",
-        "site:crunchbase.com/organization Dubai SaaS startup funding round",
-        "site:crunchbase.com/organization UAE HealthTech raised Series",
-        "site:crunchbase.com/organization Dubai EdTech funding round raised",
-        "site:crunchbase.com/organization Abu Dhabi CleanTech funding",
-        "site:crunchbase.com/organization Dubai logistics tech funding round",
-        "site:crunchbase.com/organization UAE cybersecurity funding raised",
-        "site:crunchbase.com/organization Dubai cloud infrastructure startup",
-        "site:crunchbase.com/organization UAE e-commerce startup raised",
-        "site:crunchbase.com/organization Dubai robotics automation funding",
-        "site:crunchbase.com/organization UAE Web3 DeFi funding round",
-        "site:crunchbase.com/organization Abu Dhabi gaming startup raised",
-        "site:crunchbase.com/organization UAE BioTech funding Series",
-        "site:crunchbase.com/organization Dubai AgriTech food tech raised",
-        "site:crunchbase.com/organization UAE insurtech legaltech funding",
-        "site:crunchbase.com/organization Dubai hired technology company",
-        "site:crunchbase.com/organization UAE 2024 2025 raised funding",
-        "site:crunchbase.com/organization Dubai founded 2023 2024 tech",
-        "site:crunchbase.com/organization Abu Dhabi investment capital tech",
-        "site:crunchbase.com/organization UAE HR TechSaaS B2B startup",
-        "site:crunchbase.com/organization Dubai smart mobility transport tech",
+        # Funding round specific searches (these are what Serper/Google CAN resolve)
+        'site:crunchbase.com "United Arab Emirates" "Series A"',
+        'site:crunchbase.com "Dubai" "Series B"',
+        'site:crunchbase.com "Abu Dhabi" "Seed" funding',
+        'site:crunchbase.com "UAE" "Pre-Seed" raised',
+        'site:crunchbase.com "Dubai" "Venture Round"',
+        'site:crunchbase.com "UAE" "Series C" funding',
+        'site:crunchbase.com "Dubai" AI startup funding raised 2024',
+        'site:crunchbase.com "Abu Dhabi" fintech raised million 2024',
+        'site:crunchbase.com "Dubai" crypto blockchain funding round',
+        'site:crunchbase.com "UAE" proptech funding raised',
+        'site:crunchbase.com "Dubai" SaaS funding raised million',
+        'site:crunchbase.com "UAE" healthtech "Series" raised',
+        'site:crunchbase.com "Dubai" edtech funding round raised',
+        'site:crunchbase.com "Abu Dhabi" cleantech funding',
+        'site:crunchbase.com "Dubai" logistics tech funding round',
+        'site:crunchbase.com "UAE" cybersecurity funding raised 2024',
+        'site:crunchbase.com "Dubai" cloud infrastructure startup funding',
+        'site:crunchbase.com "UAE" e-commerce startup raised 2025',
+        'site:crunchbase.com "Dubai" robotics automation funding round',
+        'site:crunchbase.com "UAE" web3 DeFi funding raised',
+        'site:crunchbase.com "Abu Dhabi" gaming startup raised',
+        'site:crunchbase.com "UAE" biotech funding series',
+        'site:crunchbase.com "Dubai" agritech food tech raised',
+        'site:crunchbase.com "UAE" insurtech legaltech funding',
+        'site:crunchbase.com "Dubai" founded 2023 2024 technology',
+        'site:crunchbase.com "Abu Dhabi" investment capital tech raised',
+        'site:crunchbase.com "UAE" HR tech B2B startup funding',
+        'site:crunchbase.com "Dubai" smart mobility transport raised',
+        'site:crunchbase.com "UAE" fintech startup raised 2024 2025',
+        'site:crunchbase.com "Dubai" IT solutions enterprise raised',
     ]
     
     # Pick niches based on the current hour and catch-up requirement
@@ -552,14 +558,18 @@ def run_tracker():
 
             # --- STRICT CRUNCHBASE-ONLY FILTER ---
             link = item.get('link', '').lower()
-            # Must be on crunchbase.com AND must be an organization/company profile page
+            # Must be on crunchbase.com
             if 'crunchbase.com' not in link:
                 continue
-            if '/organization/' not in link and '/company/' not in link:
+            # Must be a company/organization profile (not blog, hub, lists, etc)
+            is_profile = ('/organization/' in link or '/company/' in link or 
+                         link.rstrip('/').split('crunchbase.com/')[-1].count('/') == 1)
+            if not is_profile:
                 continue
-            # Block any blog, news, or non-profile pages on crunchbase
-            if any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/']):
+            # Block known non-profile paths
+            if any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/', '/event/']):
                 continue
+            logger.info(f"  ✅ Valid Crunchbase profile: {link[:80]}")
                 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
             

@@ -1,0 +1,1054 @@
+ï»¿2026-04-18T17:55:36.5397210Z Current runner version: '2.333.1'
+2026-04-18T17:55:36.5430729Z ##[group]Runner Image Provisioner
+2026-04-18T17:55:36.5432289Z Hosted Compute Agent
+2026-04-18T17:55:36.5433207Z Version: 20260213.493
+2026-04-18T17:55:36.5434141Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-18T17:55:36.5435342Z Build Date: 2026-02-13T00:28:41Z
+2026-04-18T17:55:36.5436369Z Worker ID: {4f0f29ad-8062-458a-ba21-1e73a64b40a2}
+2026-04-18T17:55:36.5437614Z Azure Region: northcentralus
+2026-04-18T17:55:36.5438567Z ##[endgroup]
+2026-04-18T17:55:36.5440789Z ##[group]Operating System
+2026-04-18T17:55:36.5441841Z Ubuntu
+2026-04-18T17:55:36.5442868Z 24.04.4
+2026-04-18T17:55:36.5443735Z LTS
+2026-04-18T17:55:36.5444510Z ##[endgroup]
+2026-04-18T17:55:36.5445338Z ##[group]Runner Image
+2026-04-18T17:55:36.5446304Z Image: ubuntu-24.04
+2026-04-18T17:55:36.5447162Z Version: 20260413.86.1
+2026-04-18T17:55:36.5449155Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260413.86/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-18T17:55:36.5451607Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260413.86
+2026-04-18T17:55:36.5453350Z ##[endgroup]
+2026-04-18T17:55:36.5455027Z ##[group]GITHUB_TOKEN Permissions
+2026-04-18T17:55:36.5457692Z Contents: write
+2026-04-18T17:55:36.5458573Z Metadata: read
+2026-04-18T17:55:36.5459445Z ##[endgroup]
+2026-04-18T17:55:36.5462569Z Secret source: Actions
+2026-04-18T17:55:36.5463742Z Prepare workflow directory
+2026-04-18T17:55:36.5930695Z Prepare all required actions
+2026-04-18T17:55:36.5988320Z Getting action download info
+2026-04-18T17:55:36.8863668Z Download action repository 'actions/checkout@v3' (SHA:f43a0e5ff2bd294095638e18286ca9a3d1956744)
+2026-04-18T17:55:36.9724166Z Download action repository 'actions/setup-python@v4' (SHA:7f4fc3e22c37d6ff65e88745f38bd3157c663f7c)
+2026-04-18T17:55:37.1851847Z Complete job name: hunt
+2026-04-18T17:55:37.2593094Z ##[group]Run actions/checkout@v3
+2026-04-18T17:55:37.2594431Z with:
+2026-04-18T17:55:37.2595108Z   fetch-depth: 0
+2026-04-18T17:55:37.2595854Z   repository: anuradhabudhar214-tech/lead_agent
+2026-04-18T17:55:37.2597083Z   token: ***
+2026-04-18T17:55:37.2597709Z   ssh-strict: true
+2026-04-18T17:55:37.2598399Z   persist-credentials: true
+2026-04-18T17:55:37.2599244Z   clean: true
+2026-04-18T17:55:37.2599759Z   sparse-checkout-cone-mode: true
+2026-04-18T17:55:37.2600231Z   fetch-tags: false
+2026-04-18T17:55:37.2600614Z   lfs: false
+2026-04-18T17:55:37.2600998Z   submodules: false
+2026-04-18T17:55:37.2601411Z   set-safe-directory: true
+2026-04-18T17:55:37.2602776Z ##[endgroup]
+2026-04-18T17:55:37.3454171Z Syncing repository: anuradhabudhar214-tech/lead_agent
+2026-04-18T17:55:37.3455874Z ##[group]Getting Git version info
+2026-04-18T17:55:37.3456600Z Working directory is '/home/runner/work/lead_agent/lead_agent'
+2026-04-18T17:55:37.3457578Z [command]/usr/bin/git version
+2026-04-18T17:55:37.3482329Z git version 2.53.0
+2026-04-18T17:55:37.3505508Z ##[endgroup]
+2026-04-18T17:55:37.3519153Z Temporarily overriding HOME='/home/runner/work/_temp/c4a21a07-7e56-4fdb-bb43-97b2756fd64c' before making global git config changes
+2026-04-18T17:55:37.3520953Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T17:55:37.3522563Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T17:55:37.3552393Z Deleting the contents of '/home/runner/work/lead_agent/lead_agent'
+2026-04-18T17:55:37.3556025Z ##[group]Initializing the repository
+2026-04-18T17:55:37.3558962Z [command]/usr/bin/git init /home/runner/work/lead_agent/lead_agent
+2026-04-18T17:55:37.3625006Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-04-18T17:55:37.3625983Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-04-18T17:55:37.3626863Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-04-18T17:55:37.3627552Z hint: call:
+2026-04-18T17:55:37.3627927Z hint:
+2026-04-18T17:55:37.3628649Z hint: 	git config --global init.defaultBranch <name>
+2026-04-18T17:55:37.3629247Z hint:
+2026-04-18T17:55:37.3630022Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-04-18T17:55:37.3630920Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-04-18T17:55:37.3631637Z hint:
+2026-04-18T17:55:37.3632251Z hint: 	git branch -m <name>
+2026-04-18T17:55:37.3632691Z hint:
+2026-04-18T17:55:37.3633267Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-04-18T17:55:37.3634211Z Initialized empty Git repository in /home/runner/work/lead_agent/lead_agent/.git/
+2026-04-18T17:55:37.3635874Z [command]/usr/bin/git remote add origin https://github.com/anuradhabudhar214-tech/lead_agent
+2026-04-18T17:55:37.3659417Z ##[endgroup]
+2026-04-18T17:55:37.3660128Z ##[group]Disabling automatic garbage collection
+2026-04-18T17:55:37.3662678Z [command]/usr/bin/git config --local gc.auto 0
+2026-04-18T17:55:37.3683028Z ##[endgroup]
+2026-04-18T17:55:37.3683802Z ##[group]Setting up auth
+2026-04-18T17:55:37.3688152Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T17:55:37.3711399Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T17:55:37.3943153Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T17:55:37.3967433Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T17:55:37.4194740Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-04-18T17:55:37.4221174Z ##[endgroup]
+2026-04-18T17:55:37.4222678Z ##[group]Fetching the repository
+2026-04-18T17:55:37.4230208Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --progress --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-04-18T17:55:37.6683300Z remote: Enumerating objects: 582, done.        
+2026-04-18T17:55:37.6684421Z remote: Counting objects:   0% (1/145)        
+2026-04-18T17:55:37.6685992Z remote: Counting objects:   1% (2/145)        
+2026-04-18T17:55:37.6686588Z remote: Counting objects:   2% (3/145)        
+2026-04-18T17:55:37.6687153Z remote: Counting objects:   3% (5/145)        
+2026-04-18T17:55:37.6687723Z remote: Counting objects:   4% (6/145)        
+2026-04-18T17:55:37.6688495Z remote: Counting objects:   5% (8/145)        
+2026-04-18T17:55:37.6689340Z remote: Counting objects:   6% (9/145)        
+2026-04-18T17:55:37.6689945Z remote: Counting objects:   7% (11/145)        
+2026-04-18T17:55:37.6690553Z remote: Counting objects:   8% (12/145)        
+2026-04-18T17:55:37.6691126Z remote: Counting objects:   9% (14/145)        
+2026-04-18T17:55:37.6691830Z remote: Counting objects:  10% (15/145)        
+2026-04-18T17:55:37.6692564Z remote: Counting objects:  11% (16/145)        
+2026-04-18T17:55:37.6693148Z remote: Counting objects:  12% (18/145)        
+2026-04-18T17:55:37.6693732Z remote: Counting objects:  13% (19/145)        
+2026-04-18T17:55:37.6694307Z remote: Counting objects:  14% (21/145)        
+2026-04-18T17:55:37.6694893Z remote: Counting objects:  15% (22/145)        
+2026-04-18T17:55:37.6695468Z remote: Counting objects:  16% (24/145)        
+2026-04-18T17:55:37.6696039Z remote: Counting objects:  17% (25/145)        
+2026-04-18T17:55:37.6696609Z remote: Counting objects:  18% (27/145)        
+2026-04-18T17:55:37.6697177Z remote: Counting objects:  19% (28/145)        
+2026-04-18T17:55:37.6697751Z remote: Counting objects:  20% (29/145)        
+2026-04-18T17:55:37.6698318Z remote: Counting objects:  21% (31/145)        
+2026-04-18T17:55:37.6698883Z remote: Counting objects:  22% (32/145)        
+2026-04-18T17:55:37.6699449Z remote: Counting objects:  23% (34/145)        
+2026-04-18T17:55:37.6700369Z remote: Counting objects:  24% (35/145)        
+2026-04-18T17:55:37.6700989Z remote: Counting objects:  25% (37/145)        
+2026-04-18T17:55:37.6701605Z remote: Counting objects:  26% (38/145)        
+2026-04-18T17:55:37.6702329Z remote: Counting objects:  27% (40/145)        
+2026-04-18T17:55:37.6702944Z remote: Counting objects:  28% (41/145)        
+2026-04-18T17:55:37.6703560Z remote: Counting objects:  29% (43/145)        
+2026-04-18T17:55:37.6704178Z remote: Counting objects:  30% (44/145)        
+2026-04-18T17:55:37.6704945Z remote: Counting objects:  31% (45/145)        
+2026-04-18T17:55:37.6705559Z remote: Counting objects:  32% (47/145)        
+2026-04-18T17:55:37.6706180Z remote: Counting objects:  33% (48/145)        
+2026-04-18T17:55:37.6706800Z remote: Counting objects:  34% (50/145)        
+2026-04-18T17:55:37.6707422Z remote: Counting objects:  35% (51/145)        
+2026-04-18T17:55:37.6708043Z remote: Counting objects:  36% (53/145)        
+2026-04-18T17:55:37.6708663Z remote: Counting objects:  37% (54/145)        
+2026-04-18T17:55:37.6709277Z remote: Counting objects:  38% (56/145)        
+2026-04-18T17:55:37.6709901Z remote: Counting objects:  39% (57/145)        
+2026-04-18T17:55:37.6710512Z remote: Counting objects:  40% (58/145)        
+2026-04-18T17:55:37.6711129Z remote: Counting objects:  41% (60/145)        
+2026-04-18T17:55:37.6711744Z remote: Counting objects:  42% (61/145)        
+2026-04-18T17:55:37.6712427Z remote: Counting objects:  43% (63/145)        
+2026-04-18T17:55:37.6713048Z remote: Counting objects:  44% (64/145)        
+2026-04-18T17:55:37.6713659Z remote: Counting objects:  45% (66/145)        
+2026-04-18T17:55:37.6714275Z remote: Counting objects:  46% (67/145)        
+2026-04-18T17:55:37.6714891Z remote: Counting objects:  47% (69/145)        
+2026-04-18T17:55:37.6715618Z remote: Counting objects:  48% (70/145)        
+2026-04-18T17:55:37.6716263Z remote: Counting objects:  49% (72/145)        
+2026-04-18T17:55:37.6716892Z remote: Counting objects:  50% (73/145)        
+2026-04-18T17:55:37.6717524Z remote: Counting objects:  51% (74/145)        
+2026-04-18T17:55:37.6718147Z remote: Counting objects:  52% (76/145)        
+2026-04-18T17:55:37.6718770Z remote: Counting objects:  53% (77/145)        
+2026-04-18T17:55:37.6719404Z remote: Counting objects:  54% (79/145)        
+2026-04-18T17:55:37.6720017Z remote: Counting objects:  55% (80/145)        
+2026-04-18T17:55:37.6720635Z remote: Counting objects:  56% (82/145)        
+2026-04-18T17:55:37.6721248Z remote: Counting objects:  57% (83/145)        
+2026-04-18T17:55:37.6721926Z remote: Counting objects:  58% (85/145)        
+2026-04-18T17:55:37.6722680Z remote: Counting objects:  59% (86/145)        
+2026-04-18T17:55:37.6723254Z remote: Counting objects:  60% (87/145)        
+2026-04-18T17:55:37.6723826Z remote: Counting objects:  61% (89/145)        
+2026-04-18T17:55:37.6724390Z remote: Counting objects:  62% (90/145)        
+2026-04-18T17:55:37.6724955Z remote: Counting objects:  63% (92/145)        
+2026-04-18T17:55:37.6725550Z remote: Counting objects:  64% (93/145)        
+2026-04-18T17:55:37.6726115Z remote: Counting objects:  65% (95/145)        
+2026-04-18T17:55:37.6726683Z remote: Counting objects:  66% (96/145)        
+2026-04-18T17:55:37.6727254Z remote: Counting objects:  67% (98/145)        
+2026-04-18T17:55:37.6727816Z remote: Counting objects:  68% (99/145)        
+2026-04-18T17:55:37.6728383Z remote: Counting objects:  69% (101/145)        
+2026-04-18T17:55:37.6728957Z remote: Counting objects:  70% (102/145)        
+2026-04-18T17:55:37.6729523Z remote: Counting objects:  71% (103/145)        
+2026-04-18T17:55:37.6730103Z remote: Counting objects:  72% (105/145)        
+2026-04-18T17:55:37.6730678Z remote: Counting objects:  73% (106/145)        
+2026-04-18T17:55:37.6731249Z remote: Counting objects:  74% (108/145)        
+2026-04-18T17:55:37.6731825Z remote: Counting objects:  75% (109/145)        
+2026-04-18T17:55:37.6732517Z remote: Counting objects:  76% (111/145)        
+2026-04-18T17:55:37.6733298Z remote: Counting objects:  77% (112/145)        
+2026-04-18T17:55:37.6733924Z remote: Counting objects:  78% (114/145)        
+2026-04-18T17:55:37.6734544Z remote: Counting objects:  79% (115/145)        
+2026-04-18T17:55:37.6735165Z remote: Counting objects:  80% (116/145)        
+2026-04-18T17:55:37.6735786Z remote: Counting objects:  81% (118/145)        
+2026-04-18T17:55:37.6736415Z remote: Counting objects:  82% (119/145)        
+2026-04-18T17:55:37.6737034Z remote: Counting objects:  83% (121/145)        
+2026-04-18T17:55:37.6737659Z remote: Counting objects:  84% (122/145)        
+2026-04-18T17:55:37.6738280Z remote: Counting objects:  85% (124/145)        
+2026-04-18T17:55:37.6738905Z remote: Counting objects:  86% (125/145)        
+2026-04-18T17:55:37.6739533Z remote: Counting objects:  87% (127/145)        
+2026-04-18T17:55:37.6740154Z remote: Counting objects:  88% (128/145)        
+2026-04-18T17:55:37.6740777Z remote: Counting objects:  89% (130/145)        
+2026-04-18T17:55:37.6741411Z remote: Counting objects:  90% (131/145)        
+2026-04-18T17:55:37.6742134Z remote: Counting objects:  91% (132/145)        
+2026-04-18T17:55:37.6742760Z remote: Counting objects:  92% (134/145)        
+2026-04-18T17:55:37.6743377Z remote: Counting objects:  93% (135/145)        
+2026-04-18T17:55:37.6743996Z remote: Counting objects:  94% (137/145)        
+2026-04-18T17:55:37.6744624Z remote: Counting objects:  95% (138/145)        
+2026-04-18T17:55:37.6745247Z remote: Counting objects:  96% (140/145)        
+2026-04-18T17:55:37.6745879Z remote: Counting objects:  97% (141/145)        
+2026-04-18T17:55:37.6746505Z remote: Counting objects:  98% (143/145)        
+2026-04-18T17:55:37.6747123Z remote: Counting objects:  99% (144/145)        
+2026-04-18T17:55:37.6748138Z remote: Counting objects: 100% (145/145)        
+2026-04-18T17:55:37.6748878Z remote: Counting objects: 100% (145/145), done.        
+2026-04-18T17:55:37.6749777Z remote: Compressing objects:   1% (1/99)        
+2026-04-18T17:55:37.6750367Z remote: Compressing objects:   2% (2/99)        
+2026-04-18T17:55:37.6750941Z remote: Compressing objects:   3% (3/99)        
+2026-04-18T17:55:37.6751515Z remote: Compressing objects:   4% (4/99)        
+2026-04-18T17:55:37.6752179Z remote: Compressing objects:   5% (5/99)        
+2026-04-18T17:55:37.6752754Z remote: Compressing objects:   6% (6/99)        
+2026-04-18T17:55:37.6764745Z remote: Compressing objects:   7% (7/99)        
+2026-04-18T17:55:37.6765723Z remote: Compressing objects:   8% (8/99)        
+2026-04-18T17:55:37.6766473Z remote: Compressing objects:   9% (9/99)        
+2026-04-18T17:55:37.6767070Z remote: Compressing objects:  10% (10/99)        
+2026-04-18T17:55:37.6767665Z remote: Compressing objects:  11% (11/99)        
+2026-04-18T17:55:37.6768253Z remote: Compressing objects:  12% (12/99)        
+2026-04-18T17:55:37.6769202Z remote: Compressing objects:  13% (13/99)        
+2026-04-18T17:55:37.6769965Z remote: Compressing objects:  14% (14/99)        
+2026-04-18T17:55:37.6770759Z remote: Compressing objects:  15% (15/99)        
+2026-04-18T17:55:37.6771427Z remote: Compressing objects:  16% (16/99)        
+2026-04-18T17:55:37.6772203Z remote: Compressing objects:  17% (17/99)        
+2026-04-18T17:55:37.6772791Z remote: Compressing objects:  18% (18/99)        
+2026-04-18T17:55:37.6773375Z remote: Compressing objects:  19% (19/99)        
+2026-04-18T17:55:37.6773978Z remote: Compressing objects:  20% (20/99)        
+2026-04-18T17:55:37.6774592Z remote: Compressing objects:  21% (21/99)        
+2026-04-18T17:55:37.6775177Z remote: Compressing objects:  22% (22/99)        
+2026-04-18T17:55:37.6775762Z remote: Compressing objects:  23% (23/99)        
+2026-04-18T17:55:37.6837392Z remote: Compressing objects:  24% (24/99)        
+2026-04-18T17:55:37.6838040Z remote: Compressing objects:  25% (25/99)        
+2026-04-18T17:55:37.6838652Z remote: Compressing objects:  26% (26/99)        
+2026-04-18T17:55:37.6839700Z remote: Compressing objects:  27% (27/99)        
+2026-04-18T17:55:37.6841053Z remote: Compressing objects:  28% (28/99)        
+2026-04-18T17:55:37.6841650Z remote: Compressing objects:  29% (29/99)        
+2026-04-18T17:55:37.6843034Z remote: Compressing objects:  30% (30/99)        
+2026-04-18T17:55:37.6843634Z remote: Compressing objects:  31% (31/99)        
+2026-04-18T17:55:37.6844228Z remote: Compressing objects:  32% (32/99)        
+2026-04-18T17:55:37.6844853Z remote: Compressing objects:  33% (33/99)        
+2026-04-18T17:55:37.6845442Z remote: Compressing objects:  34% (34/99)        
+2026-04-18T17:55:37.6846022Z remote: Compressing objects:  35% (35/99)        
+2026-04-18T17:55:37.6846608Z remote: Compressing objects:  36% (36/99)        
+2026-04-18T17:55:37.6847197Z remote: Compressing objects:  37% (37/99)        
+2026-04-18T17:55:37.6847776Z remote: Compressing objects:  38% (38/99)        
+2026-04-18T17:55:37.6848615Z remote: Compressing objects:  39% (39/99)        
+2026-04-18T17:55:37.6849396Z remote: Compressing objects:  40% (40/99)        
+2026-04-18T17:55:37.6850567Z remote: Compressing objects:  41% (41/99)        
+2026-04-18T17:55:37.6851790Z remote: Compressing objects:  42% (42/99)        
+2026-04-18T17:55:37.6852962Z remote: Compressing objects:  43% (43/99)        
+2026-04-18T17:55:37.6854020Z remote: Compressing objects:  44% (44/99)        
+2026-04-18T17:55:37.6854852Z remote: Compressing objects:  45% (45/99)        
+2026-04-18T17:55:37.6856009Z remote: Compressing objects:  46% (46/99)        
+2026-04-18T17:55:37.6857774Z remote: Compressing objects:  47% (47/99)        
+2026-04-18T17:55:37.6859106Z remote: Compressing objects:  48% (48/99)        
+2026-04-18T17:55:37.6859745Z remote: Compressing objects:  49% (49/99)        
+2026-04-18T17:55:37.6860331Z remote: Compressing objects:  50% (50/99)        
+2026-04-18T17:55:37.6860915Z remote: Compressing objects:  51% (51/99)        
+2026-04-18T17:55:37.6861680Z remote: Compressing objects:  52% (52/99)        
+2026-04-18T17:55:37.6862416Z remote: Compressing objects:  53% (53/99)        
+2026-04-18T17:55:37.6863011Z remote: Compressing objects:  54% (54/99)        
+2026-04-18T17:55:37.6863592Z remote: Compressing objects:  55% (55/99)        
+2026-04-18T17:55:37.6864175Z remote: Compressing objects:  56% (56/99)        
+2026-04-18T17:55:37.6864760Z remote: Compressing objects:  57% (57/99)        
+2026-04-18T17:55:37.6865353Z remote: Compressing objects:  58% (58/99)        
+2026-04-18T17:55:37.6865938Z remote: Compressing objects:  59% (59/99)        
+2026-04-18T17:55:37.6866521Z remote: Compressing objects:  60% (60/99)        
+2026-04-18T17:55:37.6867105Z remote: Compressing objects:  61% (61/99)        
+2026-04-18T17:55:37.6867689Z remote: Compressing objects:  62% (62/99)        
+2026-04-18T17:55:37.6868276Z remote: Compressing objects:  63% (63/99)        
+2026-04-18T17:55:37.6868857Z remote: Compressing objects:  64% (64/99)        
+2026-04-18T17:55:37.6869444Z remote: Compressing objects:  65% (65/99)        
+2026-04-18T17:55:37.6870026Z remote: Compressing objects:  66% (66/99)        
+2026-04-18T17:55:37.6870614Z remote: Compressing objects:  67% (67/99)        
+2026-04-18T17:55:37.6871224Z remote: Compressing objects:  68% (68/99)        
+2026-04-18T17:55:37.6921170Z remote: Compressing objects:  69% (69/99)        
+2026-04-18T17:55:37.6922104Z remote: Compressing objects:  70% (70/99)        
+2026-04-18T17:55:37.6922728Z remote: Compressing objects:  71% (71/99)        
+2026-04-18T17:55:37.6923309Z remote: Compressing objects:  72% (72/99)        
+2026-04-18T17:55:37.6923904Z remote: Compressing objects:  73% (73/99)        
+2026-04-18T17:55:37.6924483Z remote: Compressing objects:  74% (74/99)        
+2026-04-18T17:55:37.6925206Z remote: Compressing objects:  75% (75/99)        
+2026-04-18T17:55:37.6926099Z remote: Compressing objects:  76% (76/99)        
+2026-04-18T17:55:37.6927047Z remote: Compressing objects:  77% (77/99)        
+2026-04-18T17:55:37.6928015Z remote: Compressing objects:  78% (78/99)        
+2026-04-18T17:55:37.6929077Z remote: Compressing objects:  79% (79/99)        
+2026-04-18T17:55:37.6929912Z remote: Compressing objects:  80% (80/99)        
+2026-04-18T17:55:37.6930539Z remote: Compressing objects:  81% (81/99)        
+2026-04-18T17:55:37.6931169Z remote: Compressing objects:  82% (82/99)        
+2026-04-18T17:55:37.6931822Z remote: Compressing objects:  83% (83/99)        
+2026-04-18T17:55:37.6932641Z remote: Compressing objects:  84% (84/99)        
+2026-04-18T17:55:37.6933221Z remote: Compressing objects:  85% (85/99)        
+2026-04-18T17:55:37.6933957Z remote: Compressing objects:  86% (86/99)        
+2026-04-18T17:55:37.6934538Z remote: Compressing objects:  87% (87/99)        
+2026-04-18T17:55:37.6935120Z remote: Compressing objects:  88% (88/99)        
+2026-04-18T17:55:37.6935696Z remote: Compressing objects:  89% (89/99)        
+2026-04-18T17:55:37.6936276Z remote: Compressing objects:  90% (90/99)        
+2026-04-18T17:55:37.6936883Z remote: Compressing objects:  91% (91/99)        
+2026-04-18T17:55:37.6937459Z remote: Compressing objects:  92% (92/99)        
+2026-04-18T17:55:37.6938047Z remote: Compressing objects:  93% (93/99)        
+2026-04-18T17:55:37.6938651Z remote: Compressing objects:  94% (94/99)        
+2026-04-18T17:55:37.6939245Z remote: Compressing objects:  95% (95/99)        
+2026-04-18T17:55:37.6939828Z remote: Compressing objects:  96% (96/99)        
+2026-04-18T17:55:37.6940440Z remote: Compressing objects:  97% (97/99)        
+2026-04-18T17:55:37.6941024Z remote: Compressing objects:  98% (98/99)        
+2026-04-18T17:55:37.6941601Z remote: Compressing objects: 100% (99/99)        
+2026-04-18T17:55:37.6942381Z remote: Compressing objects: 100% (99/99), done.        
+2026-04-18T17:55:37.6950636Z Receiving objects:   0% (1/582)
+2026-04-18T17:55:37.6952173Z Receiving objects:   1% (6/582)
+2026-04-18T17:55:37.7013778Z Receiving objects:   2% (12/582)
+2026-04-18T17:55:37.7014962Z Receiving objects:   3% (18/582)
+2026-04-18T17:55:37.7016729Z Receiving objects:   4% (24/582)
+2026-04-18T17:55:37.7019933Z Receiving objects:   5% (30/582)
+2026-04-18T17:55:37.7021284Z Receiving objects:   6% (35/582)
+2026-04-18T17:55:37.7022305Z Receiving objects:   7% (41/582)
+2026-04-18T17:55:37.7023060Z Receiving objects:   8% (47/582)
+2026-04-18T17:55:37.7023665Z Receiving objects:   9% (53/582)
+2026-04-18T17:55:37.7024488Z Receiving objects:  10% (59/582)
+2026-04-18T17:55:37.7025210Z Receiving objects:  11% (65/582)
+2026-04-18T17:55:37.7026069Z Receiving objects:  12% (70/582)
+2026-04-18T17:55:37.7026879Z Receiving objects:  13% (76/582)
+2026-04-18T17:55:37.7027360Z Receiving objects:  14% (82/582)
+2026-04-18T17:55:37.7027837Z Receiving objects:  15% (88/582)
+2026-04-18T17:55:37.7028321Z Receiving objects:  16% (94/582)
+2026-04-18T17:55:37.7028795Z Receiving objects:  17% (99/582)
+2026-04-18T17:55:37.7029275Z Receiving objects:  18% (105/582)
+2026-04-18T17:55:37.7029763Z Receiving objects:  19% (111/582)
+2026-04-18T17:55:37.7078403Z Receiving objects:  20% (117/582)
+2026-04-18T17:55:37.7079100Z Receiving objects:  21% (123/582)
+2026-04-18T17:55:37.7079942Z Receiving objects:  22% (129/582)
+2026-04-18T17:55:37.7080812Z Receiving objects:  23% (134/582)
+2026-04-18T17:55:37.7081378Z Receiving objects:  24% (140/582)
+2026-04-18T17:55:37.7081997Z Receiving objects:  25% (146/582)
+2026-04-18T17:55:37.7082831Z Receiving objects:  26% (152/582)
+2026-04-18T17:55:37.7083715Z Receiving objects:  27% (158/582)
+2026-04-18T17:55:37.7084603Z Receiving objects:  28% (163/582)
+2026-04-18T17:55:37.7085491Z Receiving objects:  29% (169/582)
+2026-04-18T17:55:37.7086390Z Receiving objects:  30% (175/582)
+2026-04-18T17:55:37.7087312Z Receiving objects:  31% (181/582)
+2026-04-18T17:55:37.7088210Z Receiving objects:  32% (187/582)
+2026-04-18T17:55:37.7089104Z Receiving objects:  33% (193/582)
+2026-04-18T17:55:37.7089787Z Receiving objects:  34% (198/582)
+2026-04-18T17:55:37.7090271Z Receiving objects:  35% (204/582)
+2026-04-18T17:55:37.7090775Z Receiving objects:  36% (210/582)
+2026-04-18T17:55:37.7091253Z Receiving objects:  37% (216/582)
+2026-04-18T17:55:37.7091733Z Receiving objects:  38% (222/582)
+2026-04-18T17:55:37.7092567Z Receiving objects:  39% (227/582)
+2026-04-18T17:55:37.7093054Z Receiving objects:  40% (233/582)
+2026-04-18T17:55:37.7093536Z Receiving objects:  41% (239/582)
+2026-04-18T17:55:37.7094014Z Receiving objects:  42% (245/582)
+2026-04-18T17:55:37.7094498Z Receiving objects:  43% (251/582)
+2026-04-18T17:55:37.7094989Z Receiving objects:  44% (257/582)
+2026-04-18T17:55:37.7095476Z Receiving objects:  45% (262/582)
+2026-04-18T17:55:37.7095963Z Receiving objects:  46% (268/582)
+2026-04-18T17:55:37.7150529Z Receiving objects:  47% (274/582)
+2026-04-18T17:55:37.7151483Z Receiving objects:  48% (280/582)
+2026-04-18T17:55:37.7152511Z Receiving objects:  49% (286/582)
+2026-04-18T17:55:37.7153221Z Receiving objects:  50% (291/582)
+2026-04-18T17:55:37.7153709Z Receiving objects:  51% (297/582)
+2026-04-18T17:55:37.7154206Z Receiving objects:  52% (303/582)
+2026-04-18T17:55:37.7154710Z Receiving objects:  53% (309/582)
+2026-04-18T17:55:37.7164229Z Receiving objects:  54% (315/582)
+2026-04-18T17:55:37.7164975Z Receiving objects:  55% (321/582)
+2026-04-18T17:55:37.7166228Z Receiving objects:  56% (326/582)
+2026-04-18T17:55:37.7167117Z Receiving objects:  57% (332/582)
+2026-04-18T17:55:37.7168012Z Receiving objects:  58% (338/582)
+2026-04-18T17:55:37.7168764Z Receiving objects:  59% (344/582)
+2026-04-18T17:55:37.7169516Z Receiving objects:  60% (350/582)
+2026-04-18T17:55:37.7170398Z Receiving objects:  61% (356/582)
+2026-04-18T17:55:37.7171225Z Receiving objects:  62% (361/582)
+2026-04-18T17:55:37.7172194Z Receiving objects:  63% (367/582)
+2026-04-18T17:55:37.7172713Z Receiving objects:  64% (373/582)
+2026-04-18T17:55:37.7173190Z Receiving objects:  65% (379/582)
+2026-04-18T17:55:37.7173674Z Receiving objects:  66% (385/582)
+2026-04-18T17:55:37.7174182Z Receiving objects:  67% (390/582)
+2026-04-18T17:55:37.7175135Z Receiving objects:  68% (396/582)
+2026-04-18T17:55:37.7176226Z Receiving objects:  69% (402/582)
+2026-04-18T17:55:37.7177080Z Receiving objects:  70% (408/582)
+2026-04-18T17:55:37.7177941Z Receiving objects:  71% (414/582)
+2026-04-18T17:55:37.7178814Z Receiving objects:  72% (420/582)
+2026-04-18T17:55:37.7179581Z Receiving objects:  73% (425/582)
+2026-04-18T17:55:37.7180386Z Receiving objects:  74% (431/582)
+2026-04-18T17:55:37.7181139Z Receiving objects:  75% (437/582)
+2026-04-18T17:55:37.7181628Z Receiving objects:  76% (443/582)
+2026-04-18T17:55:37.7182209Z Receiving objects:  77% (449/582)
+2026-04-18T17:55:37.7182700Z Receiving objects:  78% (454/582)
+2026-04-18T17:55:37.7183185Z Receiving objects:  79% (460/582)
+2026-04-18T17:55:37.7183685Z Receiving objects:  80% (466/582)
+2026-04-18T17:55:37.7184167Z Receiving objects:  81% (472/582)
+2026-04-18T17:55:37.7241042Z Receiving objects:  82% (478/582)
+2026-04-18T17:55:37.7309246Z Receiving objects:  83% (484/582)
+2026-04-18T17:55:37.7320616Z Receiving objects:  84% (489/582)
+2026-04-18T17:55:37.7352810Z Receiving objects:  85% (495/582)
+2026-04-18T17:55:37.7354276Z remote: Total 582 (delta 81), reused 103 (delta 42), pack-reused 437 (from 1)        
+2026-04-18T17:55:37.7355854Z Receiving objects:  86% (501/582)
+2026-04-18T17:55:37.7356804Z Receiving objects:  87% (507/582)
+2026-04-18T17:55:37.7357683Z Receiving objects:  88% (513/582)
+2026-04-18T17:55:37.7358701Z Receiving objects:  89% (518/582)
+2026-04-18T17:55:37.7359705Z Receiving objects:  90% (524/582)
+2026-04-18T17:55:37.7360653Z Receiving objects:  91% (530/582)
+2026-04-18T17:55:37.7361583Z Receiving objects:  92% (536/582)
+2026-04-18T17:55:37.7362582Z Receiving objects:  93% (542/582)
+2026-04-18T17:55:37.7363546Z Receiving objects:  94% (548/582)
+2026-04-18T17:55:37.7364550Z Receiving objects:  95% (553/582)
+2026-04-18T17:55:37.7365558Z Receiving objects:  96% (559/582)
+2026-04-18T17:55:37.7366562Z Receiving objects:  97% (565/582)
+2026-04-18T17:55:37.7367557Z Receiving objects:  98% (571/582)
+2026-04-18T17:55:37.7368640Z Receiving objects:  99% (577/582)
+2026-04-18T17:55:37.7369660Z Receiving objects: 100% (582/582)
+2026-04-18T17:55:37.7370907Z Receiving objects: 100% (582/582), 258.20 KiB | 6.45 MiB/s, done.
+2026-04-18T17:55:37.7372617Z Resolving deltas:   0% (0/313)
+2026-04-18T17:55:37.7373448Z Resolving deltas:   1% (4/313)
+2026-04-18T17:55:37.7374304Z Resolving deltas:   2% (7/313)
+2026-04-18T17:55:37.7375191Z Resolving deltas:   3% (10/313)
+2026-04-18T17:55:37.7376107Z Resolving deltas:   4% (13/313)
+2026-04-18T17:55:37.7377128Z Resolving deltas:   5% (16/313)
+2026-04-18T17:55:37.7377901Z Resolving deltas:   6% (19/313)
+2026-04-18T17:55:37.7378783Z Resolving deltas:   7% (22/313)
+2026-04-18T17:55:37.7382269Z Resolving deltas:   8% (26/313)
+2026-04-18T17:55:37.7384731Z Resolving deltas:   9% (29/313)
+2026-04-18T17:55:37.7385823Z Resolving deltas:  10% (32/313)
+2026-04-18T17:55:37.7387271Z Resolving deltas:  11% (35/313)
+2026-04-18T17:55:37.7388230Z Resolving deltas:  12% (38/313)
+2026-04-18T17:55:37.7395964Z Resolving deltas:  13% (41/313)
+2026-04-18T17:55:37.7396941Z Resolving deltas:  14% (44/313)
+2026-04-18T17:55:37.7397817Z Resolving deltas:  15% (47/313)
+2026-04-18T17:55:37.7398711Z Resolving deltas:  16% (51/313)
+2026-04-18T17:55:37.7399651Z Resolving deltas:  17% (54/313)
+2026-04-18T17:55:37.7400453Z Resolving deltas:  18% (59/313)
+2026-04-18T17:55:37.7401382Z Resolving deltas:  19% (60/313)
+2026-04-18T17:55:37.7402435Z Resolving deltas:  20% (63/313)
+2026-04-18T17:55:37.7403280Z Resolving deltas:  21% (66/313)
+2026-04-18T17:55:37.7404110Z Resolving deltas:  22% (69/313)
+2026-04-18T17:55:37.7404958Z Resolving deltas:  23% (72/313)
+2026-04-18T17:55:37.7405828Z Resolving deltas:  24% (76/313)
+2026-04-18T17:55:37.7406650Z Resolving deltas:  25% (79/313)
+2026-04-18T17:55:37.7407532Z Resolving deltas:  26% (82/313)
+2026-04-18T17:55:37.7408378Z Resolving deltas:  27% (85/313)
+2026-04-18T17:55:37.7409243Z Resolving deltas:  28% (88/313)
+2026-04-18T17:55:37.7410094Z Resolving deltas:  29% (91/313)
+2026-04-18T17:55:37.7411198Z Resolving deltas:  30% (94/313)
+2026-04-18T17:55:37.7412254Z Resolving deltas:  31% (98/313)
+2026-04-18T17:55:37.7413106Z Resolving deltas:  32% (101/313)
+2026-04-18T17:55:37.7414001Z Resolving deltas:  33% (104/313)
+2026-04-18T17:55:37.7415013Z Resolving deltas:  34% (107/313)
+2026-04-18T17:55:37.7415869Z Resolving deltas:  35% (110/313)
+2026-04-18T17:55:37.7416751Z Resolving deltas:  36% (113/313)
+2026-04-18T17:55:37.7417641Z Resolving deltas:  37% (116/313)
+2026-04-18T17:55:37.7418525Z Resolving deltas:  38% (119/313)
+2026-04-18T17:55:37.7419369Z Resolving deltas:  39% (124/313)
+2026-04-18T17:55:37.7420276Z Resolving deltas:  40% (126/313)
+2026-04-18T17:55:37.7421177Z Resolving deltas:  41% (129/313)
+2026-04-18T17:55:37.7422172Z Resolving deltas:  42% (132/313)
+2026-04-18T17:55:37.7422908Z Resolving deltas:  43% (135/313)
+2026-04-18T17:55:37.7423688Z Resolving deltas:  44% (138/313)
+2026-04-18T17:55:37.7424570Z Resolving deltas:  45% (141/313)
+2026-04-18T17:55:37.7425474Z Resolving deltas:  46% (144/313)
+2026-04-18T17:55:37.7426295Z Resolving deltas:  47% (148/313)
+2026-04-18T17:55:37.7427256Z Resolving deltas:  48% (151/313)
+2026-04-18T17:55:37.7428127Z Resolving deltas:  49% (154/313)
+2026-04-18T17:55:37.7428973Z Resolving deltas:  50% (157/313)
+2026-04-18T17:55:37.7429806Z Resolving deltas:  51% (160/313)
+2026-04-18T17:55:37.7430666Z Resolving deltas:  52% (163/313)
+2026-04-18T17:55:37.7431554Z Resolving deltas:  53% (166/313)
+2026-04-18T17:55:37.7432605Z Resolving deltas:  54% (170/313)
+2026-04-18T17:55:37.7433507Z Resolving deltas:  55% (173/313)
+2026-04-18T17:55:37.7434346Z Resolving deltas:  56% (176/313)
+2026-04-18T17:55:37.7435178Z Resolving deltas:  57% (179/313)
+2026-04-18T17:55:37.7436028Z Resolving deltas:  58% (182/313)
+2026-04-18T17:55:37.7436883Z Resolving deltas:  59% (185/313)
+2026-04-18T17:55:37.7437739Z Resolving deltas:  60% (188/313)
+2026-04-18T17:55:37.7438573Z Resolving deltas:  61% (192/313)
+2026-04-18T17:55:37.7439427Z Resolving deltas:  62% (195/313)
+2026-04-18T17:55:37.7440295Z Resolving deltas:  63% (198/313)
+2026-04-18T17:55:37.7441288Z Resolving deltas:  64% (201/313)
+2026-04-18T17:55:37.7442541Z Resolving deltas:  65% (204/313)
+2026-04-18T17:55:37.7443733Z Resolving deltas:  66% (207/313)
+2026-04-18T17:55:37.7444931Z Resolving deltas:  67% (210/313)
+2026-04-18T17:55:37.7445847Z Resolving deltas:  68% (213/313)
+2026-04-18T17:55:37.7446767Z Resolving deltas:  69% (216/313)
+2026-04-18T17:55:37.7447671Z Resolving deltas:  70% (220/313)
+2026-04-18T17:55:37.7448499Z Resolving deltas:  71% (223/313)
+2026-04-18T17:55:37.7449298Z Resolving deltas:  72% (226/313)
+2026-04-18T17:55:37.7450117Z Resolving deltas:  73% (229/313)
+2026-04-18T17:55:37.7450972Z Resolving deltas:  74% (232/313)
+2026-04-18T17:55:37.7451734Z Resolving deltas:  75% (235/313)
+2026-04-18T17:55:37.7452723Z Resolving deltas:  76% (238/313)
+2026-04-18T17:55:37.7453638Z Resolving deltas:  77% (242/313)
+2026-04-18T17:55:37.7454549Z Resolving deltas:  78% (245/313)
+2026-04-18T17:55:37.7455470Z Resolving deltas:  79% (248/313)
+2026-04-18T17:55:37.7456388Z Resolving deltas:  80% (251/313)
+2026-04-18T17:55:37.7457231Z Resolving deltas:  81% (254/313)
+2026-04-18T17:55:37.7458055Z Resolving deltas:  82% (257/313)
+2026-04-18T17:55:37.7458842Z Resolving deltas:  83% (260/313)
+2026-04-18T17:55:37.7459682Z Resolving deltas:  84% (263/313)
+2026-04-18T17:55:37.7460480Z Resolving deltas:  85% (267/313)
+2026-04-18T17:55:37.7461333Z Resolving deltas:  86% (270/313)
+2026-04-18T17:55:37.7462369Z Resolving deltas:  87% (273/313)
+2026-04-18T17:55:37.7463292Z Resolving deltas:  88% (276/313)
+2026-04-18T17:55:37.7464218Z Resolving deltas:  89% (279/313)
+2026-04-18T17:55:37.7466660Z Resolving deltas:  90% (283/313)
+2026-04-18T17:55:37.7467989Z Resolving deltas:  91% (285/313)
+2026-04-18T17:55:37.7472506Z Resolving deltas:  92% (288/313)
+2026-04-18T17:55:37.7474472Z Resolving deltas:  93% (292/313)
+2026-04-18T17:55:37.7475400Z Resolving deltas:  94% (295/313)
+2026-04-18T17:55:37.7480333Z Resolving deltas:  95% (298/313)
+2026-04-18T17:55:37.7481156Z Resolving deltas:  96% (301/313)
+2026-04-18T17:55:37.7482462Z Resolving deltas:  97% (304/313)
+2026-04-18T17:55:37.7486657Z Resolving deltas:  98% (307/313)
+2026-04-18T17:55:37.7489184Z Resolving deltas:  99% (310/313)
+2026-04-18T17:55:37.7490091Z Resolving deltas: 100% (313/313)
+2026-04-18T17:55:37.7492996Z Resolving deltas: 100% (313/313), done.
+2026-04-18T17:55:37.7561556Z From https://github.com/anuradhabudhar214-tech/lead_agent
+2026-04-18T17:55:37.7562865Z  * [new branch]      main       -> origin/main
+2026-04-18T17:55:37.7590122Z [command]/usr/bin/git branch --list --remote origin/main
+2026-04-18T17:55:37.7606142Z   origin/main
+2026-04-18T17:55:37.7612665Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-04-18T17:55:37.7627028Z d8f41f347294d12eb338b0617879546c4188f92f
+2026-04-18T17:55:37.7630742Z ##[endgroup]
+2026-04-18T17:55:37.7631720Z ##[group]Determining the checkout info
+2026-04-18T17:55:37.7632665Z ##[endgroup]
+2026-04-18T17:55:37.7633352Z ##[group]Checking out the ref
+2026-04-18T17:55:37.7635169Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-04-18T17:55:37.7693384Z Switched to a new branch 'main'
+2026-04-18T17:55:37.7694958Z branch 'main' set up to track 'origin/main'.
+2026-04-18T17:55:37.7699777Z ##[endgroup]
+2026-04-18T17:55:37.7729316Z [command]/usr/bin/git log -1 --format='%H'
+2026-04-18T17:55:37.7745777Z 'd8f41f347294d12eb338b0617879546c4188f92f'
+2026-04-18T17:55:37.7949189Z ##[group]Run actions/setup-python@v4
+2026-04-18T17:55:37.7949750Z with:
+2026-04-18T17:55:37.7950176Z   python-version: 3.10
+2026-04-18T17:55:37.7950657Z   check-latest: false
+2026-04-18T17:55:37.7951253Z   token: ***
+2026-04-18T17:55:37.7951644Z   update-environment: true
+2026-04-18T17:55:37.7952325Z   allow-prereleases: false
+2026-04-18T17:55:37.7952754Z ##[endgroup]
+2026-04-18T17:55:37.9646531Z ##[group]Installed versions
+2026-04-18T17:55:37.9733051Z Successfully set up CPython (3.10.20)
+2026-04-18T17:55:37.9734118Z ##[endgroup]
+2026-04-18T17:55:37.9836249Z ##[group]Run pip install -r requirements.txt
+2026-04-18T17:55:37.9836970Z [36;1mpip install -r requirements.txt[0m
+2026-04-18T17:55:37.9866145Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:55:37.9866858Z env:
+2026-04-18T17:55:37.9867378Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:37.9868176Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:55:37.9868974Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:37.9869693Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:37.9870410Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:37.9871130Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:55:37.9871761Z ##[endgroup]
+2026-04-18T17:55:38.7185111Z Collecting supabase (from -r requirements.txt (line 1))
+2026-04-18T17:55:38.7751221Z   Downloading supabase-2.28.3-py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T17:55:38.8019629Z Collecting groq (from -r requirements.txt (line 2))
+2026-04-18T17:55:38.8055095Z   Downloading groq-1.2.0-py3-none-any.whl.metadata (16 kB)
+2026-04-18T17:55:38.8558939Z Collecting requests (from -r requirements.txt (line 3))
+2026-04-18T17:55:38.8602378Z   Downloading requests-2.33.1-py3-none-any.whl.metadata (4.8 kB)
+2026-04-18T17:55:38.9233316Z Collecting fastapi (from -r requirements.txt (line 4))
+2026-04-18T17:55:38.9267700Z   Downloading fastapi-0.136.0-py3-none-any.whl.metadata (28 kB)
+2026-04-18T17:55:38.9678371Z Collecting uvicorn (from -r requirements.txt (line 5))
+2026-04-18T17:55:38.9714386Z   Downloading uvicorn-0.44.0-py3-none-any.whl.metadata (6.7 kB)
+2026-04-18T17:55:39.0003171Z Collecting python-multipart (from -r requirements.txt (line 6))
+2026-04-18T17:55:39.0087291Z   Downloading python_multipart-0.0.26-py3-none-any.whl.metadata (2.1 kB)
+2026-04-18T17:55:39.0391420Z Collecting python-dotenv (from -r requirements.txt (line 7))
+2026-04-18T17:55:39.0528570Z   Downloading python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+2026-04-18T17:55:39.0730371Z Collecting google-generativeai (from -r requirements.txt (line 8))
+2026-04-18T17:55:39.0785883Z   Downloading google_generativeai-0.8.6-py3-none-any.whl.metadata (3.9 kB)
+2026-04-18T17:55:39.1106281Z Collecting google-genai (from -r requirements.txt (line 9))
+2026-04-18T17:55:39.1143539Z   Downloading google_genai-1.73.1-py3-none-any.whl.metadata (52 kB)
+2026-04-18T17:55:39.1432606Z Collecting realtime==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.1467709Z   Downloading realtime-2.28.3-py3-none-any.whl.metadata (7.0 kB)
+2026-04-18T17:55:39.1721006Z Collecting supabase-functions==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.1772307Z   Downloading supabase_functions-2.28.3-py3-none-any.whl.metadata (2.4 kB)
+2026-04-18T17:55:39.1976482Z Collecting storage3==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.2011658Z   Downloading storage3-2.28.3-py3-none-any.whl.metadata (2.1 kB)
+2026-04-18T17:55:39.2192353Z Collecting supabase-auth==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.2228162Z   Downloading supabase_auth-2.28.3-py3-none-any.whl.metadata (6.4 kB)
+2026-04-18T17:55:39.2429751Z Collecting postgrest==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.2465586Z   Downloading postgrest-2.28.3-py3-none-any.whl.metadata (3.4 kB)
+2026-04-18T17:55:39.2649289Z Collecting httpx<0.29,>=0.26 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.2685427Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2026-04-18T17:55:39.5381543Z Collecting yarl>=1.22.0 (from supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.5419854Z   Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+2026-04-18T17:55:39.5584513Z Collecting deprecation>=2.1.0 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.5618717Z   Downloading deprecation-2.1.0-py2.py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T17:55:39.6988134Z Collecting pydantic<3.0,>=1.9 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.7026476Z   Downloading pydantic-2.13.2-py3-none-any.whl.metadata (108 kB)
+2026-04-18T17:55:39.7195064Z Collecting strenum>=0.4.9 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.7230619Z   Downloading StrEnum-0.4.15-py3-none-any.whl.metadata (5.3 kB)
+2026-04-18T17:55:39.7476238Z Collecting typing-extensions>=4.14.0 (from realtime==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.7511538Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+2026-04-18T17:55:39.8405817Z Collecting websockets<16,>=11 (from realtime==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.8604150Z   Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2026-04-18T17:55:39.9548554Z Collecting pyiceberg>=0.10.0 (from storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:39.9593543Z   Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.8 kB)
+2026-04-18T17:55:39.9987288Z Collecting pyjwt>=2.10.1 (from pyjwt[crypto]>=2.10.1->supabase-auth==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.0022662Z   Downloading pyjwt-2.12.1-py3-none-any.whl.metadata (4.1 kB)
+2026-04-18T17:55:40.0257146Z Collecting anyio (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.0291480Z   Downloading anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+2026-04-18T17:55:40.0498312Z Collecting certifi (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.0536432Z   Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+2026-04-18T17:55:40.0707212Z Collecting httpcore==1.* (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.0744616Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2026-04-18T17:55:40.0891183Z Collecting idna (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.0926288Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T17:55:40.1046640Z Collecting h11>=0.16 (from httpcore==1.*->httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.1079750Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2026-04-18T17:55:40.1260586Z Collecting h2<5,>=3 (from httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.1295790Z   Downloading h2-4.3.0-py3-none-any.whl.metadata (5.1 kB)
+2026-04-18T17:55:40.1439968Z Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.1474426Z   Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+2026-04-18T17:55:40.1592921Z Collecting hpack<5,>=4.1 (from h2<5,>=3->httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.1626164Z   Downloading hpack-4.1.0-py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T17:55:40.1741562Z Collecting annotated-types>=0.6.0 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.1775823Z   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+2026-04-18T17:55:40.9242327Z Collecting pydantic-core==2.46.2 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.9290135Z   Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+2026-04-18T17:55:40.9613069Z Collecting typing-inspection>=0.4.2 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:40.9652975Z   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T17:55:41.0395446Z Collecting distro<2,>=1.7.0 (from groq->-r requirements.txt (line 2))
+2026-04-18T17:55:41.0432860Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+2026-04-18T17:55:41.0536875Z Collecting sniffio (from groq->-r requirements.txt (line 2))
+2026-04-18T17:55:41.0567882Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+2026-04-18T17:55:41.0733177Z Collecting exceptiongroup>=1.0.2 (from anyio->httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:41.0765836Z   Downloading exceptiongroup-1.3.1-py3-none-any.whl.metadata (6.7 kB)
+2026-04-18T17:55:41.1893774Z Collecting charset_normalizer<4,>=2 (from requests->-r requirements.txt (line 3))
+2026-04-18T17:55:41.1941545Z   Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+2026-04-18T17:55:41.2226528Z Collecting urllib3<3,>=1.26 (from requests->-r requirements.txt (line 3))
+2026-04-18T17:55:41.2259931Z   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+2026-04-18T17:55:41.2570729Z Collecting starlette>=0.46.0 (from fastapi->-r requirements.txt (line 4))
+2026-04-18T17:55:41.2610181Z   Downloading starlette-1.0.0-py3-none-any.whl.metadata (6.3 kB)
+2026-04-18T17:55:41.2835057Z Collecting annotated-doc>=0.0.2 (from fastapi->-r requirements.txt (line 4))
+2026-04-18T17:55:41.2877237Z   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+2026-04-18T17:55:41.3069342Z Collecting click>=7.0 (from uvicorn->-r requirements.txt (line 5))
+2026-04-18T17:55:41.3105688Z   Downloading click-8.3.2-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T17:55:41.3315702Z Collecting google-ai-generativelanguage==0.6.15 (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.3353377Z   Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl.metadata (5.7 kB)
+2026-04-18T17:55:41.4224572Z Collecting google-api-core (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.4289578Z   Downloading google_api_core-2.30.3-py3-none-any.whl.metadata (3.1 kB)
+2026-04-18T17:55:41.4819895Z Collecting google-api-python-client (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.4863225Z   Downloading google_api_python_client-2.194.0-py3-none-any.whl.metadata (7.0 kB)
+2026-04-18T17:55:41.5193088Z Collecting google-auth>=2.15.0 (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.5240544Z   Downloading google_auth-2.49.2-py3-none-any.whl.metadata (6.2 kB)
+2026-04-18T17:55:41.6882482Z Collecting protobuf (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.6919518Z   Downloading protobuf-7.34.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+2026-04-18T17:55:41.7259377Z Collecting tqdm (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.7290843Z   Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+2026-04-18T17:55:41.8260617Z Collecting proto-plus<2.0.0dev,>=1.22.3 (from google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.8294771Z   Downloading proto_plus-1.27.2-py3-none-any.whl.metadata (2.2 kB)
+2026-04-18T17:55:41.8631087Z Collecting protobuf (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.8671445Z   Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl.metadata (592 bytes)
+2026-04-18T17:55:41.8851229Z Collecting googleapis-common-protos<2.0.0,>=1.63.2 (from google-api-core->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:41.8884456Z   Downloading googleapis_common_protos-1.74.0-py3-none-any.whl.metadata (9.2 kB)
+2026-04-18T17:55:42.4914465Z Collecting grpcio<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:42.4953078Z   Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+2026-04-18T17:55:42.5311659Z Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:42.5377810Z   Downloading grpcio_status-1.80.0-py3-none-any.whl.metadata (1.3 kB)
+2026-04-18T17:55:42.5576688Z Collecting pyasn1-modules>=0.2.1 (from google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:42.5612705Z   Downloading pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+2026-04-18T17:55:42.7411737Z Collecting cryptography>=38.0.3 (from google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:42.7447634Z   Downloading cryptography-46.0.7-cp38-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+2026-04-18T17:55:42.7663553Z INFO: pip is looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+2026-04-18T17:55:42.7669587Z Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:42.7708873Z   Downloading grpcio_status-1.78.0-py3-none-any.whl.metadata (1.3 kB)
+2026-04-18T17:55:42.7838640Z   Downloading grpcio_status-1.76.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.7873220Z   Downloading grpcio_status-1.75.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.7934074Z   Downloading grpcio_status-1.75.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.7999356Z   Downloading grpcio_status-1.74.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.8064406Z   Downloading grpcio_status-1.73.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.8213905Z   Downloading grpcio_status-1.73.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.8245162Z INFO: pip is still looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+2026-04-18T17:55:42.8282952Z   Downloading grpcio_status-1.72.2-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.8348172Z   Downloading grpcio_status-1.72.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.8409627Z   Downloading grpcio_status-1.71.2-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T17:55:42.9001670Z Collecting tenacity<9.2.0,>=8.2.3 (from google-genai->-r requirements.txt (line 9))
+2026-04-18T17:55:42.9039700Z   Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+2026-04-18T17:55:43.0901002Z Collecting cffi>=2.0.0 (from cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:43.0938848Z   Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+2026-04-18T17:55:43.1102230Z Collecting pycparser (from cffi>=2.0.0->cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:43.1137700Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+2026-04-18T17:55:43.1452851Z Collecting packaging (from deprecation>=2.1.0->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.1496698Z   Downloading packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
+2026-04-18T17:55:43.1875978Z Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:43.1913789Z   Downloading pyasn1-0.6.3-py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T17:55:43.2534453Z Collecting mmh3<6.0.0,>=4.0.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.2579226Z   Downloading mmh3-5.2.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (14 kB)
+2026-04-18T17:55:43.3181741Z Collecting rich<15.0.0,>=10.11.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.3220255Z   Downloading rich-14.3.4-py3-none-any.whl.metadata (18 kB)
+2026-04-18T17:55:43.3399975Z Collecting strictyaml<2.0.0,>=1.7.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.3444714Z   Downloading strictyaml-1.7.3-py3-none-any.whl.metadata (11 kB)
+2026-04-18T17:55:43.3812910Z Collecting fsspec>=2023.1.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.3848261Z   Downloading fsspec-2026.3.0-py3-none-any.whl.metadata (10 kB)
+2026-04-18T17:55:43.4425187Z Collecting pyparsing<4.0.0,>=3.1.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.4472842Z   Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+2026-04-18T17:55:43.5186321Z Collecting pyroaring<2.0.0,>=1.0.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.5248847Z   Downloading pyroaring-1.0.4-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (11 kB)
+2026-04-18T17:55:43.5446649Z Collecting cachetools<7.0,>=5.5 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.5482078Z   Downloading cachetools-6.2.6-py3-none-any.whl.metadata (5.6 kB)
+2026-04-18T17:55:43.6302835Z Collecting zstandard<1.0.0,>=0.13.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.6348684Z   Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+2026-04-18T17:55:43.6708017Z Collecting markdown-it-py>=2.2.0 (from rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.6743225Z   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+2026-04-18T17:55:43.6952739Z Collecting pygments<3.0.0,>=2.13.0 (from rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.6984238Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+2026-04-18T17:55:43.7127655Z Collecting python-dateutil>=2.6.0 (from strictyaml<2.0.0,>=1.7.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.7160627Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T17:55:43.7669612Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.7707443Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+2026-04-18T17:55:43.8040263Z Collecting six>=1.5 (from python-dateutil>=2.6.0->strictyaml<2.0.0,>=1.7.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:43.8077159Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2026-04-18T17:55:44.0874609Z Collecting multidict>=4.0 (from yarl>=1.22.0->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:44.0913382Z   Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+2026-04-18T17:55:44.1457666Z Collecting propcache>=0.2.1 (from yarl>=1.22.0->supabase->-r requirements.txt (line 1))
+2026-04-18T17:55:44.1495389Z   Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+2026-04-18T17:55:44.1769729Z Collecting httplib2<1.0.0,>=0.19.0 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:44.1834695Z   Downloading httplib2-0.31.2-py3-none-any.whl.metadata (2.2 kB)
+2026-04-18T17:55:44.1937464Z Collecting google-auth-httplib2<1.0.0,>=0.2.0 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:44.1977122Z   Downloading google_auth_httplib2-0.3.1-py3-none-any.whl.metadata (3.0 kB)
+2026-04-18T17:55:44.2090822Z Collecting uritemplate<5,>=3.0.1 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T17:55:44.2122701Z   Downloading uritemplate-4.2.0-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T17:55:44.3322909Z Downloading supabase-2.28.3-py3-none-any.whl (16 kB)
+2026-04-18T17:55:44.3375011Z Downloading postgrest-2.28.3-py3-none-any.whl (21 kB)
+2026-04-18T17:55:44.3422554Z Downloading realtime-2.28.3-py3-none-any.whl (22 kB)
+2026-04-18T17:55:44.3471588Z Downloading storage3-2.28.3-py3-none-any.whl (28 kB)
+2026-04-18T17:55:44.3526208Z Downloading supabase_auth-2.28.3-py3-none-any.whl (48 kB)
+2026-04-18T17:55:44.3575621Z Downloading supabase_functions-2.28.3-py3-none-any.whl (8.8 kB)
+2026-04-18T17:55:44.3623276Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2026-04-18T17:55:44.3674514Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2026-04-18T17:55:44.3722569Z Downloading h2-4.3.0-py3-none-any.whl (61 kB)
+2026-04-18T17:55:44.3772011Z Downloading hpack-4.1.0-py3-none-any.whl (34 kB)
+2026-04-18T17:55:44.3821028Z Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+2026-04-18T17:55:44.3870118Z Downloading pydantic-2.13.2-py3-none-any.whl (471 kB)
+2026-04-18T17:55:44.3972546Z Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+2026-04-18T17:55:44.4202241Z    ââââââââââââââââââââââââââââââââââââââââ 2.1/2.1 MB 101.9 MB/s  0:00:00
+2026-04-18T17:55:44.4238694Z Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (181 kB)
+2026-04-18T17:55:44.4308627Z Downloading groq-1.2.0-py3-none-any.whl (142 kB)
+2026-04-18T17:55:44.4361608Z Downloading anyio-4.13.0-py3-none-any.whl (114 kB)
+2026-04-18T17:55:44.4411285Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+2026-04-18T17:55:44.4461536Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+2026-04-18T17:55:44.4508754Z Downloading requests-2.33.1-py3-none-any.whl (64 kB)
+2026-04-18T17:55:44.4562240Z Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+2026-04-18T17:55:44.4622639Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+2026-04-18T17:55:44.4687720Z Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+2026-04-18T17:55:44.4742212Z Downloading fastapi-0.136.0-py3-none-any.whl (117 kB)
+2026-04-18T17:55:44.4792782Z Downloading uvicorn-0.44.0-py3-none-any.whl (69 kB)
+2026-04-18T17:55:44.4845697Z Downloading python_multipart-0.0.26-py3-none-any.whl (28 kB)
+2026-04-18T17:55:44.4895266Z Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+2026-04-18T17:55:44.4944196Z Downloading google_generativeai-0.8.6-py3-none-any.whl (155 kB)
+2026-04-18T17:55:44.4997635Z Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl (1.3 MB)
+2026-04-18T17:55:44.5123544Z    ââââââââââââââââââââââââââââââââââââââââ 1.3/1.3 MB 120.5 MB/s  0:00:00
+2026-04-18T17:55:44.5161519Z Downloading google_api_core-2.30.3-py3-none-any.whl (173 kB)
+2026-04-18T17:55:44.5217090Z Downloading google_auth-2.49.2-py3-none-any.whl (240 kB)
+2026-04-18T17:55:44.5273308Z Downloading googleapis_common_protos-1.74.0-py3-none-any.whl (300 kB)
+2026-04-18T17:55:44.5340992Z Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.8 MB)
+2026-04-18T17:55:44.5657693Z    ââââââââââââââââââââââââââââââââââââââââ 6.8/6.8 MB 237.3 MB/s  0:00:00
+2026-04-18T17:55:44.5703767Z Downloading grpcio_status-1.71.2-py3-none-any.whl (14 kB)
+2026-04-18T17:55:44.5767988Z Downloading proto_plus-1.27.2-py3-none-any.whl (50 kB)
+2026-04-18T17:55:44.5824147Z Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl (320 kB)
+2026-04-18T17:55:44.5881341Z Downloading google_genai-1.73.1-py3-none-any.whl (783 kB)
+2026-04-18T17:55:44.5937672Z    ââââââââââââââââââââââââââââââââââââââââ 783.6/783.6 kB 151.0 MB/s  0:00:00
+2026-04-18T17:55:44.5969017Z Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+2026-04-18T17:55:44.6018965Z Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+2026-04-18T17:55:44.6063408Z Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+2026-04-18T17:55:44.6109865Z Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+2026-04-18T17:55:44.6159899Z Downloading click-8.3.2-py3-none-any.whl (108 kB)
+2026-04-18T17:55:44.6213765Z Downloading cryptography-46.0.7-cp38-abi3-manylinux_2_34_x86_64.whl (4.4 MB)
+2026-04-18T17:55:44.6364184Z    ââââââââââââââââââââââââââââââââââââââââ 4.4/4.4 MB 342.5 MB/s  0:00:00
+2026-04-18T17:55:44.6406916Z Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+2026-04-18T17:55:44.6463678Z Downloading deprecation-2.1.0-py2.py3-none-any.whl (11 kB)
+2026-04-18T17:55:44.6515873Z Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+2026-04-18T17:55:44.6566332Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2026-04-18T17:55:44.6620383Z Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+2026-04-18T17:55:44.6677990Z Downloading pyasn1-0.6.3-py3-none-any.whl (83 kB)
+2026-04-18T17:55:44.6734394Z Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (705 kB)
+2026-04-18T17:55:44.6788216Z    ââââââââââââââââââââââââââââââââââââââââ 705.6/705.6 kB 146.7 MB/s  0:00:00
+2026-04-18T17:55:44.6821039Z Downloading cachetools-6.2.6-py3-none-any.whl (11 kB)
+2026-04-18T17:55:44.6872084Z Downloading mmh3-5.2.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (101 kB)
+2026-04-18T17:55:44.6922931Z Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+2026-04-18T17:55:44.6975602Z Downloading pyroaring-1.0.4-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (2.1 MB)
+2026-04-18T17:55:44.7097364Z    ââââââââââââââââââââââââââââââââââââââââ 2.1/2.1 MB 203.0 MB/s  0:00:00
+2026-04-18T17:55:44.7141193Z Downloading rich-14.3.4-py3-none-any.whl (310 kB)
+2026-04-18T17:55:44.7205901Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+2026-04-18T17:55:44.7269785Z    ââââââââââââââââââââââââââââââââââââââââ 1.2/1.2 MB 225.8 MB/s  0:00:00
+2026-04-18T17:55:44.7306261Z Downloading strictyaml-1.7.3-py3-none-any.whl (123 kB)
+2026-04-18T17:55:44.7365053Z Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+2026-04-18T17:55:44.7525073Z    ââââââââââââââââââââââââââââââââââââââââ 5.6/5.6 MB 389.3 MB/s  0:00:00
+2026-04-18T17:55:44.7561604Z Downloading fsspec-2026.3.0-py3-none-any.whl (202 kB)
+2026-04-18T17:55:44.7621445Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+2026-04-18T17:55:44.7671555Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+2026-04-18T17:55:44.7718217Z Downloading pyjwt-2.12.1-py3-none-any.whl (29 kB)
+2026-04-18T17:55:44.7769762Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2026-04-18T17:55:44.7825570Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-04-18T17:55:44.7885043Z Downloading starlette-1.0.0-py3-none-any.whl (72 kB)
+2026-04-18T17:55:44.7936568Z Downloading StrEnum-0.4.15-py3-none-any.whl (8.9 kB)
+2026-04-18T17:55:44.7983487Z Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+2026-04-18T17:55:44.8068532Z Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+2026-04-18T17:55:44.8122585Z Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+2026-04-18T17:55:44.8178492Z Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (196 kB)
+2026-04-18T17:55:44.8238176Z Downloading google_api_python_client-2.194.0-py3-none-any.whl (15.0 MB)
+2026-04-18T17:55:44.8647699Z    ââââââââââââââââââââââââââââââââââââââââ 15.0/15.0 MB 384.5 MB/s  0:00:00
+2026-04-18T17:55:44.8684891Z Downloading google_auth_httplib2-0.3.1-py3-none-any.whl (9.5 kB)
+2026-04-18T17:55:44.8737609Z Downloading httplib2-0.31.2-py3-none-any.whl (91 kB)
+2026-04-18T17:55:44.8795116Z Downloading uritemplate-4.2.0-py3-none-any.whl (11 kB)
+2026-04-18T17:55:44.8844347Z Downloading packaging-26.1-py3-none-any.whl (95 kB)
+2026-04-18T17:55:44.8897820Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-04-18T17:55:44.8949122Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+2026-04-18T17:55:44.8999952Z Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+2026-04-18T17:55:45.1529402Z Installing collected packages: strenum, pyroaring, zstandard, websockets, urllib3, uritemplate, typing-extensions, tqdm, tenacity, sniffio, six, python-multipart, python-dotenv, pyparsing, pygments, pycparser, pyasn1, protobuf, propcache, packaging, mmh3, mdurl, idna, hyperframe, hpack, h11, fsspec, distro, click, charset_normalizer, certifi, cachetools, annotated-types, annotated-doc, uvicorn, typing-inspection, requests, python-dateutil, pyjwt, pydantic-core, pyasn1-modules, proto-plus, multidict, markdown-it-py, httplib2, httpcore, h2, grpcio, googleapis-common-protos, exceptiongroup, deprecation, cffi, yarl, strictyaml, rich, pydantic, grpcio-status, cryptography, anyio, starlette, realtime, pyiceberg, httpx, google-auth, groq, google-auth-httplib2, google-api-core, fastapi, supabase-functions, supabase-auth, storage3, postgrest, google-genai, google-api-python-client, supabase, google-ai-generativelanguage, google-generativeai
+2026-04-18T17:55:50.7247799Z 
+2026-04-18T17:55:50.7326097Z Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.13.0 cachetools-6.2.6 certifi-2026.2.25 cffi-2.0.0 charset_normalizer-3.4.7 click-8.3.2 cryptography-46.0.7 deprecation-2.1.0 distro-1.9.0 exceptiongroup-1.3.1 fastapi-0.136.0 fsspec-2026.3.0 google-ai-generativelanguage-0.6.15 google-api-core-2.30.3 google-api-python-client-2.194.0 google-auth-2.49.2 google-auth-httplib2-0.3.1 google-genai-1.73.1 google-generativeai-0.8.6 googleapis-common-protos-1.74.0 groq-1.2.0 grpcio-1.80.0 grpcio-status-1.71.2 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httplib2-0.31.2 httpx-0.28.1 hyperframe-6.1.0 idna-3.11 markdown-it-py-4.0.0 mdurl-0.1.2 mmh3-5.2.1 multidict-6.7.1 packaging-26.1 postgrest-2.28.3 propcache-0.4.1 proto-plus-1.27.2 protobuf-5.29.6 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-3.0 pydantic-2.13.2 pydantic-core-2.46.2 pygments-2.20.0 pyiceberg-0.11.1 pyjwt-2.12.1 pyparsing-3.3.2 pyroaring-1.0.4 python-dateutil-2.9.0.post0 python-dotenv-1.2.2 python-multipart-0.0.26 realtime-2.28.3 requests-2.33.1 rich-14.3.4 six-1.17.0 sniffio-1.3.1 starlette-1.0.0 storage3-2.28.3 strenum-0.4.15 strictyaml-1.7.3 supabase-2.28.3 supabase-auth-2.28.3 supabase-functions-2.28.3 tenacity-9.1.4 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 uritemplate-4.2.0 urllib3-2.6.3 uvicorn-0.44.0 websockets-15.0.1 yarl-1.23.0 zstandard-0.25.0
+2026-04-18T17:55:51.5673827Z ##[group]Run python crunchbase_tracker_cloud.py
+2026-04-18T17:55:51.5674210Z [36;1mpython crunchbase_tracker_cloud.py[0m
+2026-04-18T17:55:51.5688222Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:55:51.5688481Z env:
+2026-04-18T17:55:51.5688750Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:51.5689171Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:55:51.5689596Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:51.5689992Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:51.5690358Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:55:51.5690724Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:55:51.5691396Z   SUPABASE_URL: ***
+2026-04-18T17:55:51.5691706Z   SUPABASE_KEY: ***
+2026-04-18T17:55:51.5692202Z   GROQ_API_KEYS: ***
+2026-04-18T17:55:51.5692991Z   SERPER_API_KEYS: ***
+2026-04-18T17:55:51.5693267Z   SERPER_API_KEY: 
+2026-04-18T17:55:51.5693717Z   GEMINI_API_KEYS: ***
+2026-04-18T17:55:51.5693932Z   GEMINI_API_KEY: 
+2026-04-18T17:55:51.5694168Z   SENDER_EMAIL: ***
+2026-04-18T17:55:51.5694392Z   SENDER_PASSWORD: ***
+2026-04-18T17:55:51.5694629Z   RECIPIENT_EMAIL: ***
+2026-04-18T17:55:51.5694855Z   SMTP_SERVER: ***
+2026-04-18T17:55:51.5695081Z   SMTP_PORT: ***
+2026-04-18T17:55:51.5695280Z ##[endgroup]
+2026-04-18T17:55:53.6614887Z 2026-04-18 17:55:53,661 - INFO - HTTP Request: GET ***/rest/v1/system_stats?select=status%2Clast_run_at&id=eq.1 "HTTP/2 200 OK"
+2026-04-18T17:55:53.8956501Z 2026-04-18 17:55:53,895 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=id "HTTP/2 200 OK"
+2026-04-18T17:55:53.8965303Z 2026-04-18 17:55:53,896 - INFO - ð°ï¸ DEEP RECONSTRUCTION: Scanning entire Git history for lost leads...
+2026-04-18T17:55:53.9744249Z 2026-04-18 17:55:53,974 - INFO - â¨ Reconstructed 51 unique companies from history. Syncing...
+2026-04-18T17:55:54.2311853Z 2026-04-18 17:55:54,230 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:54.4742965Z 2026-04-18 17:55:54,473 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:54.7176117Z 2026-04-18 17:55:54,717 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:54.9566351Z 2026-04-18 17:55:54,956 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:55:55.1864455Z 2026-04-18 17:55:55,186 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:55.4240898Z 2026-04-18 17:55:55,423 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:55.6629785Z 2026-04-18 17:55:55,662 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:55.8989874Z 2026-04-18 17:55:55,898 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:56.1541368Z 2026-04-18 17:55:56,153 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:56.4160051Z 2026-04-18 17:55:56,415 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:56.6621520Z 2026-04-18 17:55:56,661 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:56.8869857Z 2026-04-18 17:55:56,886 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:57.1157195Z 2026-04-18 17:55:57,115 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:57.3432172Z 2026-04-18 17:55:57,342 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:57.5720557Z 2026-04-18 17:55:57,571 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:57.8006174Z 2026-04-18 17:55:57,800 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:58.0329874Z 2026-04-18 17:55:58,032 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:58.2618744Z 2026-04-18 17:55:58,261 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:58.4894545Z 2026-04-18 17:55:58,489 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:58.7159147Z 2026-04-18 17:55:58,715 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:58.9399406Z 2026-04-18 17:55:58,939 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:59.1674395Z 2026-04-18 17:55:59,167 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:59.3953329Z 2026-04-18 17:55:59,394 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:59.6225176Z 2026-04-18 17:55:59,622 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:55:59.8578165Z 2026-04-18 17:55:59,857 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:00.0887636Z 2026-04-18 17:56:00,088 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:00.3362385Z 2026-04-18 17:56:00,335 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:00.5717563Z 2026-04-18 17:56:00,571 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:00.8044946Z 2026-04-18 17:56:00,804 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.0308290Z 2026-04-18 17:56:01,030 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.2708647Z 2026-04-18 17:56:01,270 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.5218745Z 2026-04-18 17:56:01,521 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:01.7731393Z 2026-04-18 17:56:01,772 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.0116693Z 2026-04-18 17:56:02,011 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:02.2478137Z 2026-04-18 17:56:02,247 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.4818507Z 2026-04-18 17:56:02,481 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:02.7205731Z 2026-04-18 17:56:02,720 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:02.9452766Z 2026-04-18 17:56:02,944 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.1724091Z 2026-04-18 17:56:03,172 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.4218148Z 2026-04-18 17:56:03,421 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.6504137Z 2026-04-18 17:56:03,650 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:03.8853137Z 2026-04-18 17:56:03,885 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.1159599Z 2026-04-18 17:56:04,115 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.3455038Z 2026-04-18 17:56:04,345 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.5688357Z 2026-04-18 17:56:04,568 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:04.8040495Z 2026-04-18 17:56:04,803 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:05.0388912Z 2026-04-18 17:56:05,038 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.2698685Z 2026-04-18 17:56:05,269 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.5005837Z 2026-04-18 17:56:05,500 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.7319123Z 2026-04-18 17:56:05,731 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T17:56:05.9641068Z 2026-04-18 17:56:05,963 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T17:56:05.9647478Z 2026-04-18 17:56:05,964 - INFO - ð DEEP RECONSTRUCTION COMPLETE: 51 leads restored!
+2026-04-18T17:56:05.9648880Z 2026-04-18 17:56:05,964 - INFO - ð ATOMIC VELOCITY: Scanning 10 niches to restore lead volume!
+2026-04-18T17:56:05.9649966Z 2026-04-18 17:56:05,964 - INFO - ð§¹ RETROACTIVE CLEANUP: Purging confirmed news junk...
+2026-04-18T17:56:06.2020901Z 2026-04-18 17:56:06,201 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=id%2Ccompany%2Curl "HTTP/2 200 OK"
+2026-04-18T17:56:06.4328064Z 2026-04-18 17:56:06,432 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1546 "HTTP/2 200 OK"
+2026-04-18T17:56:06.4333419Z 2026-04-18 17:56:06,433 - INFO - ðï¸ Purged Bad Entry: Glydways...
+2026-04-18T17:56:06.6653572Z 2026-04-18 17:56:06,664 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1569 "HTTP/2 200 OK"
+2026-04-18T17:56:06.6659749Z 2026-04-18 17:56:06,665 - INFO - ðï¸ Purged Bad Entry: SuperyachtNews.com...
+2026-04-18T17:56:06.8978290Z 2026-04-18 17:56:06,897 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1576 "HTTP/2 200 OK"
+2026-04-18T17:56:06.8983489Z 2026-04-18 17:56:06,898 - INFO - ðï¸ Purged Bad Entry: 42 Abu Dhabi...
+2026-04-18T17:56:07.1323659Z 2026-04-18 17:56:07,132 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1578 "HTTP/2 200 OK"
+2026-04-18T17:56:07.1329001Z 2026-04-18 17:56:07,132 - INFO - ðï¸ Purged Bad Entry: Mohammed Bin Rashid Innovation...
+2026-04-18T17:56:07.3685273Z 2026-04-18 17:56:07,368 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1588 "HTTP/2 200 OK"
+2026-04-18T17:56:07.3690891Z 2026-04-18 17:56:07,368 - INFO - ðï¸ Purged Bad Entry: Advanced Technology Research C...
+2026-04-18T17:56:07.5998907Z 2026-04-18 17:56:07,599 - INFO - HTTP Request: DELETE ***/rest/v1/uae_leads?id=eq.1592 "HTTP/2 200 OK"
+2026-04-18T17:56:07.6009728Z 2026-04-18 17:56:07,600 - INFO - ðï¸ Purged Bad Entry: Sharjah Research Technology an...
+2026-04-18T17:56:08.9422734Z 2026-04-18 17:56:08,941 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE e-commerce startup raised'...
+2026-04-18T17:56:10.3851757Z 2026-04-18 17:56:10,384 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:11.8344190Z 2026-04-18 17:56:11,834 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:13.3459034Z 2026-04-18 17:56:13,345 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:13.9650889Z 2026-04-18 17:56:13,964 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:14.5179700Z 2026-04-18 17:56:14,517 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai robotics automation funding'...
+2026-04-18T17:56:15.1564991Z 2026-04-18 17:56:15,156 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:15.7660672Z 2026-04-18 17:56:15,765 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:16.4501083Z 2026-04-18 17:56:16,449 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:17.1555643Z 2026-04-18 17:56:17,155 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:17.7093232Z 2026-04-18 17:56:17,708 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE Web3 DeFi funding round'...
+2026-04-18T17:56:18.7972726Z 2026-04-18 17:56:18,796 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:19.4397996Z 2026-04-18 17:56:19,439 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:20.0606221Z 2026-04-18 17:56:20,060 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:20.6669712Z 2026-04-18 17:56:20,666 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:21.1920624Z 2026-04-18 17:56:21,191 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Abu Dhabi gaming startup raised'...
+2026-04-18T17:56:21.8232814Z 2026-04-18 17:56:21,823 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:22.4300713Z 2026-04-18 17:56:22,429 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:23.0441715Z 2026-04-18 17:56:23,043 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:23.6370807Z 2026-04-18 17:56:23,636 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:24.1612627Z 2026-04-18 17:56:24,160 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE BioTech funding Series'...
+2026-04-18T17:56:24.7655044Z 2026-04-18 17:56:24,765 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:25.4138933Z 2026-04-18 17:56:25,413 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:26.0313821Z 2026-04-18 17:56:26,031 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:26.6411780Z 2026-04-18 17:56:26,640 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:27.1607782Z 2026-04-18 17:56:27,160 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai AgriTech food tech raised'...
+2026-04-18T17:56:27.7868423Z 2026-04-18 17:56:27,786 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:28.3794128Z 2026-04-18 17:56:28,379 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:28.9919811Z 2026-04-18 17:56:28,991 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:29.5947886Z 2026-04-18 17:56:29,593 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:30.1195768Z 2026-04-18 17:56:30,119 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE insurtech legaltech funding'...
+2026-04-18T17:56:30.6994899Z 2026-04-18 17:56:30,699 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:31.3285727Z 2026-04-18 17:56:31,328 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:31.9430252Z 2026-04-18 17:56:31,942 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:32.5474670Z 2026-04-18 17:56:32,547 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:33.0581621Z 2026-04-18 17:56:33,057 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai hired technology company'...
+2026-04-18T17:56:33.6607573Z 2026-04-18 17:56:33,660 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:34.2971104Z 2026-04-18 17:56:34,296 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:34.9072804Z 2026-04-18 17:56:34,906 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:35.4962762Z 2026-04-18 17:56:35,495 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:36.0192583Z 2026-04-18 17:56:36,018 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization UAE 2024 2025 raised funding'...
+2026-04-18T17:56:36.6306310Z 2026-04-18 17:56:36,630 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:37.2285766Z 2026-04-18 17:56:37,228 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:38.1738015Z 2026-04-18 17:56:38,173 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:38.7692541Z 2026-04-18 17:56:38,768 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:39.2851490Z 2026-04-18 17:56:39,284 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com/organization Dubai founded 2023 2024 tech'...
+2026-04-18T17:56:39.8853996Z 2026-04-18 17:56:39,885 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:40.4938555Z 2026-04-18 17:56:40,493 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:41.1736285Z 2026-04-18 17:56:41,173 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:41.8024386Z 2026-04-18 17:56:41,802 - INFO - ð Rotated Serper Key
+2026-04-18T17:56:42.1682787Z ##[group]Run python apollo_enrichment.py
+2026-04-18T17:56:42.1683127Z [36;1mpython apollo_enrichment.py[0m
+2026-04-18T17:56:42.1697895Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:56:42.1698159Z env:
+2026-04-18T17:56:42.1698445Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1698874Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:56:42.1699293Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1699676Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1700044Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:42.1700423Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:56:42.1700875Z   SUPABASE_URL: ***
+2026-04-18T17:56:42.1701172Z   SUPABASE_KEY: ***
+2026-04-18T17:56:42.1701635Z   GEMINI_API_KEYS: ***
+2026-04-18T17:56:42.1701953Z   GEMINI_API_KEY: 
+2026-04-18T17:56:42.1702814Z   SERPER_API_KEYS: ***
+2026-04-18T17:56:42.1703026Z   SERPER_API_KEY: 
+2026-04-18T17:56:42.1703223Z ##[endgroup]
+2026-04-18T17:56:42.8314401Z 2026-04-18 17:56:42,831 - INFO - === Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===
+2026-04-18T17:56:43.0856468Z 2026-04-18 17:56:43,085 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=%2A&contact_linkedin=is.null&limit=20 "HTTP/2 200 OK"
+2026-04-18T17:56:43.0860195Z 2026-04-18 17:56:43,085 - INFO - No leads require LinkedIn enrichment right now.
+2026-04-18T17:56:43.0860934Z 2026-04-18 17:56:43,085 - INFO - === Enrichment Cycle Complete ===
+2026-04-18T17:56:43.1928640Z ##[group]Run python crunchbase_sweeper.py
+2026-04-18T17:56:43.1928979Z [36;1mpython crunchbase_sweeper.py[0m
+2026-04-18T17:56:43.1942773Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:56:43.1943036Z env:
+2026-04-18T17:56:43.1943309Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1943738Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:56:43.1944265Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1944645Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1945009Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:56:43.1945384Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:56:43.1945826Z   SUPABASE_URL: ***
+2026-04-18T17:56:43.1946123Z   SUPABASE_KEY: ***
+2026-04-18T17:56:43.1946568Z   GEMINI_API_KEYS: ***
+2026-04-18T17:56:43.1946782Z   GEMINI_API_KEY: 
+2026-04-18T17:56:43.1947604Z   SERPER_API_KEYS: ***
+2026-04-18T17:56:43.1947818Z   SERPER_API_KEY: 
+2026-04-18T17:56:43.1948015Z ##[endgroup]
+2026-04-18T17:57:39.4979273Z Found 10 leads needing funding audit out of 49 total...
+2026-04-18T17:57:39.4980037Z 
+2026-04-18T17:57:39.4980319Z Searching Crunchbase for: Dubai Chambers
+2026-04-18T17:57:39.4981210Z   No Crunchbase funding data found for Dubai Chambers
+2026-04-18T17:57:39.4982315Z   Updated: Dubai Chambers -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4982984Z 
+2026-04-18T17:57:39.4983308Z Searching Crunchbase for: Emirates AI Albion
+2026-04-18T17:57:39.4984265Z   No Crunchbase funding data found for Emirates AI Albion
+2026-04-18T17:57:39.4985321Z   Updated: Emirates AI Albion -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4985999Z 
+2026-04-18T17:57:39.4986365Z Searching Crunchbase for: Khaleej Times Accelerator
+2026-04-18T17:57:39.4987455Z   No Crunchbase funding data found for Khaleej Times Accelerator
+2026-04-18T17:57:39.4988728Z   Updated: Khaleej Times Accelerator -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4989505Z 
+2026-04-18T17:57:39.4989788Z Searching Crunchbase for: Dubai Chamber
+2026-04-18T17:57:39.4990653Z   No Crunchbase funding data found for Dubai Chamber
+2026-04-18T17:57:39.4991643Z   Updated: Dubai Chamber -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4992404Z 
+2026-04-18T17:57:39.4992727Z Searching Crunchbase for: Wealth Tech Summit
+2026-04-18T17:57:39.4993701Z   No Crunchbase funding data found for Wealth Tech Summit
+2026-04-18T17:57:39.4994765Z   Updated: Wealth Tech Summit -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4995458Z 
+2026-04-18T17:57:39.4995730Z Searching Crunchbase for: Investopia
+2026-04-18T17:57:39.4996540Z   No Crunchbase funding data found for Investopia
+2026-04-18T17:57:39.4997500Z   Updated: Investopia -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.4998133Z 
+2026-04-18T17:57:39.4998393Z Searching Crunchbase for: Seed Group
+2026-04-18T17:57:39.4999204Z   No Crunchbase funding data found for Seed Group
+2026-04-18T17:57:39.5000122Z   Updated: Seed Group -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5000703Z 
+2026-04-18T17:57:39.5001043Z Searching Crunchbase for: Fakhruddin Properties
+2026-04-18T17:57:39.5002160Z   No Crunchbase funding data found for Fakhruddin Properties
+2026-04-18T17:57:39.5003264Z   Updated: Fakhruddin Properties -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5003996Z 
+2026-04-18T17:57:39.5004238Z Searching Crunchbase for: DCDE
+2026-04-18T17:57:39.5004969Z   No Crunchbase funding data found for DCDE
+2026-04-18T17:57:39.5005806Z   Updated: DCDE -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5006375Z 
+2026-04-18T17:57:39.5006662Z Searching Crunchbase for: Prop-AI
+2026-04-18T17:57:39.5007450Z   No Crunchbase funding data found for Prop-AI
+2026-04-18T17:57:39.5008359Z   Updated: Prop-AI -> Undisclosed | Unknown Round
+2026-04-18T17:57:39.5923185Z ##[group]Run git config --global user.name "Desert Intel Bot"
+2026-04-18T17:57:39.5923640Z [36;1mgit config --global user.name "Desert Intel Bot"[0m
+2026-04-18T17:57:39.5924020Z [36;1mgit config --global user.email "bot@desertintel.ae"[0m
+2026-04-18T17:57:39.5924367Z [36;1mif [ -f enterprise_leads.csv ]; then[0m
+2026-04-18T17:57:39.5924667Z [36;1m  git add -f enterprise_leads.csv[0m
+2026-04-18T17:57:39.5925140Z [36;1m  git commit -m "ð Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"[0m
+2026-04-18T17:57:39.5925629Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T17:57:39.5926021Z [36;1melse[0m
+2026-04-18T17:57:39.5926297Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
+2026-04-18T17:57:39.5926608Z [36;1mfi[0m
+2026-04-18T17:57:39.5940204Z shell: /usr/bin/bash -e {0}
+2026-04-18T17:57:39.5940455Z env:
+2026-04-18T17:57:39.5940723Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5941190Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T17:57:39.5941611Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942164Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942539Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T17:57:39.5942916Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T17:57:39.5943238Z ##[endgroup]
+2026-04-18T17:57:39.6053214Z On branch main
+2026-04-18T17:57:39.6053685Z Your branch is up to date with 'origin/main'.
+2026-04-18T17:57:39.6054098Z 
+2026-04-18T17:57:39.6054284Z nothing to commit, working tree clean
+2026-04-18T17:57:39.6054763Z No changes to commit
+2026-04-18T17:57:39.7664939Z Everything up-to-date
+2026-04-18T17:57:39.7760076Z Post job cleanup.
+2026-04-18T17:57:39.9375305Z Post job cleanup.
+2026-04-18T17:57:40.0031063Z [command]/usr/bin/git version
+2026-04-18T17:57:40.0063853Z git version 2.53.0
+2026-04-18T17:57:40.0095827Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/ac82ab25-f04e-436e-b9eb-3fa8169854a1/.gitconfig'
+2026-04-18T17:57:40.0103791Z Temporarily overriding HOME='/home/runner/work/_temp/ac82ab25-f04e-436e-b9eb-3fa8169854a1' before making global git config changes
+2026-04-18T17:57:40.0105063Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T17:57:40.0108104Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T17:57:40.0134987Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T17:57:40.0157320Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T17:57:40.0323849Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T17:57:40.0338648Z http.https://github.com/.extraheader
+2026-04-18T17:57:40.0348347Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-18T17:57:40.0373341Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T17:57:40.0639403Z Cleaning up orphan processes
+2026-04-18T17:57:40.0882959Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v3, actions/setup-python@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
