@@ -434,34 +434,38 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- DEEP DISCOVERY NICHES (Optimized for Volume + Quality) ---
+    # --- MEGA-NICHES (Optimized for 3,000+ Leads/Day) ---
     current_niches = [
         "site:crunchbase.com 'headquarters in Dubai'",
         "site:crunchbase.com 'headquarters in Abu Dhabi'",
         "site:crunchbase.com 'operating in United Arab Emirates'",
-        "site:crunchbase.com UAE technology funding 2026",
-        "site:crunchbase.com Dubai AI startup",
-        "site:crunchbase.com Abu Dhabi Fintech",
-        "site:crunchbase.com Dubai Crypto 2026",
-        "site:crunchbase.com UAE PropTech",
-        "site:crunchbase.com 'Venture capital' Dubai",
-        "site:crunchbase.com 'Series A' UAE",
-        "site:crunchbase.com 'Seed round' Dubai",
-        "site:crunchbase.com 'Pre-seed' Abu Dhabi",
-        "site:crunchbase.com Dubai E-commerce",
-        "site:crunchbase.com UAE Logistics Tech",
-        "site:crunchbase.com Dubai HealthTech",
-        "site:crunchbase.com UAE EdTech",
-        "site:crunchbase.com Abu Dhabi CleanTech",
-        "site:crunchbase.com 'Founded in 2025' Dubai",
-        "site:crunchbase.com 'Founded in 2026' UAE",
-        "site:crunchbase.com Dubai CyberSecurity",
-        "site:crunchbase.com 'Acquired by' Dubai",
-        "site:crunchbase.com Dubai Gaming",
-        "site:crunchbase.com UAE SaaS 2026",
-        "site:crunchbase.com 'Series B' Abu Dhabi",
-        "site:crunchbase.com Dubai Web3",
-        "site:crunchbase.com Abu Dhabi BioTech"
+        "site:crunchbase.com UAE technology funding",
+        "site:crunchbase.com Dubai AI startup investment",
+        "site:crunchbase.com Abu Dhabi Fintech funding",
+        "site:crunchbase.com Dubai Crypto blockchain",
+        "site:crunchbase.com UAE PropTech startups",
+        "site:crunchbase.com 'Venture capital' Dubai companies",
+        "site:crunchbase.com 'Series A' UAE technology",
+        "site:crunchbase.com 'Seed round' Dubai startup",
+        "site:crunchbase.com 'Pre-seed' Abu Dhabi tech",
+        "site:crunchbase.com Dubai E-commerce market",
+        "site:crunchbase.com UAE Logistics Tech list",
+        "site:crunchbase.com Dubai HealthTech companies",
+        "site:crunchbase.com UAE EdTech startup list",
+        "site:crunchbase.com Abu Dhabi CleanTech funding",
+        "site:crunchbase.com 'Founded in 2025' Dubai startup",
+        "site:crunchbase.com 'Founded in 2024' UAE tech",
+        "site:crunchbase.com Dubai CyberSecurity firm",
+        "site:crunchbase.com 'Acquired by' Dubai agency",
+        "site:crunchbase.com Dubai Gaming Esports developers",
+        "site:crunchbase.com UAE SaaS enterprise software",
+        "site:crunchbase.com 'Series B' Abu Dhabi companies",
+        "site:crunchbase.com Dubai Web3 decentralized finance",
+        "site:crunchbase.com Abu Dhabi BioTech research funding",
+        "site:crunchbase.com Dubai Robotics automation tech",
+        "site:crunchbase.com UAE Sustainability green tech",
+        "site:crunchbase.com Dubai Cloud Infrastructure startups",
+        "site:crunchbase.com UAE Agritech food security"
     ]
     
     # Pick niches based on the current hour and catch-up requirement
