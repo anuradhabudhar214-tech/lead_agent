@@ -301,15 +301,12 @@ def run_tracker():
                     if gap_mins > 40:
                         logger.warning(f"🚀 CATCH-UP MODE: Detected {int(gap_mins)}m gap. Doubling harvest velocity.")
                         num_niches_to_scan = 4
-                    else:
-                        num_niches_to_scan = 2
-                else:
-                    num_niches_to_scan = 2
+                # 2. Triple-Batch Logic: 5 niches per run by default
+                num_niches_to_scan = 5
         except:
-            num_niches_to_scan = 2
+            num_niches_to_scan = 5
 
-    update_agent_status("Hunting 🔴")
-    # --- DEEP DISCOVERY NICHES ---
+    # --- DEEP DISCOVERY NICHES (Expanded for 3,000 lead trajectory) ---
     current_niches = [
         "site:crunchbase.com/organization UAE technology funding 2026",
         "site:apollo.io/companies Dubai technology hiring HQ",
@@ -319,8 +316,23 @@ def run_tracker():
         "DIFC Innovation Hub new company members",
         "site:linkedin.com/company UAE startup Hiring CEO Founder",
         "site:magniitt.com UAE venture capital funding",
-        "Dubai Chamber of Digital Economy new companies",
-        "Abu Dhabi Hub71 startup list update 2026"
+        "Dubai Chamber of Digital Economy new companies list",
+        "Abu Dhabi Hub71 startup list update 2026",
+        "Dubai AI venture debt funding 2026",
+        "Abu Dhabi semiconductor expansion announcements",
+        "Sharjah Research Technology and Innovation Park startup list",
+        "site:crunchbase.com/organization Abu Dhabi series A funding",
+        "Dubai cryptocurrency and blockchain company registration 2026",
+        "DIFC crypto license holders news",
+        "ADGM fintech sandbox active companies 2026",
+        "UAE Ministry of Economy patents tech startups",
+        "Dubai Silicon Oasis tech hiring news last 7 days",
+        "Khalifa Fund supported projects 2026 Abu Dhabi",
+        "Dubai Internet City new office setup companies",
+        "RAKEA Ras Al Khaimah tech expansion",
+        "site:wam.ae technology investment announcements",
+        "Dubai South logistics tech startups list",
+        "ADJD Abu Dhabi Judicial Department business registration AI"
     ]
     
     # Pick niches based on the current hour and catch-up requirement
@@ -332,7 +344,7 @@ def run_tracker():
                       
     for idx_n, niche in enumerate(selected_niches):
         source = niche.split(".")[1] if "." in niche else "Web"
-        update_agent_status(f"Hunting 🔴 ({idx_n+1}/2: {source.title()} Scan)")
+        update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
 
         results = serper_search_broad(niche)

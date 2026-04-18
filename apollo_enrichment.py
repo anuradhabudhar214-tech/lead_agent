@@ -110,8 +110,8 @@ def guess_email_format(name, domain):
 def run_enrichment():
     logger.info("=== Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===")
     
-    # Fetch leads missing a linkedin URL
-    res = supabase.table("uae_leads").select("*").is_("contact_linkedin", "null").limit(8).execute()
+    # Fetch leads missing a linkedin URL (Increased from 8 to 20 for high-volume)
+    res = supabase.table("uae_leads").select("*").is_("contact_linkedin", "null").limit(20).execute()
     leads = res.data
     
     if not leads:
