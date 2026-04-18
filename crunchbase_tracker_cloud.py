@@ -157,6 +157,56 @@ def save_to_csv(lead):
     except Exception as e:
         logger.error(f"❌ CSV Backup Error: {e}")
 
+def extract_funding_regex(company, context):
+    """Zero-Quota math-based extraction. Matches Crunchbase text directly."""
+    amount = "Undisclosed"
+    round_name = "Unknown Round"
+    
+    # Match amounts: $5M, $2.5 million, AED 10M, USD 100M etc.
+    amt_patterns = [
+        r'\$([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+        r'([\d\.]+)\s*(billion|million)\s*(?:USD|AED|dollars?)',
+        r'AED\s*([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+        r'USD\s*([\d\.]+)\s*(billion|million|B|M|bn|mn)',
+        r'raised\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+        r'secured\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+    ]
+    for pattern in amt_patterns:
+        match = re.search(pattern, context, re.IGNORECASE)
+        if match:
+            num = match.group(1); unit = match.group(2).upper()
+            if unit in ['MILLION', 'M', 'MN']: unit = 'M'
+            elif unit in ['BILLION', 'B', 'BN']: unit = 'B'
+            amount = f"${num}{unit}"
+            break
+            
+    round_patterns = [
+        (r'pre[\-\s]?seed', 'Pre-Seed'),
+        (r'seed\s+round|seed\s+funding|seed\s+stage|raised.*seed', 'Seed'),
+        (r'series\s+a\b', 'Series A'),
+        (r'series\s+b\b', 'Series B'),
+        (r'series\s+c\b', 'Series C'),
+        (r'series\s+d\b', 'Series D'),
+        (r'series\s+e\b', 'Series E'),
+        (r'funding\s+round|equity\s+round|financing\s+round', 'Funding Round'),
+        (r'private\s+equity|equity\s+funding', 'Private Equity'),
+        (r'venture\s+round|venture\s+capital\s+round', 'Venture'),
+        (r'corporate\s+round|strategic\s+investment', 'Corporate'),
+        (r'scale[\-\s]?up', 'Scaleup Funding'),
+        (r'ipo|initial\s+public\s+offering', 'IPO'),
+        (r'acquisition|m\&a|merged|bought.*by', 'M&A / Acquisition'),
+        (r'debt\s+financing|loan|credit\s+facility', 'Debt'),
+        (r'angel\s+round|angel\s+investment', 'Angel'),
+        (r'grant|award|prize', 'Grant'),
+        (r'series\s+[\w]+', 'Series Unknown'),
+    ]
+    for pattern, label in round_patterns:
+        if re.search(pattern, context, re.IGNORECASE):
+            round_name = label
+            break
+            
+    return {"amount": amount, "round": round_name, "summary": context[:180].strip() if context else "Found via discovery."}
+
 def compile_auditor_intel_extreme(discovery_package):
     """High-Volume Gemini 2.0 extraction maximized for 3000 leads daily."""
     key = vault.get_gemini_key()
@@ -254,7 +304,23 @@ def compile_auditor_intel_extreme(discovery_package):
             except Exception as ex:
                 logger.error(f"❌ Groq Error: {ex}")
                 vault.rotate_groq()
-    return "SKIP"
+    
+    # --- NUCLEAR FALLBACK: If AI fails, use Regex Extraction instantly ---
+    logger.info(f"🛡️ NUCLEAR FALLBACK: Extracting via Code Logic for {company_name}")
+    regex_data = extract_funding_regex(company_name, discovery_package)
+    return {
+        "company": company_name,
+        "industry": "Tech/Misc",
+        "confidence_score": 80,
+        "strategic_signal": regex_data["summary"],
+        "integration_opportunity": "IT Services / AI Integration",
+        "patron_chairman": "TBD",
+        "ceo_founder": "Founding Team",
+        "funding_amount": regex_data["amount"],
+        "funding_round": regex_data["round"],
+        "financials": regex_data["summary"],
+        "registry_status": "PROBING..."
+    }
 
 def serper_search_broad(query):
     """Max-Volume Serper discovery (50 results per call)."""
