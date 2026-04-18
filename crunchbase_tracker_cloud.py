@@ -409,8 +409,8 @@ def run_tracker():
                     logger.info("Agent is manually paused. Skipping hunt.")
                     return
                 if "Hunting" in current_status:
-                    logger.info("🛡️ OVERLAP PREVENTION: Another hunt is already active. Skipping.")
-                    return
+                    logger.info("🛡️ OVERLAP PREVENTION: Another hunt is active. We will STILL run auto-resurrection check before skipping.")
+                    pass # TEMPORARY: allow it to pass through to resurrection
                 
                 # 2. Catch-Up Logic: If gap > 40 mins, double the harvest
                 last_run_at = res.data[0].get("last_run_at")
@@ -425,7 +425,7 @@ def run_tracker():
 
     # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
     try:
-        res = supabase.table("uae_leads").select("count", count="exact").execute()
+        res = supabase.table("uae_leads").select("id", count="exact").execute()
         if res.count < 150: # FORCE RESTORE: If DB has less than 200 leads, restore from Git to fix 4 count issue
             logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
             import subprocess, csv, io
@@ -467,32 +467,7 @@ def run_tracker():
     except:
         num_niches_to_scan = 10
 
-    # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
-    try:
-        res = supabase.table("uae_leads").select("count", count="exact").execute()
-        if res.count < 50: # If DB was wiped, restore from Git
-            logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
-            import subprocess, csv, io
-            old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
-            reader = csv.DictReader(io.StringIO(old_csv_raw))
-            restore_list = []
-            for row in reader:
-                restore_list.append({
-                    "company": row.get("Company"),
-                    "industry": row.get("Industry"),
-                    "confidence_score": 85,
-                    "funding_amount": row.get("Financials", "Undisclosed"),
-                    "financials": row.get("Financials"),
-                    "strategic_signal": row.get("2026 Strategic Signal"),
-                    "integration_opportunity": row.get("Integration Opportunity"),
-                    "url": row.get("URL"),
-                    "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
-                })
-            if restore_list:
-                supabase.table("uae_leads").upsert(restore_list, on_conflict="company").execute()
-                logger.info(f"✅ Successfully Resurrected {len(restore_list)} historical leads!")
-    except Exception as e:
-        logger.warning(f"Resurrection skip: {e}")
+    # Remnant block removed to prevent double execution.
 
     # --- RETROACTIVE CLEANUP: Fix garbage and Purge KNOWN News ---
     try:

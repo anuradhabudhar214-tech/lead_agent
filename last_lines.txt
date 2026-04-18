@@ -1,0 +1,149 @@
+2026-04-18T10:04:07.7647534Z Downloading pyroaring-1.0.4-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (2.1 MB)
+2026-04-18T10:04:07.7745775Z    ââââââââââââââââââââââââââââââââââââââââ 2.1/2.1 MB 257.2 MB/s  0:00:00
+2026-04-18T10:04:07.7881296Z Downloading rich-14.3.4-py3-none-any.whl (310 kB)
+2026-04-18T10:04:07.8048360Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+2026-04-18T10:04:07.8117581Z    ââââââââââââââââââââââââââââââââââââââââ 1.2/1.2 MB 216.4 MB/s  0:00:00
+2026-04-18T10:04:07.8251585Z Downloading strictyaml-1.7.3-py3-none-any.whl (123 kB)
+2026-04-18T10:04:07.8413278Z Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+2026-04-18T10:04:07.8602085Z    ââââââââââââââââââââââââââââââââââââââââ 5.6/5.6 MB 331.7 MB/s  0:00:00
+2026-04-18T10:04:07.8737470Z Downloading fsspec-2026.3.0-py3-none-any.whl (202 kB)
+2026-04-18T10:04:07.8899659Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+2026-04-18T10:04:07.9057734Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+2026-04-18T10:04:07.9216205Z Downloading pyjwt-2.12.1-py3-none-any.whl (29 kB)
+2026-04-18T10:04:07.9399100Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2026-04-18T10:04:07.9558416Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-04-18T10:04:07.9711727Z Downloading starlette-1.0.0-py3-none-any.whl (72 kB)
+2026-04-18T10:04:07.9865481Z Downloading StrEnum-0.4.15-py3-none-any.whl (8.9 kB)
+2026-04-18T10:04:08.0017424Z Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+2026-04-18T10:04:08.0172553Z Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+2026-04-18T10:04:08.0329910Z Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+2026-04-18T10:04:08.0493244Z Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (196 kB)
+2026-04-18T10:04:08.0678352Z Downloading google_api_python_client-2.194.0-py3-none-any.whl (15.0 MB)
+2026-04-18T10:04:08.1175461Z    ââââââââââââââââââââââââââââââââââââââââ 15.0/15.0 MB 317.1 MB/s  0:00:00
+2026-04-18T10:04:08.1312847Z Downloading google_auth_httplib2-0.3.1-py3-none-any.whl (9.5 kB)
+2026-04-18T10:04:08.1470500Z Downloading httplib2-0.31.2-py3-none-any.whl (91 kB)
+2026-04-18T10:04:08.1629263Z Downloading uritemplate-4.2.0-py3-none-any.whl (11 kB)
+2026-04-18T10:04:08.1789266Z Downloading packaging-26.1-py3-none-any.whl (95 kB)
+2026-04-18T10:04:08.1948049Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-04-18T10:04:08.2103184Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+2026-04-18T10:04:08.2258482Z Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+2026-04-18T10:04:08.5271990Z Installing collected packages: strenum, pyroaring, zstandard, websockets, urllib3, uritemplate, typing-extensions, tqdm, tenacity, sniffio, six, python-multipart, python-dotenv, pyparsing, pygments, pycparser, pyasn1, protobuf, propcache, packaging, mmh3, mdurl, idna, hyperframe, hpack, h11, fsspec, distro, click, charset_normalizer, certifi, cachetools, annotated-types, annotated-doc, uvicorn, typing-inspection, requests, python-dateutil, pyjwt, pydantic-core, pyasn1-modules, proto-plus, multidict, markdown-it-py, httplib2, httpcore, h2, grpcio, googleapis-common-protos, exceptiongroup, deprecation, cffi, yarl, strictyaml, rich, pydantic, grpcio-status, cryptography, anyio, starlette, realtime, pyiceberg, httpx, google-auth, groq, google-auth-httplib2, google-api-core, fastapi, supabase-functions, supabase-auth, storage3, postgrest, google-genai, google-api-python-client, supabase, google-ai-generativelanguage, google-generativeai
+2026-04-18T10:04:15.2433128Z 
+2026-04-18T10:04:15.2543159Z Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.13.0 cachetools-6.2.6 certifi-2026.2.25 cffi-2.0.0 charset_normalizer-3.4.7 click-8.3.2 cryptography-46.0.7 deprecation-2.1.0 distro-1.9.0 exceptiongroup-1.3.1 fastapi-0.136.0 fsspec-2026.3.0 google-ai-generativelanguage-0.6.15 google-api-core-2.30.3 google-api-python-client-2.194.0 google-auth-2.49.2 google-auth-httplib2-0.3.1 google-genai-1.73.1 google-generativeai-0.8.6 googleapis-common-protos-1.74.0 groq-1.1.2 grpcio-1.80.0 grpcio-status-1.71.2 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httplib2-0.31.2 httpx-0.28.1 hyperframe-6.1.0 idna-3.11 markdown-it-py-4.0.0 mdurl-0.1.2 mmh3-5.2.1 multidict-6.7.1 packaging-26.1 postgrest-2.28.3 propcache-0.4.1 proto-plus-1.27.2 protobuf-5.29.6 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-3.0 pydantic-2.13.2 pydantic-core-2.46.2 pygments-2.20.0 pyiceberg-0.11.1 pyjwt-2.12.1 pyparsing-3.3.2 pyroaring-1.0.4 python-dateutil-2.9.0.post0 python-dotenv-1.2.2 python-multipart-0.0.26 realtime-2.28.3 requests-2.33.1 rich-14.3.4 six-1.17.0 sniffio-1.3.1 starlette-1.0.0 storage3-2.28.3 strenum-0.4.15 strictyaml-1.7.3 supabase-2.28.3 supabase-auth-2.28.3 supabase-functions-2.28.3 tenacity-9.1.4 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 uritemplate-4.2.0 urllib3-2.6.3 uvicorn-0.44.0 websockets-15.0.1 yarl-1.23.0 zstandard-0.25.0
+2026-04-18T10:04:16.1052810Z ##[group]Run python crunchbase_tracker_cloud.py
+2026-04-18T10:04:16.1053280Z [36;1mpython crunchbase_tracker_cloud.py[0m
+2026-04-18T10:04:16.1076122Z shell: /usr/bin/bash -e {0}
+2026-04-18T10:04:16.1076407Z env:
+2026-04-18T10:04:16.1076714Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:16.1077251Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T10:04:16.1077774Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:16.1078241Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:16.1078722Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:16.1079181Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T10:04:16.1079955Z   SUPABASE_URL: ***
+2026-04-18T10:04:16.1080316Z   SUPABASE_KEY: ***
+2026-04-18T10:04:16.1081019Z   GROQ_API_KEYS: ***
+2026-04-18T10:04:16.1082018Z   SERPER_API_KEYS: ***
+2026-04-18T10:04:16.1082337Z   SERPER_API_KEY: 
+2026-04-18T10:04:16.1082930Z   GEMINI_API_KEYS: ***
+2026-04-18T10:04:16.1083176Z   GEMINI_API_KEY: 
+2026-04-18T10:04:16.1083447Z   SENDER_EMAIL: ***
+2026-04-18T10:04:16.1083704Z   SENDER_PASSWORD: ***
+2026-04-18T10:04:16.1083979Z   RECIPIENT_EMAIL: ***
+2026-04-18T10:04:16.1084238Z   SMTP_SERVER: ***
+2026-04-18T10:04:16.1084478Z   SMTP_PORT: ***
+2026-04-18T10:04:16.1084699Z ##[endgroup]
+2026-04-18T10:04:18.0784799Z 2026-04-18 10:04:18,078 - INFO - HTTP Request: GET ***/rest/v1/system_stats?select=status%2Clast_run_at&id=eq.1 "HTTP/2 200 OK"
+2026-04-18T10:04:18.0791583Z 2026-04-18 10:04:18,078 - INFO - ð¡ï¸ OVERLAP PREVENTION: Another hunt is already active. Skipping.
+2026-04-18T10:04:18.5168735Z ##[group]Run python apollo_enrichment.py
+2026-04-18T10:04:18.5169141Z [36;1mpython apollo_enrichment.py[0m
+2026-04-18T10:04:18.5191148Z shell: /usr/bin/bash -e {0}
+2026-04-18T10:04:18.5191421Z env:
+2026-04-18T10:04:18.5191725Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:18.5192255Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T10:04:18.5192777Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:18.5193235Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:18.5193706Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:18.5194183Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T10:04:18.5194769Z   SUPABASE_URL: ***
+2026-04-18T10:04:18.5195127Z   SUPABASE_KEY: ***
+2026-04-18T10:04:18.5195705Z   GEMINI_API_KEYS: ***
+2026-04-18T10:04:18.5195960Z   GEMINI_API_KEY: 
+2026-04-18T10:04:18.5197018Z   SERPER_API_KEYS: ***
+2026-04-18T10:04:18.5197263Z   SERPER_API_KEY: 
+2026-04-18T10:04:18.5197494Z ##[endgroup]
+2026-04-18T10:04:19.2835856Z 2026-04-18 10:04:19,283 - INFO - === Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===
+2026-04-18T10:04:19.5778265Z 2026-04-18 10:04:19,577 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=%2A&contact_linkedin=is.null&limit=20 "HTTP/2 200 OK"
+2026-04-18T10:04:19.5782804Z 2026-04-18 10:04:19,578 - INFO - No leads require LinkedIn enrichment right now.
+2026-04-18T10:04:19.5783617Z 2026-04-18 10:04:19,578 - INFO - === Enrichment Cycle Complete ===
+2026-04-18T10:04:19.6849383Z ##[group]Run python crunchbase_sweeper.py
+2026-04-18T10:04:19.6849839Z [36;1mpython crunchbase_sweeper.py[0m
+2026-04-18T10:04:19.6871324Z shell: /usr/bin/bash -e {0}
+2026-04-18T10:04:19.6871602Z env:
+2026-04-18T10:04:19.6871906Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:19.6872443Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T10:04:19.6873136Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:19.6873622Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:19.6874086Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:19.6874578Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T10:04:19.6875146Z   SUPABASE_URL: ***
+2026-04-18T10:04:19.6875494Z   SUPABASE_KEY: ***
+2026-04-18T10:04:19.6876046Z   GEMINI_API_KEYS: ***
+2026-04-18T10:04:19.6876303Z   GEMINI_API_KEY: 
+2026-04-18T10:04:19.6877312Z   SERPER_API_KEYS: ***
+2026-04-18T10:04:19.6877551Z   SERPER_API_KEY: 
+2026-04-18T10:04:19.6877774Z ##[endgroup]
+2026-04-18T10:04:37.8668080Z Found 3 leads needing funding audit out of 4 total...
+2026-04-18T10:04:37.8669018Z 
+2026-04-18T10:04:37.8669216Z Searching Crunchbase for: Emirates AI Albion
+2026-04-18T10:04:37.8669744Z   No Crunchbase funding data found for Emirates AI Albion
+2026-04-18T10:04:37.8670390Z   Updated: Emirates AI Albion -> Undisclosed | Unknown Round
+2026-04-18T10:04:37.8671027Z 
+2026-04-18T10:04:37.8671188Z Searching Crunchbase for: Seed Group
+2026-04-18T10:04:37.8671554Z   No Crunchbase funding data found for Seed Group
+2026-04-18T10:04:37.8671964Z   Updated: Seed Group -> Undisclosed | Unknown Round
+2026-04-18T10:04:37.8672235Z 
+2026-04-18T10:04:37.8672349Z Searching Crunchbase for: Prop-AI
+2026-04-18T10:04:37.8672691Z   No Crunchbase funding data found for Prop-AI
+2026-04-18T10:04:37.8673103Z   Updated: Prop-AI -> Undisclosed | Unknown Round
+2026-04-18T10:04:37.9691241Z ##[group]Run git config --global user.name "Desert Intel Bot"
+2026-04-18T10:04:37.9691893Z [36;1mgit config --global user.name "Desert Intel Bot"[0m
+2026-04-18T10:04:37.9692393Z [36;1mgit config --global user.email "bot@desertintel.ae"[0m
+2026-04-18T10:04:37.9692835Z [36;1mif [ -f enterprise_leads.csv ]; then[0m
+2026-04-18T10:04:37.9693223Z [36;1m  git add -f enterprise_leads.csv[0m
+2026-04-18T10:04:37.9693870Z [36;1m  git commit -m "ð Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"[0m
+2026-04-18T10:04:37.9694607Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T10:04:37.9694962Z [36;1melse[0m
+2026-04-18T10:04:37.9695301Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
+2026-04-18T10:04:37.9695695Z [36;1mfi[0m
+2026-04-18T10:04:37.9717069Z shell: /usr/bin/bash -e {0}
+2026-04-18T10:04:37.9717359Z env:
+2026-04-18T10:04:37.9717667Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:37.9718241Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T10:04:37.9718766Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:37.9719226Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:37.9719680Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T10:04:37.9720150Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T10:04:37.9720854Z ##[endgroup]
+2026-04-18T10:04:37.9843171Z On branch main
+2026-04-18T10:04:37.9843756Z Your branch is up to date with 'origin/main'.
+2026-04-18T10:04:37.9844179Z 
+2026-04-18T10:04:37.9844380Z nothing to commit, working tree clean
+2026-04-18T10:04:37.9845554Z No changes to commit
+2026-04-18T10:04:38.1598203Z Everything up-to-date
+2026-04-18T10:04:38.1699045Z Post job cleanup.
+2026-04-18T10:04:38.3623370Z Post job cleanup.
+2026-04-18T10:04:38.4365141Z [command]/usr/bin/git version
+2026-04-18T10:04:38.4399915Z git version 2.53.0
+2026-04-18T10:04:38.4438036Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/554761af-1fbd-4590-93bf-fe8edbd87767/.gitconfig'
+2026-04-18T10:04:38.4449682Z Temporarily overriding HOME='/home/runner/work/_temp/554761af-1fbd-4590-93bf-fe8edbd87767' before making global git config changes
+2026-04-18T10:04:38.4451249Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T10:04:38.4455020Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T10:04:38.4485565Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T10:04:38.4513454Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T10:04:38.4731999Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T10:04:38.4751873Z http.https://github.com/.extraheader
+2026-04-18T10:04:38.4764751Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-18T10:04:38.4793381Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T10:04:38.5125518Z Cleaning up orphan processes
+2026-04-18T10:04:38.5412013Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v3, actions/setup-python@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

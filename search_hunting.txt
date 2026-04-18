@@ -1,0 +1,6 @@
+101: def update_agent_status(status):
+108:         if "Hunting" in status or "Waking" in status:
+121:                 if "Hunting" in status:
+411:                 if "Hunting" in current_status:
+562:         update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
+612:         update_agent_status("Sleeping 💤")
