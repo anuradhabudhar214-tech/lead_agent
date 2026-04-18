@@ -159,25 +159,24 @@ def save_to_csv(lead):
         logger.error(f"❌ CSV Backup Error: {e}")
 
 def clean_company_name(raw_name):
-    """Extreme scrubber to isolate company name from search headlines."""
+    """Deep scrubber to isolate company names and kill news headlines."""
     if not raw_name: return "Unknown Entity"
     
-    # Remove web site names
-    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok|Google News|Reuters|Bloomberg|WAM\.ae', '', raw_name, flags=re.I)
+    # 1. Reject if it starts with a digit (e.g. 2,709 new...)
+    if re.match(r'^\d', raw_name):
+        return "FILTERED_HEADLINE"
+        
+    # 2. Remove web site names and news outlets
+    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok|Google News|Reuters|Bloomberg|WAM\.ae|PR Newswire|Business Wire', '', raw_name, flags=re.I)
     
-    # Split on headline 'Action' verbs that indicate this is a news story, not a company profile
-    # Common GHA/Serper headline patterns in UAE
-    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined|member|partners|unveils|secures', clean, flags=re.I)[0]
+    # 3. Split on headline 'Action' verbs or common separators
+    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined|member|partners|unveils|secures|hiring|job', clean, flags=re.I)[0]
     
-    # Strip common garbage prefixes from headlines
-    clean = re.sub(r'^\d+[\s\w]*new (member )?companies (join|joined) ', '', clean, flags=re.I)
-    clean = re.sub(r'^BREAKING:|^JUST IN:|^NEWS:|^UPDATE:', '', clean, flags=re.I)
-    
-    # Clean non-alphanumeric at ends
+    # 4. Strip non-alphanumeric at ends
     clean = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', clean).strip()
     
-    # FINAL SAFETY: If it's still > 6 words, or starts with 'How', 'Why', 'Top', it's a blog post/news
-    if len(clean.split()) > 6 or clean.lower().startswith(('how', 'why', 'top', 'best', 'where', '202')):
+    # 5. FINAL SAFETY: If it's still > 5 words or contains news-y verbs, it's a headline
+    if len(clean.split()) > 5 or any(word in clean.lower() for word in ['launches', 'joined', 'member', 'announced', 'leads', 'raised', 'funded']):
         return "FILTERED_HEADLINE"
         
     return clean.strip()
@@ -332,21 +331,35 @@ def compile_auditor_intel_extreme(discovery_package):
                 logger.error(f"❌ Groq Error: {ex}")
                 vault.rotate_groq()
     
-    # --- NUCLEAR FALLBACK: If AI fails, use Regex Extraction instantly ---
-    logger.info(f"🛡️ NUCLEAR FALLBACK: Extracting via Code Logic for {company_name}")
-    regex_data = extract_funding_regex(company_name, discovery_package)
+    # --- NUCLEAR FALLBACK: If Gemini fails, use Groq specifically for name extraction + Regex for funding ---
+    logger.info(f"🛡️ NUCLEAR FALLBACK: Extracting via Groq/Regex for {company_name}")
+    
+    refined_name = company_name
+    groq_key = vault.get_groq_key()
+    if groq_key:
+        try:
+            client_groq = Groq(api_key=groq_key)
+            name_check = client_groq.chat.completions.create(
+                messages=[{"role": "user", "content": f"Extract ONLY the company name from this title: '{discovery_package.split('|')[0]}'. Return just the name, NO commentary."}],
+                model="llama-3.1-8b-instant"
+            )
+            refined_name = clean_company_name(name_check.choices[0].message.content.strip())
+            if refined_name == "FILTERED_HEADLINE": return "SKIP"
+        except: pass
+
+    regex_data = extract_funding_regex(refined_name, discovery_package)
     return {
-        "company": company_name,
-        "industry": "Tech/Misc",
+        "company": refined_name,
+        "industry": "Tech/Innovation",
         "confidence_score": 80,
         "strategic_signal": regex_data["summary"],
-        "integration_opportunity": "IT Services / AI Integration",
+        "integration_opportunity": "Advanced IT / AI Solutions",
         "patron_chairman": "TBD",
         "ceo_founder": "Founding Team",
         "funding_amount": regex_data["amount"],
         "funding_round": regex_data["round"],
         "financials": regex_data["summary"],
-        "registry_status": "PROBING...",
+        "registry_status": "Live Discovery",
         "status": "Pending"
     }
 
