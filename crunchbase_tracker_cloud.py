@@ -159,21 +159,25 @@ def save_to_csv(lead):
         logger.error(f"❌ CSV Backup Error: {e}")
 
 def clean_company_name(raw_name):
-    """Deep scrubs web titles to extract only the legitimate company name."""
+    """Extreme scrubber to isolate company name from search headlines."""
     if not raw_name: return "Unknown Entity"
     
-    # Remove obvious web cruft first
-    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok', '', raw_name, flags=re.I)
+    # Remove web site names
+    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok|Google News|Reuters|Bloomberg|WAM\.ae', '', raw_name, flags=re.I)
     
-    # Split on common title separators
-    # Added ' in ', ' at ', ' for ', ' announces ', ' launches ' – common in headlines
-    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined', clean, flags=re.I)[0]
+    # Split on headline 'Action' verbs that indicate this is a news story, not a company profile
+    # Common GHA/Serper headline patterns in UAE
+    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined|member|partners|unveils|secures', clean, flags=re.I)[0]
     
-    # Strip non-alphanumeric at ends (like commas, dots)
+    # Strip common garbage prefixes from headlines
+    clean = re.sub(r'^\d+[\s\w]*new (member )?companies (join|joined) ', '', clean, flags=re.I)
+    clean = re.sub(r'^BREAKING:|^JUST IN:|^NEWS:|^UPDATE:', '', clean, flags=re.I)
+    
+    # Clean non-alphanumeric at ends
     clean = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', clean).strip()
     
-    # LENGTH FILTER: If name is > 6 words, it's probably a headline, not a company
-    if len(clean.split()) > 6:
+    # FINAL SAFETY: If it's still > 6 words, or starts with 'How', 'Why', 'Top', it's a blog post/news
+    if len(clean.split()) > 6 or clean.lower().startswith(('how', 'why', 'top', 'best', 'where', '202')):
         return "FILTERED_HEADLINE"
         
     return clean.strip()
@@ -390,11 +394,26 @@ def run_tracker():
                     gap_mins = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
                     if gap_mins > 40:
                         logger.warning(f"🚀 CATCH-UP MODE: Detected {int(gap_mins)}m gap. Doubling harvest velocity.")
-                        num_niches_to_scan = 4
                 # 2. Triple-Batch Logic: 5 niches per run by default
                 num_niches_to_scan = 5
         except:
             num_niches_to_scan = 5
+
+    # --- RETROACTIVE CLEANUP: Fix garbage company names already in DB ---
+    try:
+        logger.info("🧹 RETROACTIVE CLEANUP: Scrubbing existing database names...")
+        res = supabase.table("uae_leads").select("id, company").execute()
+        for item in res.data:
+            old_name = item.get("company", "")
+            cleaned = clean_company_name(old_name)
+            if cleaned == "FILTERED_HEADLINE" or len(old_name) > 100:
+                supabase.table("uae_leads").delete().eq("id", item["id"]).execute()
+                logger.info(f"🗑️ Purged Garbage: {old_name[:40]}...")
+            elif cleaned != old_name:
+                supabase.table("uae_leads").update({"company": cleaned}).eq("id", item["id"]).execute()
+                logger.info(f"✨ Cleaned: {old_name[:20]} -> {cleaned}")
+    except Exception as e:
+        logger.warning(f"Cleanup skip: {e}")
 
     # --- DEEP DISCOVERY NICHES (Expanded for 3,000 lead trajectory) ---
     current_niches = [
