@@ -159,12 +159,23 @@ def save_to_csv(lead):
         logger.error(f"❌ CSV Backup Error: {e}")
 
 def clean_company_name(raw_name):
-    """Strips web search cruft like ' - Crunchbase' or ' | LinkedIn'."""
+    """Deep scrubs web titles to extract only the legitimate company name."""
     if not raw_name: return "Unknown Entity"
-    # Remove common suffixes
-    clean = re.split(r' \-| \| | \/ | \. ', raw_name)[0]
-    # Strip common site names
-    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Facebook|Instagram|Twitter|YouTube', '', clean, flags=re.I)
+    
+    # Remove obvious web cruft first
+    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Instagram|Facebook|Twitter|YouTube|TikTok', '', raw_name, flags=re.I)
+    
+    # Split on common title separators
+    # Added ' in ', ' at ', ' for ', ' announces ', ' launches ' – common in headlines
+    clean = re.split(r' \-| \| | \/ | \.\.\.|\: | at | in | for | news | announced|launches|joined', clean, flags=re.I)[0]
+    
+    # Strip non-alphanumeric at ends (like commas, dots)
+    clean = re.sub(r'^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$', '', clean).strip()
+    
+    # LENGTH FILTER: If name is > 6 words, it's probably a headline, not a company
+    if len(clean.split()) > 6:
+        return "FILTERED_HEADLINE"
+        
     return clean.strip()
 
 def extract_funding_regex(company, context):
@@ -224,7 +235,9 @@ def compile_auditor_intel_extreme(discovery_package):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     
     # Step 1: Extract and CLEAN company name from discovery package
-    company_name = clean_company_name(discovery_package.split('|')[0].replace('Title:', '').strip()[:80])
+    company_name = clean_company_name(discovery_package.split('|')[0].replace('Title:', '').strip()[:100])
+    if company_name == "FILTERED_HEADLINE":
+        return "SKIP"
     
     prompt = f"""
     ROLE: Senior UAE Market Intelligence Auditor.
