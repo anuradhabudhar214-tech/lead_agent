@@ -412,9 +412,9 @@ def run_tracker():
         except:
             num_niches_to_scan = 5
 
-    # --- RETROACTIVE CLEANUP: Fix garbage and Purge Non-Crunchbase ---
+    # --- RETROACTIVE CLEANUP: Fix garbage and Purge KNOWN News ---
     try:
-        logger.info("🧹 RETROACTIVE CLEANUP: Purging news headlines and non-Crunchbase entries...")
+        logger.info("🧹 RETROACTIVE CLEANUP: Purging confirmed news junk...")
         res = supabase.table("uae_leads").select("id, company, url").execute()
         for item in res.data:
             old_name = item.get("company", "")
@@ -423,45 +423,45 @@ def run_tracker():
             
             # PURGE IF:
             # 1. Headline detected
-            # 2. URL is not Crunchbase (Discovery Shield Enforcement)
+            # 2. URL is a known news site (not just 'not Crunchbase')
             # 3. Name is garbage/too long
-            if cleaned == "FILTERED_HEADLINE" or "crunchbase.com/organization" not in (url or "").lower() or len(old_name) > 60:
+            if cleaned == "FILTERED_HEADLINE" or any(news in (url or "").lower() for news in ['wam.ae', 'reuters', 'bloomberg', 'news.']) or len(old_name) > 60:
                 supabase.table("uae_leads").delete().eq("id", item["id"]).execute()
-                logger.info(f"🗑️ Purged Non-Crunchbase/Garbage: {old_name[:30]}...")
+                logger.info(f"🗑️ Purged Bad Entry: {old_name[:30]}...")
             elif cleaned != old_name:
                 supabase.table("uae_leads").update({"company": cleaned}).eq("id", item["id"]).execute()
                 logger.info(f"✨ Cleaned: {old_name[:20]} -> {cleaned}")
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- DEEP DISCOVERY NICHES (100% Crunchbase Only - 3,000 lead trajectory) ---
+    # --- DEEP DISCOVERY NICHES (Optimized for Volume + Quality) ---
     current_niches = [
-        "site:crunchbase.com/organization 'headquarters in Dubai'",
-        "site:crunchbase.com/organization 'headquarters in Abu Dhabi'",
-        "site:crunchbase.com/organization 'operating in United Arab Emirates'",
-        "site:crunchbase.com/organization UAE technology funding 2026",
-        "site:crunchbase.com/organization Dubai AI startup",
-        "site:crunchbase.com/organization Abu Dhabi Fintech investment",
-        "site:crunchbase.com/organization Dubai Crypto Blockchain 2026",
-        "site:crunchbase.com/organization UAE PropTech expansion",
-        "site:crunchbase.com/organization 'Venture capital backed' Dubai",
-        "site:crunchbase.com/organization 'Series A' UAE",
-        "site:crunchbase.com/organization 'Seed round' Dubai",
-        "site:crunchbase.com/organization 'Pre-seed' Abu Dhabi",
-        "site:crunchbase.com/organization Dubai E-commerce startup",
-        "site:crunchbase.com/organization UAE Logistics Tech innovation",
-        "site:crunchbase.com/organization Dubai HealthTech focus",
-        "site:crunchbase.com/organization UAE EdTech expansion",
-        "site:crunchbase.com/organization Abu Dhabi CleanTech",
-        "site:crunchbase.com/organization 'Founded in 2025' Dubai",
-        "site:crunchbase.com/organization 'Founded in 2026' UAE",
-        "site:crunchbase.com/organization Dubai CyberSecurity company profile",
-        "site:crunchbase.com/organization 'Acquired by' Dubai",
-        "site:crunchbase.com/organization Dubai Gaming Esports",
-        "site:crunchbase.com/organization UAE SaaS expansion 2026",
-        "site:crunchbase.com/organization 'Series B' Abu Dhabi",
-        "site:crunchbase.com/organization Dubai Web3 startup list",
-        "site:crunchbase.com/organization Abu Dhabi BioTech venture"
+        "site:crunchbase.com 'headquarters in Dubai'",
+        "site:crunchbase.com 'headquarters in Abu Dhabi'",
+        "site:crunchbase.com 'operating in United Arab Emirates'",
+        "site:crunchbase.com UAE technology funding 2026",
+        "site:crunchbase.com Dubai AI startup",
+        "site:crunchbase.com Abu Dhabi Fintech",
+        "site:crunchbase.com Dubai Crypto 2026",
+        "site:crunchbase.com UAE PropTech",
+        "site:crunchbase.com 'Venture capital' Dubai",
+        "site:crunchbase.com 'Series A' UAE",
+        "site:crunchbase.com 'Seed round' Dubai",
+        "site:crunchbase.com 'Pre-seed' Abu Dhabi",
+        "site:crunchbase.com Dubai E-commerce",
+        "site:crunchbase.com UAE Logistics Tech",
+        "site:crunchbase.com Dubai HealthTech",
+        "site:crunchbase.com UAE EdTech",
+        "site:crunchbase.com Abu Dhabi CleanTech",
+        "site:crunchbase.com 'Founded in 2025' Dubai",
+        "site:crunchbase.com 'Founded in 2026' UAE",
+        "site:crunchbase.com Dubai CyberSecurity",
+        "site:crunchbase.com 'Acquired by' Dubai",
+        "site:crunchbase.com Dubai Gaming",
+        "site:crunchbase.com UAE SaaS 2026",
+        "site:crunchbase.com 'Series B' Abu Dhabi",
+        "site:crunchbase.com Dubai Web3",
+        "site:crunchbase.com Abu Dhabi BioTech"
     ]
     
     # Pick niches based on the current hour and catch-up requirement
@@ -488,9 +488,9 @@ def run_tracker():
                         return
                 except: pass
 
-            # --- CRUNCHBASE ONLY SHIELD: Reject anything not a profile ---
+            # --- FLEXIBLE SHIELD: Require Crunchbase but allow profile variants ---
             link = item.get('link', '')
-            if "crunchbase.com/organization" not in link.lower():
+            if "crunchbase.com/" not in link.lower() or "/organization/" not in link.lower() and "/company/" not in link.lower():
                 continue
                 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
