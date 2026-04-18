@@ -470,11 +470,6 @@ def run_tracker():
     # --- ATOMIC VELOCITY BOOST ---
     num_niches_to_scan = 10
     logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
-    try:
-        num_niches_to_scan = 10 
-        logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
-    except:
-        num_niches_to_scan = 10
 
     # Remnant block removed to prevent double execution.
 

@@ -1,0 +1,8 @@
+2026-04-18T16:54:16.7506573Z 2026-04-18 16:54:16,750 - INFO - ð AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...
+2026-04-18T16:54:17.1811350Z 2026-04-18 16:54:17,180 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company&columns=%22integration_opportunity%22%2C%22confidence_score%22%2C%22discovered_at%22%2C%22strategic_signal%22%2C%22industry%22%2C%22company%22%2C%22funding_amount%22%2C%22url%22%2C%22financials%22 "HTTP/2 500 Internal Server Error"
+2026-04-18T16:54:17.1815399Z 2026-04-18 16:54:17,181 - ERROR - â Upsert Sync Error: {'message': 'ON CONFLICT DO UPDATE command cannot affect row a second time', 'code': '21000', 'hint': 'Ensure that no rows proposed for insertion within the same command have duplicate constrained values.', 'details': None}
+2026-04-18T16:54:17.4605166Z 2026-04-18 16:54:17,460 - ERROR - â Upsert Sync Error: {'message': 'invalid input syntax for type timestamp with time zone: "Active Entity - Master Registry"', 'code': '22007', 'hint': None, 'details': None}
+2026-04-18T16:54:17.6992953Z 2026-04-18 16:54:17,698 - ERROR - â Upsert Sync Error: {'message': 'invalid input syntax for type timestamp with time zone: "Active Entity - Master Registry"', 'code': '22007', 'hint': None, 'details': None}
+2026-04-18T16:54:17.6994180Z 2026-04-18 16:54:17,699 - INFO - â Successfully Resurrected 107 historical leads!
+2026-04-18T16:55:10.9009702Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T16:55:10.9010307Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
