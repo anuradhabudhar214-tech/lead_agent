@@ -426,10 +426,10 @@ def run_tracker():
     # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
     try:
         res = supabase.table("uae_leads").select("id", count="exact").execute()
-        if res.count < 150: # FORCE RESTORE: If DB has less than 200 leads, restore from Git to fix 4 count issue
-            logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
+        if res.count < 115: # FORCE RESTORE: If DB has less than 115 leads, restore from full 245fd15 backup
+            logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine' (Commit 245fd15)...")
             import subprocess, csv, io
-            old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
+            old_csv_raw = subprocess.check_output(["git", "show", "245fd15:enterprise_leads.csv"]).decode('utf-8')
             reader = csv.DictReader(io.StringIO(old_csv_raw))
             restore_list = []
             unique_companies = set()
