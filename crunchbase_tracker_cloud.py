@@ -432,10 +432,19 @@ def run_tracker():
             old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
             reader = csv.DictReader(io.StringIO(old_csv_raw))
             restore_list = []
+            unique_companies = set()
             for row in reader:
                 try:
+                    company_name = row.get("Company") or "Unknown"
+                    if company_name in unique_companies:
+                        continue # prevent ON CONFLICT error in single chunk
+                    unique_companies.add(company_name)
+
+                    # Ensure valid timestamp for discovered_at
+                    valid_date = datetime.now(timezone.utc).isoformat()
+
                     restore_list.append({
-                        "company": row.get("Company") or "Unknown",
+                        "company": company_name,
                         "industry": row.get("Industry") or "Tech",
                         "confidence_score": 85,
                         "funding_amount": row.get("Funding") or row.get("Financials") or "Undisclosed",
@@ -443,7 +452,7 @@ def run_tracker():
                         "strategic_signal": row.get("2026 Strategic Signal") or "N/A",
                         "integration_opportunity": row.get("Integration Opportunity") or "N/A",
                         "url": row.get("URL") or "",
-                        "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
+                        "discovered_at": valid_date
                     })
                 except Exception: pass
             if restore_list:
