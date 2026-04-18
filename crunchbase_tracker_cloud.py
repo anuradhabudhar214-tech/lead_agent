@@ -366,7 +366,7 @@ def compile_auditor_intel_extreme(discovery_package):
     }
 
 def serper_search_broad(query):
-    """Crunchbase-targeted Serper discovery (50 results per call)."""
+    """Crunchbase-targeted Serper discovery."""
     key = vault.get_serper_key()
     if not key:
         logger.error("No Serper keys available!")
@@ -375,7 +375,7 @@ def serper_search_broad(query):
     headers = {"X-API-KEY": key, "Content-Type": "application/json"}
     try:
         track_cloud_usage("Serper")
-        payload = {"q": query, "num": 50, "tbs": "qdr:m"}
+        payload = {"q": query, "num": 50}
         r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
         res_data = r.json()
         if r.status_code == 403 or r.status_code == 429:
@@ -384,9 +384,9 @@ def serper_search_broad(query):
             return []
         if 'organic' in res_data:
             results = res_data['organic']
-            logger.info(f"  Serper returned {len(results)} results for query")
+            logger.info(f"  Serper returned {len(results)} results")
             return results
-        logger.warning(f"Serper no organic results. Response keys: {list(res_data.keys())}")
+        logger.warning(f"Serper response issue: {res_data.get('message', 'no organic')}")
         return []
     except Exception as e:
         logger.error(f"Serper request failed: {e}")
@@ -497,39 +497,40 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- CRUNCHBASE ONLY NICHES: Funding round data ---
+    # --- CRUNCHBASE FUNDING HUNT: Search for UAE startups with funding data ---
+    # NOTE: site:crunchbase.com returns no results (Crunchbase blocks Google)
+    # Strategy: Search for UAE funded companies -> URL filter keeps ONLY Crunchbase links
     current_niches = [
-        # Funding round specific searches (these are what Serper/Google CAN resolve)
-        'site:crunchbase.com "United Arab Emirates" "Series A"',
-        'site:crunchbase.com "Dubai" "Series B"',
-        'site:crunchbase.com "Abu Dhabi" "Seed" funding',
-        'site:crunchbase.com "UAE" "Pre-Seed" raised',
-        'site:crunchbase.com "Dubai" "Venture Round"',
-        'site:crunchbase.com "UAE" "Series C" funding',
-        'site:crunchbase.com "Dubai" AI startup funding raised 2024',
-        'site:crunchbase.com "Abu Dhabi" fintech raised million 2024',
-        'site:crunchbase.com "Dubai" crypto blockchain funding round',
-        'site:crunchbase.com "UAE" proptech funding raised',
-        'site:crunchbase.com "Dubai" SaaS funding raised million',
-        'site:crunchbase.com "UAE" healthtech "Series" raised',
-        'site:crunchbase.com "Dubai" edtech funding round raised',
-        'site:crunchbase.com "Abu Dhabi" cleantech funding',
-        'site:crunchbase.com "Dubai" logistics tech funding round',
-        'site:crunchbase.com "UAE" cybersecurity funding raised 2024',
-        'site:crunchbase.com "Dubai" cloud infrastructure startup funding',
-        'site:crunchbase.com "UAE" e-commerce startup raised 2025',
-        'site:crunchbase.com "Dubai" robotics automation funding round',
-        'site:crunchbase.com "UAE" web3 DeFi funding raised',
-        'site:crunchbase.com "Abu Dhabi" gaming startup raised',
-        'site:crunchbase.com "UAE" biotech funding series',
-        'site:crunchbase.com "Dubai" agritech food tech raised',
-        'site:crunchbase.com "UAE" insurtech legaltech funding',
-        'site:crunchbase.com "Dubai" founded 2023 2024 technology',
-        'site:crunchbase.com "Abu Dhabi" investment capital tech raised',
-        'site:crunchbase.com "UAE" HR tech B2B startup funding',
-        'site:crunchbase.com "Dubai" smart mobility transport raised',
-        'site:crunchbase.com "UAE" fintech startup raised 2024 2025',
-        'site:crunchbase.com "Dubai" IT solutions enterprise raised',
+        'crunchbase.com UAE startup "Series A" funding raised million',
+        'crunchbase.com Dubai startup "Series B" funding raised million',
+        'crunchbase.com "Abu Dhabi" startup "Seed" funding raised',
+        'crunchbase.com UAE startup "Pre-Seed" funding raised 2024',
+        'crunchbase.com Dubai startup "Venture Round" raised million',
+        'crunchbase.com UAE "Series C" funding round raised 2024',
+        'crunchbase UAE Dubai AI technology startup funding round raised',
+        'crunchbase Dubai fintech startup seed funding raised million',
+        'crunchbase UAE proptech startup funding round 2024 2025',
+        'crunchbase Dubai SaaS B2B startup series A funding raised',
+        'crunchbase UAE healthtech biotech funding series raised',
+        'crunchbase Dubai cybersecurity startup funding round raised',
+        'crunchbase UAE logistics supply chain startup funding raised',
+        'crunchbase Dubai edtech startup funding raised million',
+        'crunchbase Abu Dhabi cleantech green energy funding raised',
+        'crunchbase UAE e-commerce startup raised series funding 2024',
+        'crunchbase Dubai robotics automation startup funding raised',
+        'crunchbase UAE web3 blockchain crypto startup funding',
+        'crunchbase Dubai cloud infrastructure SaaS startup raised',
+        'crunchbase UAE insurtech legaltech startup funding raised',
+        'crunchbase Dubai founded 2022 2023 2024 UAE tech startup funding',
+        'crunchbase Abu Dhabi capital investment tech startup raised',
+        'crunchbase UAE smart mobility transport startup raised',
+        'crunchbase Dubai gaming esports tech startup funding raised',
+        'crunchbase UAE agritech foodtech startup funding round',
+        'crunchbase Dubai HR tech workforce management startup raised',
+        'crunchbase UAE media entertainment tech startup funding',
+        'crunchbase Dubai deeptech quantum space startup funding',
+        'crunchbase UAE construction proptech startup raised million',
+        'crunchbase Dubai retail ecommerce platform startup raised',
     ]
     
     # Pick niches based on the current hour and catch-up requirement

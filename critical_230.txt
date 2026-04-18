@@ -1,0 +1,55 @@
+2026-04-18T18:02:26.7112013Z remote: Compressing objects:  85% (89/104)        
+2026-04-18T18:02:26.7201568Z Receiving objects:  43% (253/588)
+2026-04-18T18:02:29.1210064Z   Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+2026-04-18T18:02:29.4633476Z   Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2026-04-18T18:02:29.5673801Z   Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.8 kB)
+2026-04-18T18:02:30.6774121Z   Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+2026-04-18T18:02:30.8720179Z Collecting charset_normalizer<4,>=2 (from requests->-r requirements.txt (line 3))
+2026-04-18T18:02:30.8760632Z   Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+2026-04-18T18:02:31.4224375Z   Downloading protobuf-7.34.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+2026-04-18T18:02:31.5970364Z   Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl.metadata (592 bytes)
+2026-04-18T18:02:32.3464725Z   Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+2026-04-18T18:02:33.0482102Z   Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+2026-04-18T18:02:33.4292013Z Collecting pyroaring<2.0.0,>=1.0.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T18:02:33.5469617Z   Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+2026-04-18T18:02:33.9727086Z   Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+2026-04-18T18:02:34.0386484Z   Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+2026-04-18T18:02:34.2861013Z Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+2026-04-18T18:02:34.3024950Z Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (181 kB)
+2026-04-18T18:02:34.3400282Z Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+2026-04-18T18:02:34.4250883Z Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.8 MB)
+2026-04-18T18:02:34.4686637Z Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl (320 kB)
+2026-04-18T18:02:34.5391408Z Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+2026-04-18T18:02:34.5820847Z Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (705 kB)
+2026-04-18T18:02:34.6505660Z Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+2026-04-18T18:02:34.7344277Z Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+2026-04-18T18:02:34.7409825Z Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+2026-04-18T18:02:34.7482902Z Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (196 kB)
+2026-04-18T18:02:45.4474526Z 2026-04-18 18:02:45,447 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:46.8421201Z 2026-04-18 18:02:46,841 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T18:02:50.8112061Z 2026-04-18 18:02:50,810 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:52.4787787Z 2026-04-18 18:02:52,478 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:52.9544382Z 2026-04-18 18:02:52,954 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:54.6201447Z 2026-04-18 18:02:54,619 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 200 OK"
+2026-04-18T18:02:55.3162119Z 2026-04-18 18:02:55,315 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:56.2509524Z 2026-04-18 18:02:56,250 - INFO - HTTP Request: POST ***/rest/v1/uae_leads?on_conflict=company "HTTP/2 201 Created"
+2026-04-18T18:02:58.6494264Z 2026-04-18 18:02:58,648 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Dubai" robotics automation funding round'...
+2026-04-18T18:02:59.2835802Z 2026-04-18 18:02:59,283 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:02:59.8276730Z 2026-04-18 18:02:59,827 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "UAE" web3 DeFi funding raised'...
+2026-04-18T18:03:00.4498874Z 2026-04-18 18:03:00,449 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:01.0118792Z 2026-04-18 18:03:01,011 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Abu Dhabi" gaming startup raised'...
+2026-04-18T18:03:01.5986485Z 2026-04-18 18:03:01,598 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:02.1823839Z 2026-04-18 18:03:02,181 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "UAE" biotech funding series'...
+2026-04-18T18:03:02.8873279Z 2026-04-18 18:03:02,887 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:03.4212461Z 2026-04-18 18:03:03,420 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Dubai" agritech food tech raised'...
+2026-04-18T18:03:04.0561367Z 2026-04-18 18:03:04,055 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:04.5779262Z 2026-04-18 18:03:04,577 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "UAE" insurtech legaltech funding'...
+2026-04-18T18:03:05.1727762Z 2026-04-18 18:03:05,172 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:05.6920201Z 2026-04-18 18:03:05,691 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Dubai" founded 2023 2024 technology'...
+2026-04-18T18:03:06.3471690Z 2026-04-18 18:03:06,346 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:06.8829720Z 2026-04-18 18:03:06,882 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Abu Dhabi" investment capital tech raised'...
+2026-04-18T18:03:07.5382048Z 2026-04-18 18:03:07,537 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:08.0508256Z 2026-04-18 18:03:08,050 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "UAE" HR tech B2B startup funding'...
+2026-04-18T18:03:08.6358535Z 2026-04-18 18:03:08,635 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
+2026-04-18T18:03:09.1564677Z 2026-04-18 18:03:09,155 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com "Dubai" smart mobility transport raised'...
+2026-04-18T18:03:09.7543907Z 2026-04-18 18:03:09,754 - WARNING - Serper no organic results. Response keys: ['message', 'statusCode']
