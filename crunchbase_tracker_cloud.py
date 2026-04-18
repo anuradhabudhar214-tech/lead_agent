@@ -456,14 +456,17 @@ def run_tracker():
                     })
                 except Exception: pass
             if restore_list:
-                for i in range(0, len(restore_list), 50):
-                    chunk = restore_list[i:i+50]
+                success_count = 0
+                for lead in restore_list:
                     try:
-                        supabase.table("uae_leads").upsert(chunk, on_conflict="company").execute()
-                        logger.info(f"✅ Fast-Synced chunk {i}")
+                        supabase.table("uae_leads").upsert(lead, on_conflict="company").execute()
+                        success_count += 1
                     except Exception as e:
-                        logger.error(f"❌ Upsert Sync Error: {e}")
-                logger.info(f"✅ Successfully Resurrected {len(restore_list)} historical leads!")
+                        # Log error but keep going!
+                        if "21000" not in str(e): # Ignore the duplicate-in-batch error since we're single row now
+                            logger.error(f"⚠️ Row Sync Error: {e}")
+                
+                logger.info(f"✅ Successfully Resurrected {success_count} historical leads!")
     except Exception as e:
         logger.warning(f"Resurrection skip/error: {e}")
 
