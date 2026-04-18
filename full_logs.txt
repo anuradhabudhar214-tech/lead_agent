@@ -1,0 +1,638 @@
+ï»¿2026-04-18T09:47:10.1066099Z Current runner version: '2.333.1'
+2026-04-18T09:47:10.1090410Z ##[group]Runner Image Provisioner
+2026-04-18T09:47:10.1091442Z Hosted Compute Agent
+2026-04-18T09:47:10.1092205Z Version: 20260213.493
+2026-04-18T09:47:10.1093156Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-18T09:47:10.1093972Z Build Date: 2026-02-13T00:28:41Z
+2026-04-18T09:47:10.1094743Z Worker ID: {e69ffb03-28b8-44b9-8e35-4cdf21dd4650}
+2026-04-18T09:47:10.1095482Z Azure Region: eastus2
+2026-04-18T09:47:10.1096234Z ##[endgroup]
+2026-04-18T09:47:10.1098056Z ##[group]Operating System
+2026-04-18T09:47:10.1098807Z Ubuntu
+2026-04-18T09:47:10.1099414Z 24.04.4
+2026-04-18T09:47:10.1099928Z LTS
+2026-04-18T09:47:10.1100554Z ##[endgroup]
+2026-04-18T09:47:10.1101134Z ##[group]Runner Image
+2026-04-18T09:47:10.1101801Z Image: ubuntu-24.04
+2026-04-18T09:47:10.1102830Z Version: 20260413.86.1
+2026-04-18T09:47:10.1104358Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260413.86/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-18T09:47:10.1105931Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260413.86
+2026-04-18T09:47:10.1107295Z ##[endgroup]
+2026-04-18T09:47:10.1108487Z ##[group]GITHUB_TOKEN Permissions
+2026-04-18T09:47:10.1111004Z Contents: write
+2026-04-18T09:47:10.1111651Z Metadata: read
+2026-04-18T09:47:10.1112606Z ##[endgroup]
+2026-04-18T09:47:10.1114984Z Secret source: Actions
+2026-04-18T09:47:10.1116168Z Prepare workflow directory
+2026-04-18T09:47:10.1434658Z Prepare all required actions
+2026-04-18T09:47:10.1471540Z Getting action download info
+2026-04-18T09:47:10.3969766Z Download action repository 'actions/checkout@v3' (SHA:f43a0e5ff2bd294095638e18286ca9a3d1956744)
+2026-04-18T09:47:10.5179641Z Download action repository 'actions/setup-python@v4' (SHA:7f4fc3e22c37d6ff65e88745f38bd3157c663f7c)
+2026-04-18T09:47:10.6975635Z Complete job name: hunt
+2026-04-18T09:47:10.7694130Z ##[group]Run actions/checkout@v3
+2026-04-18T09:47:10.7695045Z with:
+2026-04-18T09:47:10.7695573Z   repository: anuradhabudhar214-tech/lead_agent
+2026-04-18T09:47:10.7696424Z   token: ***
+2026-04-18T09:47:10.7696889Z   ssh-strict: true
+2026-04-18T09:47:10.7697390Z   persist-credentials: true
+2026-04-18T09:47:10.7697917Z   clean: true
+2026-04-18T09:47:10.7698397Z   sparse-checkout-cone-mode: true
+2026-04-18T09:47:10.7698969Z   fetch-depth: 1
+2026-04-18T09:47:10.7699430Z   fetch-tags: false
+2026-04-18T09:47:10.7699900Z   lfs: false
+2026-04-18T09:47:10.7700349Z   submodules: false
+2026-04-18T09:47:10.7700840Z   set-safe-directory: true
+2026-04-18T09:47:10.7701571Z ##[endgroup]
+2026-04-18T09:47:10.8594951Z Syncing repository: anuradhabudhar214-tech/lead_agent
+2026-04-18T09:47:10.8596828Z ##[group]Getting Git version info
+2026-04-18T09:47:10.8597622Z Working directory is '/home/runner/work/lead_agent/lead_agent'
+2026-04-18T09:47:10.8598694Z [command]/usr/bin/git version
+2026-04-18T09:47:10.8638282Z git version 2.53.0
+2026-04-18T09:47:10.8665754Z ##[endgroup]
+2026-04-18T09:47:10.8681321Z Temporarily overriding HOME='/home/runner/work/_temp/41bcd3e1-b90f-4bc0-8f31-547723bae9a1' before making global git config changes
+2026-04-18T09:47:10.8684115Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T09:47:10.8686264Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T09:47:10.8718401Z Deleting the contents of '/home/runner/work/lead_agent/lead_agent'
+2026-04-18T09:47:10.8722717Z ##[group]Initializing the repository
+2026-04-18T09:47:10.8726690Z [command]/usr/bin/git init /home/runner/work/lead_agent/lead_agent
+2026-04-18T09:47:10.8823574Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-04-18T09:47:10.8825487Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-04-18T09:47:10.8827305Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-04-18T09:47:10.8828700Z hint: call:
+2026-04-18T09:47:10.8829456Z hint:
+2026-04-18T09:47:10.8830411Z hint: 	git config --global init.defaultBranch <name>
+2026-04-18T09:47:10.8831995Z hint:
+2026-04-18T09:47:10.8833316Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-04-18T09:47:10.8834972Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-04-18T09:47:10.8836365Z hint:
+2026-04-18T09:47:10.8837162Z hint: 	git branch -m <name>
+2026-04-18T09:47:10.8838013Z hint:
+2026-04-18T09:47:10.8839095Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-04-18T09:47:10.8840919Z Initialized empty Git repository in /home/runner/work/lead_agent/lead_agent/.git/
+2026-04-18T09:47:10.8843638Z [command]/usr/bin/git remote add origin https://github.com/anuradhabudhar214-tech/lead_agent
+2026-04-18T09:47:10.8867255Z ##[endgroup]
+2026-04-18T09:47:10.8868614Z ##[group]Disabling automatic garbage collection
+2026-04-18T09:47:10.8870435Z [command]/usr/bin/git config --local gc.auto 0
+2026-04-18T09:47:10.8898032Z ##[endgroup]
+2026-04-18T09:47:10.8899399Z ##[group]Setting up auth
+2026-04-18T09:47:10.8904497Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T09:47:10.8932930Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T09:47:10.9220382Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T09:47:10.9247982Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T09:47:10.9458249Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-04-18T09:47:10.9490562Z ##[endgroup]
+2026-04-18T09:47:10.9492061Z ##[group]Fetching the repository
+2026-04-18T09:47:10.9500031Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +76617afbc7d3daf44ec7dbf96016431d3b2e54e8:refs/remotes/origin/main
+2026-04-18T09:47:11.0958450Z remote: Enumerating objects: 41, done.        
+2026-04-18T09:47:11.0960004Z remote: Counting objects:   2% (1/41)        
+2026-04-18T09:47:11.0960936Z remote: Counting objects:   4% (2/41)        
+2026-04-18T09:47:11.0961987Z remote: Counting objects:   7% (3/41)        
+2026-04-18T09:47:11.0963394Z remote: Counting objects:   9% (4/41)        
+2026-04-18T09:47:11.0964775Z remote: Counting objects:  12% (5/41)        
+2026-04-18T09:47:11.0965955Z remote: Counting objects:  14% (6/41)        
+2026-04-18T09:47:11.0967079Z remote: Counting objects:  17% (7/41)        
+2026-04-18T09:47:11.0968106Z remote: Counting objects:  19% (8/41)        
+2026-04-18T09:47:11.0968976Z remote: Counting objects:  21% (9/41)        
+2026-04-18T09:47:11.0970718Z remote: Counting objects:  24% (10/41)        
+2026-04-18T09:47:11.0972366Z remote: Counting objects:  26% (11/41)        
+2026-04-18T09:47:11.0974104Z remote: Counting objects:  29% (12/41)        
+2026-04-18T09:47:11.0975419Z remote: Counting objects:  31% (13/41)        
+2026-04-18T09:47:11.0976418Z remote: Counting objects:  34% (14/41)        
+2026-04-18T09:47:11.0977165Z remote: Counting objects:  36% (15/41)        
+2026-04-18T09:47:11.0977873Z remote: Counting objects:  39% (16/41)        
+2026-04-18T09:47:11.0978576Z remote: Counting objects:  41% (17/41)        
+2026-04-18T09:47:11.0979284Z remote: Counting objects:  43% (18/41)        
+2026-04-18T09:47:11.0980025Z remote: Counting objects:  46% (19/41)        
+2026-04-18T09:47:11.0980738Z remote: Counting objects:  48% (20/41)        
+2026-04-18T09:47:11.0981447Z remote: Counting objects:  51% (21/41)        
+2026-04-18T09:47:11.0982143Z remote: Counting objects:  53% (22/41)        
+2026-04-18T09:47:11.0983208Z remote: Counting objects:  56% (23/41)        
+2026-04-18T09:47:11.0983920Z remote: Counting objects:  58% (24/41)        
+2026-04-18T09:47:11.0984868Z remote: Counting objects:  60% (25/41)        
+2026-04-18T09:47:11.0985562Z remote: Counting objects:  63% (26/41)        
+2026-04-18T09:47:11.0986240Z remote: Counting objects:  65% (27/41)        
+2026-04-18T09:47:11.0987082Z remote: Counting objects:  68% (28/41)        
+2026-04-18T09:47:11.0987833Z remote: Counting objects:  70% (29/41)        
+2026-04-18T09:47:11.0988546Z remote: Counting objects:  73% (30/41)        
+2026-04-18T09:47:11.0989236Z remote: Counting objects:  75% (31/41)        
+2026-04-18T09:47:11.0989932Z remote: Counting objects:  78% (32/41)        
+2026-04-18T09:47:11.0990619Z remote: Counting objects:  80% (33/41)        
+2026-04-18T09:47:11.0991304Z remote: Counting objects:  82% (34/41)        
+2026-04-18T09:47:11.0992023Z remote: Counting objects:  85% (35/41)        
+2026-04-18T09:47:11.0992982Z remote: Counting objects:  87% (36/41)        
+2026-04-18T09:47:11.0993699Z remote: Counting objects:  90% (37/41)        
+2026-04-18T09:47:11.0994385Z remote: Counting objects:  92% (38/41)        
+2026-04-18T09:47:11.0995076Z remote: Counting objects:  95% (39/41)        
+2026-04-18T09:47:11.0995759Z remote: Counting objects:  97% (40/41)        
+2026-04-18T09:47:11.0996442Z remote: Counting objects: 100% (41/41)        
+2026-04-18T09:47:11.0997166Z remote: Counting objects: 100% (41/41), done.        
+2026-04-18T09:47:11.0997919Z remote: Compressing objects:   2% (1/37)        
+2026-04-18T09:47:11.0998645Z remote: Compressing objects:   5% (2/37)        
+2026-04-18T09:47:11.0999357Z remote: Compressing objects:   8% (3/37)        
+2026-04-18T09:47:11.1000059Z remote: Compressing objects:  10% (4/37)        
+2026-04-18T09:47:11.1000776Z remote: Compressing objects:  13% (5/37)        
+2026-04-18T09:47:11.1001476Z remote: Compressing objects:  16% (6/37)        
+2026-04-18T09:47:11.1002341Z remote: Compressing objects:  18% (7/37)        
+2026-04-18T09:47:11.1003348Z remote: Compressing objects:  21% (8/37)        
+2026-04-18T09:47:11.1004067Z remote: Compressing objects:  24% (9/37)        
+2026-04-18T09:47:11.1004806Z remote: Compressing objects:  27% (10/37)        
+2026-04-18T09:47:11.1005531Z remote: Compressing objects:  29% (11/37)        
+2026-04-18T09:47:11.1006253Z remote: Compressing objects:  32% (12/37)        
+2026-04-18T09:47:11.1006969Z remote: Compressing objects:  35% (13/37)        
+2026-04-18T09:47:11.1007688Z remote: Compressing objects:  37% (14/37)        
+2026-04-18T09:47:11.1009053Z remote: Compressing objects:  40% (15/37)        
+2026-04-18T09:47:11.1010405Z remote: Compressing objects:  43% (16/37)        
+2026-04-18T09:47:11.1011538Z remote: Compressing objects:  45% (17/37)        
+2026-04-18T09:47:11.1012278Z remote: Compressing objects:  48% (18/37)        
+2026-04-18T09:47:11.1013270Z remote: Compressing objects:  51% (19/37)        
+2026-04-18T09:47:11.1014020Z remote: Compressing objects:  54% (20/37)        
+2026-04-18T09:47:11.1014739Z remote: Compressing objects:  56% (21/37)        
+2026-04-18T09:47:11.1015459Z remote: Compressing objects:  59% (22/37)        
+2026-04-18T09:47:11.1016202Z remote: Compressing objects:  62% (23/37)        
+2026-04-18T09:47:11.1016915Z remote: Compressing objects:  64% (24/37)        
+2026-04-18T09:47:11.1017695Z remote: Compressing objects:  67% (25/37)        
+2026-04-18T09:47:11.1018818Z remote: Compressing objects:  70% (26/37)        
+2026-04-18T09:47:11.1019749Z remote: Compressing objects:  72% (27/37)        
+2026-04-18T09:47:11.1020494Z remote: Compressing objects:  75% (28/37)        
+2026-04-18T09:47:11.1022321Z remote: Compressing objects:  78% (29/37)        
+2026-04-18T09:47:11.1023376Z remote: Compressing objects:  81% (30/37)        
+2026-04-18T09:47:11.1024583Z remote: Compressing objects:  83% (31/37)        
+2026-04-18T09:47:11.1025751Z remote: Compressing objects:  86% (32/37)        
+2026-04-18T09:47:11.1026534Z remote: Compressing objects:  89% (33/37)        
+2026-04-18T09:47:11.1027261Z remote: Compressing objects:  91% (34/37)        
+2026-04-18T09:47:11.1027993Z remote: Compressing objects:  94% (35/37)        
+2026-04-18T09:47:11.1028905Z remote: Compressing objects:  97% (36/37)        
+2026-04-18T09:47:11.1029625Z remote: Compressing objects: 100% (37/37)        
+2026-04-18T09:47:11.1030403Z remote: Compressing objects: 100% (37/37), done.        
+2026-04-18T09:47:11.1086264Z remote: Total 41 (delta 3), reused 30 (delta 2), pack-reused 0 (from 0)        
+2026-04-18T09:47:11.1168509Z From https://github.com/anuradhabudhar214-tech/lead_agent
+2026-04-18T09:47:11.1170536Z  * [new ref]         76617afbc7d3daf44ec7dbf96016431d3b2e54e8 -> origin/main
+2026-04-18T09:47:11.1199998Z ##[endgroup]
+2026-04-18T09:47:11.1201686Z ##[group]Determining the checkout info
+2026-04-18T09:47:11.1203728Z ##[endgroup]
+2026-04-18T09:47:11.1205154Z ##[group]Checking out the ref
+2026-04-18T09:47:11.1207587Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-04-18T09:47:11.1269972Z Switched to a new branch 'main'
+2026-04-18T09:47:11.1273276Z branch 'main' set up to track 'origin/main'.
+2026-04-18T09:47:11.1280088Z ##[endgroup]
+2026-04-18T09:47:11.1311324Z [command]/usr/bin/git log -1 --format='%H'
+2026-04-18T09:47:11.1333162Z '76617afbc7d3daf44ec7dbf96016431d3b2e54e8'
+2026-04-18T09:47:11.1669189Z ##[group]Run actions/setup-python@v4
+2026-04-18T09:47:11.1670217Z with:
+2026-04-18T09:47:11.1670751Z   python-version: 3.10
+2026-04-18T09:47:11.1671441Z   check-latest: false
+2026-04-18T09:47:11.1672161Z   token: ***
+2026-04-18T09:47:11.1672968Z   update-environment: true
+2026-04-18T09:47:11.1673699Z   allow-prereleases: false
+2026-04-18T09:47:11.1674277Z ##[endgroup]
+2026-04-18T09:47:11.3335391Z ##[group]Installed versions
+2026-04-18T09:47:11.3444967Z Successfully set up CPython (3.10.20)
+2026-04-18T09:47:11.3446615Z ##[endgroup]
+2026-04-18T09:47:11.3570330Z ##[group]Run pip install -r requirements.txt
+2026-04-18T09:47:11.3571188Z [36;1mpip install -r requirements.txt[0m
+2026-04-18T09:47:11.3616761Z shell: /usr/bin/bash -e {0}
+2026-04-18T09:47:11.3617387Z env:
+2026-04-18T09:47:11.3618014Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:11.3618969Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T09:47:11.3619891Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:11.3620728Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:11.3621604Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:11.3622748Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T09:47:11.3623513Z ##[endgroup]
+2026-04-18T09:47:12.1759310Z Collecting supabase (from -r requirements.txt (line 1))
+2026-04-18T09:47:12.2436867Z   Downloading supabase-2.28.3-py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T09:47:12.2686541Z Collecting groq (from -r requirements.txt (line 2))
+2026-04-18T09:47:12.2756342Z   Downloading groq-1.1.2-py3-none-any.whl.metadata (16 kB)
+2026-04-18T09:47:12.3388533Z Collecting requests (from -r requirements.txt (line 3))
+2026-04-18T09:47:12.3507983Z   Downloading requests-2.33.1-py3-none-any.whl.metadata (4.8 kB)
+2026-04-18T09:47:12.4209032Z Collecting fastapi (from -r requirements.txt (line 4))
+2026-04-18T09:47:12.4283451Z   Downloading fastapi-0.136.0-py3-none-any.whl.metadata (28 kB)
+2026-04-18T09:47:12.4711249Z Collecting uvicorn (from -r requirements.txt (line 5))
+2026-04-18T09:47:12.4784544Z   Downloading uvicorn-0.44.0-py3-none-any.whl.metadata (6.7 kB)
+2026-04-18T09:47:12.4975005Z Collecting python-multipart (from -r requirements.txt (line 6))
+2026-04-18T09:47:12.5044694Z   Downloading python_multipart-0.0.26-py3-none-any.whl.metadata (2.1 kB)
+2026-04-18T09:47:12.5269068Z Collecting python-dotenv (from -r requirements.txt (line 7))
+2026-04-18T09:47:12.5349212Z   Downloading python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+2026-04-18T09:47:12.5533034Z Collecting google-generativeai (from -r requirements.txt (line 8))
+2026-04-18T09:47:12.5605514Z   Downloading google_generativeai-0.8.6-py3-none-any.whl.metadata (3.9 kB)
+2026-04-18T09:47:12.5917325Z Collecting google-genai (from -r requirements.txt (line 9))
+2026-04-18T09:47:12.5992326Z   Downloading google_genai-1.73.1-py3-none-any.whl.metadata (52 kB)
+2026-04-18T09:47:12.6247916Z Collecting realtime==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.6318697Z   Downloading realtime-2.28.3-py3-none-any.whl.metadata (7.0 kB)
+2026-04-18T09:47:12.6517091Z Collecting supabase-functions==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.6591527Z   Downloading supabase_functions-2.28.3-py3-none-any.whl.metadata (2.4 kB)
+2026-04-18T09:47:12.6814943Z Collecting storage3==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.6886596Z   Downloading storage3-2.28.3-py3-none-any.whl.metadata (2.1 kB)
+2026-04-18T09:47:12.7099859Z Collecting supabase-auth==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.7178148Z   Downloading supabase_auth-2.28.3-py3-none-any.whl.metadata (6.4 kB)
+2026-04-18T09:47:12.7399415Z Collecting postgrest==2.28.3 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.7471656Z   Downloading postgrest-2.28.3-py3-none-any.whl.metadata (3.4 kB)
+2026-04-18T09:47:12.7713555Z Collecting httpx<0.29,>=0.26 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:12.7787326Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2026-04-18T09:47:13.1178145Z Collecting yarl>=1.22.0 (from supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.1253646Z   Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+2026-04-18T09:47:13.1453427Z Collecting deprecation>=2.1.0 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.1524307Z   Downloading deprecation-2.1.0-py2.py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T09:47:13.3172331Z Collecting pydantic<3.0,>=1.9 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.3245269Z   Downloading pydantic-2.13.2-py3-none-any.whl.metadata (108 kB)
+2026-04-18T09:47:13.3432878Z Collecting strenum>=0.4.9 (from postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.3500724Z   Downloading StrEnum-0.4.15-py3-none-any.whl.metadata (5.3 kB)
+2026-04-18T09:47:13.3798998Z Collecting typing-extensions>=4.14.0 (from realtime==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.3872586Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+2026-04-18T09:47:13.4983960Z Collecting websockets<16,>=11 (from realtime==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.5063562Z   Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.8 kB)
+2026-04-18T09:47:13.6135557Z Collecting pyiceberg>=0.10.0 (from storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.6210951Z   Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.8 kB)
+2026-04-18T09:47:13.6636141Z Collecting pyjwt>=2.10.1 (from pyjwt[crypto]>=2.10.1->supabase-auth==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.6710188Z   Downloading pyjwt-2.12.1-py3-none-any.whl.metadata (4.1 kB)
+2026-04-18T09:47:13.6990630Z Collecting anyio (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.7061043Z   Downloading anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+2026-04-18T09:47:13.7312579Z Collecting certifi (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.7384113Z   Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+2026-04-18T09:47:13.7603557Z Collecting httpcore==1.* (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.7673755Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2026-04-18T09:47:13.7867649Z Collecting idna (from httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.7938688Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T09:47:13.8099086Z Collecting h11>=0.16 (from httpcore==1.*->httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.8168128Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2026-04-18T09:47:13.8385367Z Collecting h2<5,>=3 (from httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.8457049Z   Downloading h2-4.3.0-py3-none-any.whl.metadata (5.1 kB)
+2026-04-18T09:47:13.8631014Z Collecting hyperframe<7,>=6.1 (from h2<5,>=3->httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.8707103Z   Downloading hyperframe-6.1.0-py3-none-any.whl.metadata (4.3 kB)
+2026-04-18T09:47:13.8855627Z Collecting hpack<5,>=4.1 (from h2<5,>=3->httpx[http2]<0.29,>=0.26->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.8926760Z   Downloading hpack-4.1.0-py3-none-any.whl.metadata (4.6 kB)
+2026-04-18T09:47:13.9087261Z Collecting annotated-types>=0.6.0 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:13.9157491Z   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+2026-04-18T09:47:14.7944475Z Collecting pydantic-core==2.46.2 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:14.8026990Z   Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+2026-04-18T09:47:14.8195363Z Collecting typing-inspection>=0.4.2 (from pydantic<3.0,>=1.9->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:14.8270113Z   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T09:47:14.8489122Z Collecting distro<2,>=1.7.0 (from groq->-r requirements.txt (line 2))
+2026-04-18T09:47:14.8561291Z   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+2026-04-18T09:47:14.8705117Z Collecting sniffio (from groq->-r requirements.txt (line 2))
+2026-04-18T09:47:14.8775568Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+2026-04-18T09:47:14.8978393Z Collecting exceptiongroup>=1.0.2 (from anyio->httpx<0.29,>=0.26->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:14.9060174Z   Downloading exceptiongroup-1.3.1-py3-none-any.whl.metadata (6.7 kB)
+2026-04-18T09:47:15.0304300Z Collecting charset_normalizer<4,>=2 (from requests->-r requirements.txt (line 3))
+2026-04-18T09:47:15.0386232Z   Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+2026-04-18T09:47:15.0719401Z Collecting urllib3<3,>=1.26 (from requests->-r requirements.txt (line 3))
+2026-04-18T09:47:15.0794309Z   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+2026-04-18T09:47:15.1165128Z Collecting starlette>=0.46.0 (from fastapi->-r requirements.txt (line 4))
+2026-04-18T09:47:15.1236009Z   Downloading starlette-1.0.0-py3-none-any.whl.metadata (6.3 kB)
+2026-04-18T09:47:15.1505174Z Collecting annotated-doc>=0.0.2 (from fastapi->-r requirements.txt (line 4))
+2026-04-18T09:47:15.1574535Z   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+2026-04-18T09:47:15.1800461Z Collecting click>=7.0 (from uvicorn->-r requirements.txt (line 5))
+2026-04-18T09:47:15.1871405Z   Downloading click-8.3.2-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T09:47:15.2100093Z Collecting google-ai-generativelanguage==0.6.15 (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.2170918Z   Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl.metadata (5.7 kB)
+2026-04-18T09:47:15.3078118Z Collecting google-api-core (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.3149865Z   Downloading google_api_core-2.30.3-py3-none-any.whl.metadata (3.1 kB)
+2026-04-18T09:47:15.3782064Z Collecting google-api-python-client (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.3857106Z   Downloading google_api_python_client-2.194.0-py3-none-any.whl.metadata (7.0 kB)
+2026-04-18T09:47:15.4273925Z Collecting google-auth>=2.15.0 (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.4349806Z   Downloading google_auth-2.49.2-py3-none-any.whl.metadata (6.2 kB)
+2026-04-18T09:47:15.6297056Z Collecting protobuf (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.6371595Z   Downloading protobuf-7.34.1-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+2026-04-18T09:47:15.6791785Z Collecting tqdm (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.6864873Z   Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+2026-04-18T09:47:15.7792863Z Collecting proto-plus<2.0.0dev,>=1.22.3 (from google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.7866475Z   Downloading proto_plus-1.27.2-py3-none-any.whl.metadata (2.2 kB)
+2026-04-18T09:47:15.8193802Z Collecting protobuf (from google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.8271750Z   Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl.metadata (592 bytes)
+2026-04-18T09:47:15.8501279Z Collecting googleapis-common-protos<2.0.0,>=1.63.2 (from google-api-core->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:15.8572167Z   Downloading googleapis_common_protos-1.74.0-py3-none-any.whl.metadata (9.2 kB)
+2026-04-18T09:47:16.5564671Z Collecting grpcio<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:16.5642310Z   Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.8 kB)
+2026-04-18T09:47:16.6068788Z Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:16.6143043Z   Downloading grpcio_status-1.80.0-py3-none-any.whl.metadata (1.3 kB)
+2026-04-18T09:47:16.6407603Z Collecting pyasn1-modules>=0.2.1 (from google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:16.6481104Z   Downloading pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+2026-04-18T09:47:16.8725500Z Collecting cryptography>=38.0.3 (from google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:16.8811076Z   Downloading cryptography-46.0.7-cp38-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+2026-04-18T09:47:16.9145504Z INFO: pip is looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+2026-04-18T09:47:16.9152243Z Collecting grpcio-status<2.0.0,>=1.33.2 (from google-api-core[grpc]!=2.0.*,!=2.1.*,!=2.10.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,<3.0.0dev,>=1.34.1->google-ai-generativelanguage==0.6.15->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:16.9223043Z   Downloading grpcio_status-1.78.0-py3-none-any.whl.metadata (1.3 kB)
+2026-04-18T09:47:16.9327340Z   Downloading grpcio_status-1.76.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:16.9432689Z   Downloading grpcio_status-1.75.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:16.9534786Z   Downloading grpcio_status-1.75.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:16.9641110Z   Downloading grpcio_status-1.74.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:16.9750225Z   Downloading grpcio_status-1.73.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:17.0055200Z   Downloading grpcio_status-1.73.0-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:17.0087110Z INFO: pip is still looking at multiple versions of grpcio-status to determine which version is compatible with other requirements. This could take a while.
+2026-04-18T09:47:17.0162049Z   Downloading grpcio_status-1.72.2-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:17.0265398Z   Downloading grpcio_status-1.72.1-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:17.0369241Z   Downloading grpcio_status-1.71.2-py3-none-any.whl.metadata (1.1 kB)
+2026-04-18T09:47:17.1026247Z Collecting tenacity<9.2.0,>=8.2.3 (from google-genai->-r requirements.txt (line 9))
+2026-04-18T09:47:17.1099122Z   Downloading tenacity-9.1.4-py3-none-any.whl.metadata (1.2 kB)
+2026-04-18T09:47:17.3174622Z Collecting cffi>=2.0.0 (from cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:17.3250365Z   Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+2026-04-18T09:47:17.3447770Z Collecting pycparser (from cffi>=2.0.0->cryptography>=38.0.3->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:17.3520276Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+2026-04-18T09:47:17.3755218Z Collecting packaging (from deprecation>=2.1.0->postgrest==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.3824724Z   Downloading packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
+2026-04-18T09:47:17.4161486Z Collecting pyasn1<0.7.0,>=0.6.1 (from pyasn1-modules>=0.2.1->google-auth>=2.15.0->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:17.4234225Z   Downloading pyasn1-0.6.3-py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T09:47:17.4845338Z Collecting mmh3<6.0.0,>=4.0.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.4923232Z   Downloading mmh3-5.2.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (14 kB)
+2026-04-18T09:47:17.5451042Z Collecting rich<15.0.0,>=10.11.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.5527641Z   Downloading rich-14.3.4-py3-none-any.whl.metadata (18 kB)
+2026-04-18T09:47:17.5723269Z Collecting strictyaml<2.0.0,>=1.7.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.5799004Z   Downloading strictyaml-1.7.3-py3-none-any.whl.metadata (11 kB)
+2026-04-18T09:47:17.6241810Z Collecting fsspec>=2023.1.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.6444050Z   Downloading fsspec-2026.3.0-py3-none-any.whl.metadata (10 kB)
+2026-04-18T09:47:17.7044075Z Collecting pyparsing<4.0.0,>=3.1.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.7119142Z   Downloading pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+2026-04-18T09:47:17.7849919Z Collecting pyroaring<2.0.0,>=1.0.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.7935432Z   Downloading pyroaring-1.0.4-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (11 kB)
+2026-04-18T09:47:17.8166110Z Collecting cachetools<7.0,>=5.5 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.8237048Z   Downloading cachetools-6.2.6-py3-none-any.whl.metadata (5.6 kB)
+2026-04-18T09:47:17.9105088Z Collecting zstandard<1.0.0,>=0.13.0 (from pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.9190127Z   Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (3.3 kB)
+2026-04-18T09:47:17.9427037Z Collecting markdown-it-py>=2.2.0 (from rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.9499737Z   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+2026-04-18T09:47:17.9780337Z Collecting pygments<3.0.0,>=2.13.0 (from rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:17.9851405Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+2026-04-18T09:47:18.0049474Z Collecting python-dateutil>=2.6.0 (from strictyaml<2.0.0,>=1.7.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:18.0117767Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2026-04-18T09:47:18.0285542Z Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich<15.0.0,>=10.11.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:18.0353728Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+2026-04-18T09:47:18.0709629Z Collecting six>=1.5 (from python-dateutil>=2.6.0->strictyaml<2.0.0,>=1.7.0->pyiceberg>=0.10.0->storage3==2.28.3->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:18.0778105Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2026-04-18T09:47:18.3673730Z Collecting multidict>=4.0 (from yarl>=1.22.0->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:18.3751596Z   Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+2026-04-18T09:47:18.4411563Z Collecting propcache>=0.2.1 (from yarl>=1.22.0->supabase->-r requirements.txt (line 1))
+2026-04-18T09:47:18.4489226Z   Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+2026-04-18T09:47:18.4754065Z Collecting httplib2<1.0.0,>=0.19.0 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:18.4825694Z   Downloading httplib2-0.31.2-py3-none-any.whl.metadata (2.2 kB)
+2026-04-18T09:47:18.4979557Z Collecting google-auth-httplib2<1.0.0,>=0.2.0 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:18.5050943Z   Downloading google_auth_httplib2-0.3.1-py3-none-any.whl.metadata (3.0 kB)
+2026-04-18T09:47:18.6196901Z Collecting uritemplate<5,>=3.0.1 (from google-api-python-client->google-generativeai->-r requirements.txt (line 8))
+2026-04-18T09:47:18.6267354Z   Downloading uritemplate-4.2.0-py3-none-any.whl.metadata (2.6 kB)
+2026-04-18T09:47:18.6463403Z Downloading supabase-2.28.3-py3-none-any.whl (16 kB)
+2026-04-18T09:47:18.6556152Z Downloading postgrest-2.28.3-py3-none-any.whl (21 kB)
+2026-04-18T09:47:18.6646974Z Downloading realtime-2.28.3-py3-none-any.whl (22 kB)
+2026-04-18T09:47:18.6742883Z Downloading storage3-2.28.3-py3-none-any.whl (28 kB)
+2026-04-18T09:47:18.6837476Z Downloading supabase_auth-2.28.3-py3-none-any.whl (48 kB)
+2026-04-18T09:47:18.6930501Z Downloading supabase_functions-2.28.3-py3-none-any.whl (8.8 kB)
+2026-04-18T09:47:18.7025085Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2026-04-18T09:47:18.7176126Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2026-04-18T09:47:18.7268559Z Downloading h2-4.3.0-py3-none-any.whl (61 kB)
+2026-04-18T09:47:18.7364024Z Downloading hpack-4.1.0-py3-none-any.whl (34 kB)
+2026-04-18T09:47:18.7461838Z Downloading hyperframe-6.1.0-py3-none-any.whl (13 kB)
+2026-04-18T09:47:18.7555502Z Downloading pydantic-2.13.2-py3-none-any.whl (471 kB)
+2026-04-18T09:47:18.7759649Z Downloading pydantic_core-2.46.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+2026-04-18T09:47:18.7996407Z    ââââââââââââââââââââââââââââââââââââââââ 2.1/2.1 MB 88.4 MB/s  0:00:00
+2026-04-18T09:47:18.8070772Z Downloading websockets-15.0.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (181 kB)
+2026-04-18T09:47:18.8170584Z Downloading groq-1.1.2-py3-none-any.whl (141 kB)
+2026-04-18T09:47:18.8268805Z Downloading anyio-4.13.0-py3-none-any.whl (114 kB)
+2026-04-18T09:47:18.8361267Z Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+2026-04-18T09:47:18.8455096Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+2026-04-18T09:47:18.8546829Z Downloading requests-2.33.1-py3-none-any.whl (64 kB)
+2026-04-18T09:47:18.8643025Z Downloading charset_normalizer-3.4.7-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+2026-04-18T09:47:18.8738543Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+2026-04-18T09:47:18.8835156Z Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+2026-04-18T09:47:18.8935329Z Downloading fastapi-0.136.0-py3-none-any.whl (117 kB)
+2026-04-18T09:47:18.9027505Z Downloading uvicorn-0.44.0-py3-none-any.whl (69 kB)
+2026-04-18T09:47:18.9118617Z Downloading python_multipart-0.0.26-py3-none-any.whl (28 kB)
+2026-04-18T09:47:18.9213558Z Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+2026-04-18T09:47:18.9310726Z Downloading google_generativeai-0.8.6-py3-none-any.whl (155 kB)
+2026-04-18T09:47:18.9407011Z Downloading google_ai_generativelanguage-0.6.15-py3-none-any.whl (1.3 MB)
+2026-04-18T09:47:18.9538816Z    ââââââââââââââââââââââââââââââââââââââââ 1.3/1.3 MB 109.9 MB/s  0:00:00
+2026-04-18T09:47:18.9610151Z Downloading google_api_core-2.30.3-py3-none-any.whl (173 kB)
+2026-04-18T09:47:18.9708114Z Downloading google_auth-2.49.2-py3-none-any.whl (240 kB)
+2026-04-18T09:47:18.9805547Z Downloading googleapis_common_protos-1.74.0-py3-none-any.whl (300 kB)
+2026-04-18T09:47:18.9905571Z Downloading grpcio-1.80.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (6.8 MB)
+2026-04-18T09:47:19.0215140Z    ââââââââââââââââââââââââââââââââââââââââ 6.8/6.8 MB 231.9 MB/s  0:00:00
+2026-04-18T09:47:19.0287688Z Downloading grpcio_status-1.71.2-py3-none-any.whl (14 kB)
+2026-04-18T09:47:19.0389347Z Downloading proto_plus-1.27.2-py3-none-any.whl (50 kB)
+2026-04-18T09:47:19.0485450Z Downloading protobuf-5.29.6-cp38-abi3-manylinux2014_x86_64.whl (320 kB)
+2026-04-18T09:47:19.0588553Z Downloading google_genai-1.73.1-py3-none-any.whl (783 kB)
+2026-04-18T09:47:19.0648527Z    ââââââââââââââââââââââââââââââââââââââââ 783.6/783.6 kB 156.8 MB/s  0:00:00
+2026-04-18T09:47:19.0718833Z Downloading tenacity-9.1.4-py3-none-any.whl (28 kB)
+2026-04-18T09:47:19.0812512Z Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+2026-04-18T09:47:19.0904025Z Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+2026-04-18T09:47:19.0994844Z Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+2026-04-18T09:47:19.1094097Z Downloading click-8.3.2-py3-none-any.whl (108 kB)
+2026-04-18T09:47:19.1186751Z Downloading cryptography-46.0.7-cp38-abi3-manylinux_2_34_x86_64.whl (4.4 MB)
+2026-04-18T09:47:19.1367847Z    ââââââââââââââââââââââââââââââââââââââââ 4.4/4.4 MB 269.1 MB/s  0:00:00
+2026-04-18T09:47:19.1441578Z Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+2026-04-18T09:47:19.1539165Z Downloading deprecation-2.1.0-py2.py3-none-any.whl (11 kB)
+2026-04-18T09:47:19.1632790Z Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+2026-04-18T09:47:19.1727226Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2026-04-18T09:47:19.1819758Z Downloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+2026-04-18T09:47:19.1911391Z Downloading pyasn1-0.6.3-py3-none-any.whl (83 kB)
+2026-04-18T09:47:19.2013711Z Downloading pyiceberg-0.11.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (705 kB)
+2026-04-18T09:47:19.2070317Z    ââââââââââââââââââââââââââââââââââââââââ 705.6/705.6 kB 134.6 MB/s  0:00:00
+2026-04-18T09:47:19.2139626Z Downloading cachetools-6.2.6-py3-none-any.whl (11 kB)
+2026-04-18T09:47:19.2228696Z Downloading mmh3-5.2.1-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (101 kB)
+2026-04-18T09:47:19.2322625Z Downloading pyparsing-3.3.2-py3-none-any.whl (122 kB)
+2026-04-18T09:47:19.2438189Z Downloading pyroaring-1.0.4-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (2.1 MB)
+2026-04-18T09:47:19.2537932Z    ââââââââââââââââââââââââââââââââââââââââ 2.1/2.1 MB 244.1 MB/s  0:00:00
+2026-04-18T09:47:19.2607102Z Downloading rich-14.3.4-py3-none-any.whl (310 kB)
+2026-04-18T09:47:19.2706123Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+2026-04-18T09:47:19.2772314Z    ââââââââââââââââââââââââââââââââââââââââ 1.2/1.2 MB 227.7 MB/s  0:00:00
+2026-04-18T09:47:19.2840854Z Downloading strictyaml-1.7.3-py3-none-any.whl (123 kB)
+2026-04-18T09:47:19.2935813Z Downloading zstandard-0.25.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.6 MB)
+2026-04-18T09:47:19.3137770Z    ââââââââââââââââââââââââââââââââââââââââ 5.6/5.6 MB 298.1 MB/s  0:00:00
+2026-04-18T09:47:19.3210594Z Downloading fsspec-2026.3.0-py3-none-any.whl (202 kB)
+2026-04-18T09:47:19.3305898Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+2026-04-18T09:47:19.3398631Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+2026-04-18T09:47:19.3487514Z Downloading pyjwt-2.12.1-py3-none-any.whl (29 kB)
+2026-04-18T09:47:19.3580025Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2026-04-18T09:47:19.3678224Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-04-18T09:47:19.3772093Z Downloading starlette-1.0.0-py3-none-any.whl (72 kB)
+2026-04-18T09:47:19.3864530Z Downloading StrEnum-0.4.15-py3-none-any.whl (8.9 kB)
+2026-04-18T09:47:19.3953367Z Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+2026-04-18T09:47:19.4045342Z Downloading yarl-1.23.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (102 kB)
+2026-04-18T09:47:19.4141278Z Downloading multidict-6.7.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (243 kB)
+2026-04-18T09:47:19.4238323Z Downloading propcache-0.4.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (196 kB)
+2026-04-18T09:47:19.4336632Z Downloading google_api_python_client-2.194.0-py3-none-any.whl (15.0 MB)
+2026-04-18T09:47:19.4806218Z    ââââââââââââââââââââââââââââââââââââââââ 15.0/15.0 MB 333.8 MB/s  0:00:00
+2026-04-18T09:47:19.4879663Z Downloading google_auth_httplib2-0.3.1-py3-none-any.whl (9.5 kB)
+2026-04-18T09:47:19.4975384Z Downloading httplib2-0.31.2-py3-none-any.whl (91 kB)
+2026-04-18T09:47:19.5071703Z Downloading uritemplate-4.2.0-py3-none-any.whl (11 kB)
+2026-04-18T09:47:19.5163557Z Downloading packaging-26.1-py3-none-any.whl (95 kB)
+2026-04-18T09:47:19.5257832Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-04-18T09:47:19.5349227Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+2026-04-18T09:47:19.5442320Z Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+2026-04-18T09:47:19.8149213Z Installing collected packages: strenum, pyroaring, zstandard, websockets, urllib3, uritemplate, typing-extensions, tqdm, tenacity, sniffio, six, python-multipart, python-dotenv, pyparsing, pygments, pycparser, pyasn1, protobuf, propcache, packaging, mmh3, mdurl, idna, hyperframe, hpack, h11, fsspec, distro, click, charset_normalizer, certifi, cachetools, annotated-types, annotated-doc, uvicorn, typing-inspection, requests, python-dateutil, pyjwt, pydantic-core, pyasn1-modules, proto-plus, multidict, markdown-it-py, httplib2, httpcore, h2, grpcio, googleapis-common-protos, exceptiongroup, deprecation, cffi, yarl, strictyaml, rich, pydantic, grpcio-status, cryptography, anyio, starlette, realtime, pyiceberg, httpx, google-auth, groq, google-auth-httplib2, google-api-core, fastapi, supabase-functions, supabase-auth, storage3, postgrest, google-genai, google-api-python-client, supabase, google-ai-generativelanguage, google-generativeai
+2026-04-18T09:47:26.4634091Z 
+2026-04-18T09:47:26.4744859Z Successfully installed annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.13.0 cachetools-6.2.6 certifi-2026.2.25 cffi-2.0.0 charset_normalizer-3.4.7 click-8.3.2 cryptography-46.0.7 deprecation-2.1.0 distro-1.9.0 exceptiongroup-1.3.1 fastapi-0.136.0 fsspec-2026.3.0 google-ai-generativelanguage-0.6.15 google-api-core-2.30.3 google-api-python-client-2.194.0 google-auth-2.49.2 google-auth-httplib2-0.3.1 google-genai-1.73.1 google-generativeai-0.8.6 googleapis-common-protos-1.74.0 groq-1.1.2 grpcio-1.80.0 grpcio-status-1.71.2 h11-0.16.0 h2-4.3.0 hpack-4.1.0 httpcore-1.0.9 httplib2-0.31.2 httpx-0.28.1 hyperframe-6.1.0 idna-3.11 markdown-it-py-4.0.0 mdurl-0.1.2 mmh3-5.2.1 multidict-6.7.1 packaging-26.1 postgrest-2.28.3 propcache-0.4.1 proto-plus-1.27.2 protobuf-5.29.6 pyasn1-0.6.3 pyasn1-modules-0.4.2 pycparser-3.0 pydantic-2.13.2 pydantic-core-2.46.2 pygments-2.20.0 pyiceberg-0.11.1 pyjwt-2.12.1 pyparsing-3.3.2 pyroaring-1.0.4 python-dateutil-2.9.0.post0 python-dotenv-1.2.2 python-multipart-0.0.26 realtime-2.28.3 requests-2.33.1 rich-14.3.4 six-1.17.0 sniffio-1.3.1 starlette-1.0.0 storage3-2.28.3 strenum-0.4.15 strictyaml-1.7.3 supabase-2.28.3 supabase-auth-2.28.3 supabase-functions-2.28.3 tenacity-9.1.4 tqdm-4.67.3 typing-extensions-4.15.0 typing-inspection-0.4.2 uritemplate-4.2.0 urllib3-2.6.3 uvicorn-0.44.0 websockets-15.0.1 yarl-1.23.0 zstandard-0.25.0
+2026-04-18T09:47:27.2940047Z ##[group]Run python crunchbase_tracker_cloud.py
+2026-04-18T09:47:27.2940462Z [36;1mpython crunchbase_tracker_cloud.py[0m
+2026-04-18T09:47:27.2963464Z shell: /usr/bin/bash -e {0}
+2026-04-18T09:47:27.2963730Z env:
+2026-04-18T09:47:27.2964005Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:27.2964461Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T09:47:27.2964908Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:27.2965309Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:27.2965696Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:47:27.2966104Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T09:47:27.2966862Z   SUPABASE_URL: ***
+2026-04-18T09:47:27.2967168Z   SUPABASE_KEY: ***
+2026-04-18T09:47:27.2967511Z   GROQ_API_KEYS: ***
+2026-04-18T09:47:27.2968305Z   SERPER_API_KEYS: ***
+2026-04-18T09:47:27.2968566Z   SERPER_API_KEY: 
+2026-04-18T09:47:27.2969045Z   GEMINI_API_KEYS: ***
+2026-04-18T09:47:27.2969255Z   GEMINI_API_KEY: 
+2026-04-18T09:47:27.2969487Z   SENDER_EMAIL: ***
+2026-04-18T09:47:27.2969716Z   SENDER_PASSWORD: ***
+2026-04-18T09:47:27.2969955Z   RECIPIENT_EMAIL: ***
+2026-04-18T09:47:27.2970197Z   SMTP_SERVER: ***
+2026-04-18T09:47:27.2970428Z   SMTP_PORT: ***
+2026-04-18T09:47:27.2970632Z ##[endgroup]
+2026-04-18T09:47:29.1476220Z 2026-04-18 09:47:29,147 - INFO - HTTP Request: GET ***/rest/v1/system_stats?select=status%2Clast_run_at&id=eq.1 "HTTP/2 200 OK"
+2026-04-18T09:47:29.3956610Z 2026-04-18 09:47:29,395 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=count "HTTP/2 206 Partial Content"
+2026-04-18T09:47:29.3963401Z 2026-04-18 09:47:29,396 - INFO - ð AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...
+2026-04-18T09:47:29.3980672Z fatal: invalid object name '47a4d22'.
+2026-04-18T09:47:29.3984359Z 2026-04-18 09:47:29,398 - WARNING - Resurrection skip/error: Command '['git', 'show', '47a4d22:enterprise_leads.csv']' returned non-zero exit status 128.
+2026-04-18T09:47:29.3985685Z 2026-04-18 09:47:29,398 - INFO - ð ATOMIC VELOCITY: Scanning 10 niches to restore lead volume!
+2026-04-18T09:47:29.3986378Z 2026-04-18 09:47:29,398 - INFO - ð ATOMIC VELOCITY: Scanning 10 niches to restore lead volume!
+2026-04-18T09:47:29.6391910Z 2026-04-18 09:47:29,638 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=count "HTTP/2 206 Partial Content"
+2026-04-18T09:47:29.6397285Z 2026-04-18 09:47:29,639 - INFO - ð AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...
+2026-04-18T09:47:29.6414010Z fatal: invalid object name '47a4d22'.
+2026-04-18T09:47:29.6417991Z 2026-04-18 09:47:29,641 - WARNING - Resurrection skip: Command '['git', 'show', '47a4d22:enterprise_leads.csv']' returned non-zero exit status 128.
+2026-04-18T09:47:29.6419517Z 2026-04-18 09:47:29,641 - INFO - ð§¹ RETROACTIVE CLEANUP: Purging confirmed news junk...
+2026-04-18T09:47:29.8850512Z 2026-04-18 09:47:29,884 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=id%2Ccompany%2Curl "HTTP/2 200 OK"
+2026-04-18T09:47:30.4842099Z 2026-04-18 09:47:30,483 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com 'Series A' UAE technology'...
+2026-04-18T09:47:31.2546930Z 2026-04-18 09:47:31,254 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:32.3693196Z 2026-04-18 09:47:32,369 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:33.0577479Z 2026-04-18 09:47:33,057 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:33.7619805Z 2026-04-18 09:47:33,761 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:34.3651009Z 2026-04-18 09:47:34,364 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com 'Seed round' Dubai startup'...
+2026-04-18T09:47:35.0209294Z 2026-04-18 09:47:35,020 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:35.6857087Z 2026-04-18 09:47:35,685 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:36.3712234Z 2026-04-18 09:47:36,370 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:37.0188380Z 2026-04-18 09:47:37,018 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:38.3938396Z 2026-04-18 09:47:38,393 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com 'Pre-seed' Abu Dhabi tech'...
+2026-04-18T09:47:39.0843487Z 2026-04-18 09:47:39,084 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:39.7511718Z 2026-04-18 09:47:39,750 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:41.2033108Z 2026-04-18 09:47:41,203 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:41.8613880Z 2026-04-18 09:47:41,861 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:42.4159827Z 2026-04-18 09:47:42,415 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com Dubai E-commerce market'...
+2026-04-18T09:47:43.0428689Z 2026-04-18 09:47:43,042 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:43.6905032Z 2026-04-18 09:47:43,690 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:44.4111714Z 2026-04-18 09:47:44,410 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:45.0501285Z 2026-04-18 09:47:45,049 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:45.6154888Z 2026-04-18 09:47:45,614 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com UAE Logistics Tech list'...
+2026-04-18T09:47:46.2307283Z 2026-04-18 09:47:46,230 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:46.9009071Z 2026-04-18 09:47:46,900 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:47.6590928Z 2026-04-18 09:47:47,658 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:48.2840711Z 2026-04-18 09:47:48,283 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:48.8376742Z 2026-04-18 09:47:48,837 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com Dubai HealthTech companies'...
+2026-04-18T09:47:49.5076025Z 2026-04-18 09:47:49,507 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:50.1671657Z 2026-04-18 09:47:50,166 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:51.2981217Z 2026-04-18 09:47:51,297 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:51.9293045Z 2026-04-18 09:47:51,929 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:52.4830906Z 2026-04-18 09:47:52,482 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com UAE EdTech startup list'...
+2026-04-18T09:47:53.1863129Z 2026-04-18 09:47:53,185 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:53.8109645Z 2026-04-18 09:47:53,810 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:54.4466715Z 2026-04-18 09:47:54,446 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:55.2024159Z 2026-04-18 09:47:55,202 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:55.7591447Z 2026-04-18 09:47:55,758 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com Abu Dhabi CleanTech funding'...
+2026-04-18T09:47:56.3933538Z 2026-04-18 09:47:56,393 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:57.4267615Z 2026-04-18 09:47:57,426 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:58.0953890Z 2026-04-18 09:47:58,095 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:58.7230430Z 2026-04-18 09:47:58,722 - INFO - ð Rotated Serper Key
+2026-04-18T09:47:59.2696804Z 2026-04-18 09:47:59,269 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com 'Founded in 2025' Dubai startup'...
+2026-04-18T09:47:59.8923911Z 2026-04-18 09:47:59,892 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:00.5273894Z 2026-04-18 09:48:00,527 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:01.1634842Z 2026-04-18 09:48:01,163 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:01.8027713Z 2026-04-18 09:48:01,802 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:02.3795764Z 2026-04-18 09:48:02,379 - INFO - ð GLOBAL HARVEST: 'site:crunchbase.com 'Founded in 2024' UAE tech'...
+2026-04-18T09:48:03.0413446Z 2026-04-18 09:48:03,041 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:03.6765192Z 2026-04-18 09:48:03,676 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:04.3254874Z 2026-04-18 09:48:04,325 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:05.0000188Z 2026-04-18 09:48:04,999 - INFO - ð Rotated Serper Key
+2026-04-18T09:48:05.3828296Z ##[group]Run python apollo_enrichment.py
+2026-04-18T09:48:05.3828668Z [36;1mpython apollo_enrichment.py[0m
+2026-04-18T09:48:05.3850540Z shell: /usr/bin/bash -e {0}
+2026-04-18T09:48:05.3850799Z env:
+2026-04-18T09:48:05.3851073Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:05.3851534Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T09:48:05.3851973Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:05.3852360Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:05.3852909Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:05.3853314Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T09:48:05.3853829Z   SUPABASE_URL: ***
+2026-04-18T09:48:05.3854136Z   SUPABASE_KEY: ***
+2026-04-18T09:48:05.3854637Z   GEMINI_API_KEYS: ***
+2026-04-18T09:48:05.3854861Z   GEMINI_API_KEY: 
+2026-04-18T09:48:05.3855676Z   SERPER_API_KEYS: ***
+2026-04-18T09:48:05.3855892Z   SERPER_API_KEY: 
+2026-04-18T09:48:05.3856093Z ##[endgroup]
+2026-04-18T09:48:06.1639414Z 2026-04-18 09:48:06,163 - INFO - === Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===
+2026-04-18T09:48:06.4635678Z 2026-04-18 09:48:06,463 - INFO - HTTP Request: GET ***/rest/v1/uae_leads?select=%2A&contact_linkedin=is.null&limit=20 "HTTP/2 200 OK"
+2026-04-18T09:48:06.4639067Z 2026-04-18 09:48:06,463 - INFO - No leads require LinkedIn enrichment right now.
+2026-04-18T09:48:06.4639713Z 2026-04-18 09:48:06,463 - INFO - === Enrichment Cycle Complete ===
+2026-04-18T09:48:06.5795656Z ##[group]Run python crunchbase_sweeper.py
+2026-04-18T09:48:06.5796041Z [36;1mpython crunchbase_sweeper.py[0m
+2026-04-18T09:48:06.5819093Z shell: /usr/bin/bash -e {0}
+2026-04-18T09:48:06.5819358Z env:
+2026-04-18T09:48:06.5819639Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:06.5820106Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T09:48:06.5820568Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:06.5820965Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:06.5821355Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:06.5821763Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T09:48:06.5822267Z   SUPABASE_URL: ***
+2026-04-18T09:48:06.5822833Z   SUPABASE_KEY: ***
+2026-04-18T09:48:06.5823326Z   GEMINI_API_KEYS: ***
+2026-04-18T09:48:06.5823549Z   GEMINI_API_KEY: 
+2026-04-18T09:48:06.5824368Z   SERPER_API_KEYS: ***
+2026-04-18T09:48:06.5824582Z   SERPER_API_KEY: 
+2026-04-18T09:48:06.5824783Z ##[endgroup]
+2026-04-18T09:48:25.1234328Z Found 3 leads needing funding audit out of 4 total...
+2026-04-18T09:48:25.1234822Z 
+2026-04-18T09:48:25.1235003Z Searching Crunchbase for: Emirates AI Albion
+2026-04-18T09:48:25.1235502Z   No Crunchbase funding data found for Emirates AI Albion
+2026-04-18T09:48:25.1236044Z   Updated: Emirates AI Albion -> Undisclosed | Unknown Round
+2026-04-18T09:48:25.1236366Z 
+2026-04-18T09:48:25.1236502Z Searching Crunchbase for: Seed Group
+2026-04-18T09:48:25.1236889Z   No Crunchbase funding data found for Seed Group
+2026-04-18T09:48:25.1237320Z   Updated: Seed Group -> Undisclosed | Unknown Round
+2026-04-18T09:48:25.1237606Z 
+2026-04-18T09:48:25.1237740Z Searching Crunchbase for: Prop-AI
+2026-04-18T09:48:25.1238033Z   No Crunchbase funding data found for Prop-AI
+2026-04-18T09:48:25.1238390Z   Updated: Prop-AI -> Undisclosed | Unknown Round
+2026-04-18T09:48:25.2208546Z ##[group]Run git config --global user.name "Desert Intel Bot"
+2026-04-18T09:48:25.2209038Z [36;1mgit config --global user.name "Desert Intel Bot"[0m
+2026-04-18T09:48:25.2209444Z [36;1mgit config --global user.email "bot@desertintel.ae"[0m
+2026-04-18T09:48:25.2209815Z [36;1mif [ -f enterprise_leads.csv ]; then[0m
+2026-04-18T09:48:25.2210310Z [36;1m  git add -f enterprise_leads.csv[0m
+2026-04-18T09:48:25.2210828Z [36;1m  git commit -m "ð Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"[0m
+2026-04-18T09:48:25.2211383Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T09:48:25.2211692Z [36;1melse[0m
+2026-04-18T09:48:25.2211980Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
+2026-04-18T09:48:25.2212308Z [36;1mfi[0m
+2026-04-18T09:48:25.2234016Z shell: /usr/bin/bash -e {0}
+2026-04-18T09:48:25.2234270Z env:
+2026-04-18T09:48:25.2234548Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:25.2235044Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib/pkgconfig
+2026-04-18T09:48:25.2235489Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:25.2235880Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:25.2236269Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.20/x64
+2026-04-18T09:48:25.2236668Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.20/x64/lib
+2026-04-18T09:48:25.2237003Z ##[endgroup]
+2026-04-18T09:48:25.2355785Z On branch main
+2026-04-18T09:48:25.2356161Z Your branch is up to date with 'origin/main'.
+2026-04-18T09:48:25.2356391Z 
+2026-04-18T09:48:25.2356510Z nothing to commit, working tree clean
+2026-04-18T09:48:25.2358608Z No changes to commit
+2026-04-18T09:48:25.3501927Z Everything up-to-date
+2026-04-18T09:48:25.3596478Z Post job cleanup.
+2026-04-18T09:48:25.5302824Z Post job cleanup.
+2026-04-18T09:48:25.6017753Z [command]/usr/bin/git version
+2026-04-18T09:48:25.6054169Z git version 2.53.0
+2026-04-18T09:48:25.6091720Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/359bc662-aa31-458e-b1f8-06ba6c0fe62d/.gitconfig'
+2026-04-18T09:48:25.6101655Z Temporarily overriding HOME='/home/runner/work/_temp/359bc662-aa31-458e-b1f8-06ba6c0fe62d' before making global git config changes
+2026-04-18T09:48:25.6103092Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-18T09:48:25.6106887Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/lead_agent/lead_agent
+2026-04-18T09:48:25.6139568Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-18T09:48:25.6169003Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-18T09:48:25.6391453Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-18T09:48:25.6411004Z http.https://github.com/.extraheader
+2026-04-18T09:48:25.6422951Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-18T09:48:25.6450701Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-18T09:48:25.6778079Z Cleaning up orphan processes
+2026-04-18T09:48:25.7065449Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v3, actions/setup-python@v4. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,6 @@
+﻿2026-04-18T09:47:29.3963401Z 2026-04-18 09:47:29,396 - INFO - ├░┬ƒ┬Ü┬æ AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...
+2026-04-18T09:47:29.3984359Z 2026-04-18 09:47:29,398 - WARNING - Resurrection skip/error: Command '['git', 'show', '47a4d22:enterprise_leads.csv']' returned non-zero exit status 128.
+2026-04-18T09:47:29.6397285Z 2026-04-18 09:47:29,639 - INFO - ├░┬ƒ┬Ü┬æ AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...
+2026-04-18T09:47:29.6417991Z 2026-04-18 09:47:29,641 - WARNING - Resurrection skip: Command '['git', 'show', '47a4d22:enterprise_leads.csv']' returned non-zero exit status 128.
+2026-04-18T09:48:25.2211383Z [36;1m  git push origin main || echo "Push skipped"[0m
+2026-04-18T09:48:25.2211980Z [36;1m  echo "No CSV file generated this run, skipping commit."[0m
