@@ -158,6 +158,15 @@ def save_to_csv(lead):
     except Exception as e:
         logger.error(f"❌ CSV Backup Error: {e}")
 
+def clean_company_name(raw_name):
+    """Strips web search cruft like ' - Crunchbase' or ' | LinkedIn'."""
+    if not raw_name: return "Unknown Entity"
+    # Remove common suffixes
+    clean = re.split(r' \-| \| | \/ | \. ', raw_name)[0]
+    # Strip common site names
+    clean = re.sub(r'Crunchbase|LinkedIn|Apollo\.io|Facebook|Instagram|Twitter|YouTube', '', clean, flags=re.I)
+    return clean.strip()
+
 def extract_funding_regex(company, context):
     """Zero-Quota math-based extraction. Matches Crunchbase text directly."""
     amount = "Undisclosed"
@@ -214,8 +223,8 @@ def compile_auditor_intel_extreme(discovery_package):
     if not key: return "SKIP"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     
-    # Step 1: Extract company name from discovery package
-    company_name = discovery_package.split('|')[0].replace('Title:', '').strip()[:80]
+    # Step 1: Extract and CLEAN company name from discovery package
+    company_name = clean_company_name(discovery_package.split('|')[0].replace('Title:', '').strip()[:80])
     
     prompt = f"""
     ROLE: Senior UAE Market Intelligence Auditor.
@@ -320,7 +329,8 @@ def compile_auditor_intel_extreme(discovery_package):
         "funding_amount": regex_data["amount"],
         "funding_round": regex_data["round"],
         "financials": regex_data["summary"],
-        "registry_status": "PROBING..."
+        "registry_status": "PROBING...",
+        "status": "Pending"
     }
 
 def serper_search_broad(query):
