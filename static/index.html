@@ -3,592 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crunchbase Tracker | Insight Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>UAE Lead Command Center</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0b10;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.3);
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-            --green: #10b981;
-            --red: #ef4444;
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0b0e14;
+            --surface: #161b22;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --verified: #238636;
+            --pending: #d29922;
+            --active: #1f6feb;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        .header {
+            background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+            padding: 2rem;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
             padding: 2rem;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-            animation: fadeInDown 0.8s ease-out;
-        }
-
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text-dim);
-        }
-
-        .dot.active {
-            background: var(--green);
-            box-shadow: 0 0 10px var(--green);
-            animation: pulse 2s infinite;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border-radius: 1.5rem;
+        .stat-card {
+            background: var(--surface);
             padding: 1.5rem;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            text-align: center;
+            transition: transform 0.2s;
         }
 
-        .card:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            transform: translateY(-4px);
-        }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--primary); display: block; }
+        .stat-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        .stats-card {
-            grid-column: span 4;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+        .main-content { padding: 0 2rem 2rem 2rem; }
+        
+        table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 12px; overflow: hidden; }
+        th { background: #21262d; padding: 1rem; text-align: left; font-size: 0.9rem; color: var(--text-dim); }
+        td { padding: 1rem; border-bottom: 1px solid #30363d; font-size: 0.95rem; }
+        tr:hover { background: #1c2128; }
 
-        .stats-card .label {
-            color: var(--text-dim);
-            font-size: 0.875rem;
-        }
-
-        .stats-card .value {
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .stats-half {
-            grid-column: span 6;
-        }
-
-        .controls-card {
-            grid-column: span 12;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 4px 15px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            background: #4f46e5;
-            transform: scale(1.02);
-        }
-
-        .btn-stop {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-stop:hover {
-            background: rgba(239, 68, 68, 0.2);
-        }
-
-        .updates-card {
-            grid-column: span 12;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            text-align: left;
-            padding: 1rem;
-            color: var(--text-dim);
-            font-weight: 400;
-            font-size: 0.875rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .company-cell {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .badge-round {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--accent);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.5rem;
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-verified { background: rgba(35, 134, 54, 0.2); color: #3fb950; border: 1px solid #238636; }
+        .badge-pending { background: rgba(210, 153, 34, 0.2); color: #d29922; border: 1px solid #9e7a27; }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-primary { background: var(--active); color: white; }
+        .btn-ghost { background: transparent; border: 1px solid #30363d; color: var(--text); }
+        .btn-ghost:hover { background: #30363d; }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .status-online { background: #3fb950; box-shadow: 0 0 10px #3fb950; }
+        .status-paused { background: #f85149; }
+
+        .search-row { margin-bottom: 1rem; display: flex; gap: 1rem; }
+        .search-input { 
+            background: #0d1117; 
+            border: 1px solid #30363d; 
+            color: white; 
+            padding: 0.5rem 1rem; 
+            border-radius: 6px; 
+            width: 300px;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--card-bg); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.1); }
+        .action-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <h1>Crunchbase Insight Agent</h1>
-                <p style="color: var(--text-dim); font-size: 0.875rem; margin-top: 0.25rem;">Autonomous Market Intelligence</p>
+    <header class="header">
+        <div>
+            <h1 style="font-size: 1.5rem;"><i class="fas fa-shield-halved" style="color: var(--primary);"></i> DUBAI LEAD COMMAND</h1>
+            <p style="font-size: 0.8rem; color: var(--text-dim);">Real-time Market Intelligence Engine</p>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <div>
+                <span id="status-indicator" class="status-dot status-online"></span>
+                <span id="agent-status" style="font-weight: 600;">ACTIVE</span>
             </div>
-            <div id="agent-status-badge" class="status-badge">
-                <div id="status-dot" class="dot"></div>
-                <span id="status-text">Disconnected</span>
-                <span id="heartbeat-pulse" style="margin-left: 8px; font-size: 0.7rem; color: var(--text-dim); border-left: 1px solid rgba(255,255,255,0.1); padding-left: 8px;">Pulse: --</span>
-                <div style="display: flex; gap: 0.5rem; margin-left: 1rem;">
-                    <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); border: 1px solid var(--green);" onclick="startEngine()">▶️ Start</button>
-                    <button class="btn" style="background: rgba(239, 68, 68, 0.1); color: var(--red, #ef4444); border: 1px solid #ef4444;" onclick="stopEngine()">⏸️ Stop</button>
-                    <button class="btn" style="background: var(--accent); font-size: 0.75rem; padding: 0.3rem 0.8rem;" onclick="window.location.href='/api/download/master'">📊 Export ALL</button>
-                </div>
-            </div>
-        </header>
+            <button onclick="toggleEngine()" id="toggle-btn" class="btn btn-ghost">
+                <i class="fas fa-pause"></i> PAUSE ENGINE
+            </button>
+        </div>
+    </header>
 
-        <div class="grid">
-            <div class="card stats-card" style="border-bottom: 3px solid var(--accent);">
-                <span class="label">Auto-Hunt Frequency</span>
-                <span class="value" style="color: var(--accent);">HOURLY</span>
-                <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 10px;">Last Scan: <span id="last-update">Analyzing...</span></div>
-            </div>
-            <div class="card stats-card" style="border-bottom: 3px solid #60a5fa; background: rgba(96, 165, 250, 0.05);">
-                <span class="label">📅 Found Today</span>
-                <span id="today-insights" class="value" style="color: #60a5fa;">0</span>
-            </div>
-            <div class="card stats-card" style="border-bottom: 3px solid var(--green);">
-                <span class="label">Total Insights</span>
-                <span id="total-updates" class="value">0</span>
-            </div>
-            <div class="card stats-card stats-half" style="border-left: 2px solid var(--accent);">
-                <span class="label">🤖 Total Scan Cycles</span>
-                <span id="total-scans" class="value" style="color: var(--accent); font-size: 1.2rem;">0</span>
-            </div>
-            <div class="card stats-card stats-half">
-                <span class="label">Serper Quota (Used/Total)</span>
-                <span id="serper-usage-display" class="value" style="color: var(--accent); font-size: 1.1rem;">0 / 10,000</span>
-                <div style="font-size: 0.65rem; color: var(--text-dim); margin-top: 5px;" id="serper-percent">0% Used</div>
-            </div>
-            <div class="card stats-card stats-half">
-                <span class="label">Gemini AI Brain Calls</span>
-                <span id="gemini-usage" class="value" style="color: var(--accent);">0</span>
-            </div>
-            <div class="card stats-card stats-half">
-                <span class="label">Groq Fallback Logic</span>
-                <span id="groq-usage" class="value" style="color: var(--accent);">0</span>
-            </div>
-
-            <div class="card controls-card" style="background: rgba(16, 185, 129, 0.05); border: 1px dashed var(--green);">
-                <div class="info">
-                    <h3 style="font-weight: 600; color: var(--green);">🛡️ Credit Preservation Mode: Active</h3>
-                    <p style="color: var(--text-dim); font-size: 0.875rem;">1-Hour Scan Interval | Rotating Niche Discovery</p>
-                </div>
-                <div class="actions">
-                    <span id="current-niche" class="badge-round" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; padding: 0.5rem 1rem;">Niche: Analyzing...</span>
-                </div>
-            </div>
-
-            <div class="card updates-card">
-                <div class="card-header">
-                    <h3 style="font-weight: 600;">2026 Advanced Intelligence Reports</h3>
-                    <button class="btn" style="background: transparent; color: var(--accent); padding: 0;" onclick="refreshData()">Refresh</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="text-align: center;"># NO.</th>
-                                <th>COMPANY & AUDIT</th>
-                                <th>FINANCIALS</th>
-                                <th>2026 STRATEGIC SIGNAL</th>
-                                <th style="text-align: center;">CONFIDENCE</th>
-                                <th>DECISION MAKERS (UNMASKED)</th>
-                                <th style="text-align: right;">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="updates-table">
-                            <!-- Data will be injected here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span id="found-today" class="stat-value">0</span>
+            <span class="stat-label">Found Today</span>
+        </div>
+        <div class="stat-card">
+            <span id="total-leads" class="stat-value">0</span>
+            <span class="stat-label">Total Pipeline</span>
+        </div>
+        <div class="stat-card">
+            <span id="serper-stat" class="stat-value">0</span>
+            <span class="stat-label">Discovery API</span>
+        </div>
+        <div class="stat-card">
+            <span id="gemini-stat" class="stat-value">0</span>
+            <span class="stat-label">AI Analysis</span>
         </div>
     </div>
 
+    <div class="main-content">
+        <div class="search-row">
+            <input type="text" id="table-search" class="search-input" placeholder="Search companies or industries..." onkeyup="filterTable()">
+            <div style="flex-grow: 1;"></div>
+            <a href="/api/download/all" class="btn btn-ghost btn-sm"><i class="fas fa-download"></i> CSV ALL</a>
+            <a href="/api/download/verified" class="btn btn-primary btn-sm"><i class="fas fa-check-double"></i> VERIFIED HQ</a>
+        </div>
+        
+        <table id="leads-table">
+            <thead>
+                <tr>
+                    <th>COMPANY</th>
+                    <th>FUNDING / ROUND</th>
+                    <th>SIGNAL & MISSION</th>
+                    <th>CONTACT</th>
+                    <th>ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody id="leads-body">
+                <!-- Data will be injected here -->
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        // --- DATA FETCHING & RENDERING ---
-        async function fetchUpdates() {
-            try {
-                const response = await fetch('/api/updates');
-                if (!response.ok) throw new Error('API Error');
-                
-                const updates = await response.json();
-                const table = document.getElementById('updates-table');
-                if (!table) return;
-                
-                table.innerHTML = '';
-                
-                // Safety check: ensure we have an array
-                if (!Array.isArray(updates)) {
-                    table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">📡 Agent is initializing or Database is not connected...</td></tr>`;
-                    return;
+        let currentStatus = "Active";
+
+        function filterTable() {
+            const input = document.getElementById("table-search");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("leads-table");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    const txtValue = td.textContent || td.innerText;
+                    tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
                 }
-
-                if (updates.length === 0) {
-                    table.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-dim);">🔍 No new intelligence discovered since midnight. Hunting continues...</td></tr>`;
-                    return;
-                }
-
-                let lastDate = "";
-
-                updates.forEach((item, index) => {
-                    const rawDate = item.discovered_at || '';
-                    const dateObj = new Date(rawDate);
-                    const groupDate = !isNaN(dateObj) ? dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'Recently Discovered';
-
-                    if (groupDate !== lastDate) {
-                        const divider = document.createElement('tr');
-                        divider.className = "date-header-row";
-                        divider.innerHTML = `
-                            <td colspan="7" style="padding: 30px 20px 10px 20px; border-bottom: none;">
-                                <div style="display: flex; align-items: center; gap: 15px;">
-                                    <div style="height: 2px; flex: 1; background: linear-gradient(to right, var(--accent), transparent);"></div>
-                                    <span style="font-size: 1.2rem; font-weight: 900; color: var(--text-bright); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(99, 102, 241, 0.3);">📅 ${groupDate}</span>
-                                    <div style="height: 2px; flex: 1; background: linear-gradient(to left, var(--accent), transparent);"></div>
-                                </div>
-                            </td>
-                        `;
-                        table.appendChild(divider);
-                        lastDate = groupDate;
-                    }
-
-                    const row = document.createElement('tr');
-                    let confidence = item.confidence_score || 0;
-                    let isVerified = item.status === "Active" || confidence >= 85;
-                    let scoreColor = isVerified ? "var(--green)" : "#fbbf24";
-                    
-                    const financials = item.financials || '—';
-                    const finColor = (financials.includes('UNVERIFIED') || financials.includes('Searching') || financials.includes('Hunting')) ? '#fbbf24' : 'var(--text-bright)';
-                    const registryStatus = item.registry_status || 'Checking...';
-                    const regColor = (registryStatus.includes('VERIFIED')) ? 'var(--green)' : '#fbbf24';
-                    
-                    const auditBadge = isVerified ? 
-                        `<span style="color: var(--green); border: 1px solid var(--green); padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 8px; opacity: 0.9;">AUDITED</span>` :
-                        `<span style="color: #fbbf24; border: 1px solid #fbbf24; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 8px; opacity: 0.9;">PENDING</span>`;
-
-                    const actionBtns = (item.status === "Pending") ? `
-                        <button class="btn" style="background: rgba(16, 185, 129, 0.1); color: var(--green); font-size: 0.75rem; padding: 0.4rem 0.8rem; border: 1px solid rgba(16, 185, 129, 0.2);" onclick="verifyLead('${item.company}')">✅ Verify</button>
-                    ` : `<div style="text-align: right; color: var(--green); font-size: 0.85rem; font-weight: 800; letter-spacing: 0.5px;">✓ IN MASTER</div>`;
-
-                    const contactPerson = item.contact_name || item.ceo_founder || 'Hunting...';
-                    
-                    // Retrieve stored status or default
-                    const storedStatus = localStorage.getItem('lead_status_' + item.id) || 'Not Contacted';
-                    let statusColor = 'rgba(255, 255, 255, 0.1)';
-                    if (storedStatus === "Meeting Booked" || storedStatus === "Deal Closed") statusColor = 'var(--green)';
-                    else if (storedStatus === "Replied") statusColor = 'var(--accent)';
-
-                    const trackerDropdown = `
-                        <select id="status-select-${item.id}" onchange="updateStatus(${item.id}, this.value)" style="margin-top: 8px; width: 100%; padding: 4px; background: var(--bg); color: var(--text-bright); border: 1px solid ${statusColor}; border-radius: 4px; font-size: 0.75rem;">
-                            <option value="Not Contacted" ${storedStatus === 'Not Contacted' ? 'selected' : ''}>Not Contacted</option>
-                            <option value="Connected" ${storedStatus === 'Connected' ? 'selected' : ''}>Connected</option>
-                            <option value="Replied" ${storedStatus === 'Replied' ? 'selected' : ''}>Replied</option>
-                            <option value="Meeting Booked" ${storedStatus === 'Meeting Booked' ? 'selected' : ''}>Meeting Booked</option>
-                            <option value="Deal Closed" ${storedStatus === 'Deal Closed' ? 'selected' : ''}>Deal Closed</option>
-                        </select>
-                    `;
-
-                    row.innerHTML = `
-                        <td style="font-weight: 700; color: var(--accent); vertical-align: middle; text-align: center; width: 60px;">#${updates.length - index}</td>
-                        <td>
-                            <div style="display: flex; gap: 12px; margin-bottom: 8px; align-items: center;">
-                                <div style="color: ${regColor}; font-size: 0.65rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">REGISTRY: ${registryStatus}</div>
-                                <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; padding: 2px 8px; display: flex; align-items: center; gap: 6px;">
-                                    <span style="font-size: 0.8rem;">📄</span>
-                                    <span style="color: var(--accent); font-size: 0.6rem; font-weight: 800; letter-spacing: 1px;">SOURCE: CRUNCHBASE PROFILE</span>
-                                </div>
-                            </div>
-                            <div style="font-weight: 800; font-size: 1.25rem; color: var(--text-bright); margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
-                                ${item.company} ${auditBadge}
-                                <div style="margin-left: auto; display: flex; gap: 8px;">
-                                    <button class="btn" style="background: rgba(99, 102, 241, 0.15); color: var(--accent); font-size: 0.7rem; padding: 0.4rem 0.8rem; border: 1px solid var(--accent);" onclick="copyPitch('${item.company.replace(/'/g, "\\'")}', '${contactPerson.replace(/'/g, "\\'")}', '${item.financials.replace(/'/g, "\\'")}', '${item.strategic_signal.replace(/'/g, "\\'")}')">📝 Pitch</button>
-                                    <button class="btn" style="background: rgba(10, 102, 194, 0.15); color: #0a66c2; font-size: 0.7rem; padding: 0.4rem 0.8rem; border: 1px solid #0a66c2;" onclick="openLinkedInSearch('${contactPerson.replace(/'/g, "\\'")}', '${item.company.replace(/'/g, "\\'")}')">in Search</button>
-                                </div>
-                            </div>
-                            <div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.5; border-left: 3px solid var(--accent);">
-                                ${item.integration_opportunity}
-                            </div>
-                        </td>
-                        <td style="width: 200px;">
-                            ${item.funding_amount && item.funding_amount !== 'Undisclosed' ? 
-                                `<div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--green); color: var(--green); padding: 6px 10px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; display: inline-block; margin-bottom: 6px; box-shadow: 0 0 10px rgba(16,185,129,0.1);">💰 ${item.funding_amount}</div>`
-                                : `<div style="font-weight: 800; font-size: 0.9rem; color: #fbbf24; margin-bottom: 6px;">💰 Undisclosed</div>`
-                            }
-                            ${item.funding_round && item.funding_round !== 'Unknown Round' ? 
-                                `<br><div style="background: rgba(99, 102, 241, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; display: inline-block; margin-bottom: 8px;">🔄 ${item.funding_round}</div>`
-                                : `<br><div style="font-weight: 600; font-size: 0.75rem; color: var(--text-dim); margin-bottom: 8px;">🔄 Unknown Stage</div>`
-                            }
-                            <div style="font-size: 0.8rem; color: var(--text-dim); line-height: 1.4; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.05);">${financials}</div>
-                        </td>
-                        <td><div style="background: rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--text-bright); font-weight: 600;">${item.strategic_signal}</div></td>
-                        <td>
-                            <div style="font-size: 1.75rem; font-weight: 900; color: ${scoreColor}; text-align: center; text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);">${confidence}%</div>
-                        </td>
-                        <td style="min-width: 250px;">
-                            <div style="display: flex; flex-direction: column; gap: 6px;">
-                                <div style="display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-bright); font-size: 1.05rem;">
-                                    <span style="font-size: 1.2rem; opacity: 0.7;">👤</span> 
-                                    <span>${contactPerson}</span>
-                                </div>
-                                ${item.contact_role ? `<div style="color: var(--text-dim); font-size: 0.8rem; font-weight: 600; margin-left: 28px;">💼 ${item.contact_role}</div>` : ''}
-                                <div style="font-size: 0.85rem; font-weight: 800; font-family: monospace; letter-spacing: 0.5px; margin-left: 28px; color: ${item.contact_email && item.contact_email !== 'Not Found' ? 'var(--green)' : '#fbbf24'};">
-                                    ${item.contact_email && item.contact_email !== 'Not Found' ? '📧 ' + item.contact_email : (item.contact_email === 'Not Found' ? '❌ No Email' : '⏳ Probing Contact...')}
-                                </div>
-                                ${item.contact_linkedin && item.contact_linkedin.includes('http') ? 
-                                    `<div style="margin-left: 28px; margin-top: 8px;">
-                                        <a href="${item.contact_linkedin}" target="_blank" class="btn" style="background: #0a66c2; color: white; text-decoration: none; padding: 4px 12px; font-size: 0.75rem; border-radius: 4px; display: inline-block;">
-                                            in Profile ↗
-                                        </a>
-                                    </div>` 
-                                    : `<div style="margin-left: 28px; margin-top: 8px; font-size: 0.75rem; color: #fbbf24; font-weight: 600;">⏳ Searching...</div>`}
-                            </div>
-                        </td>
-                        <td style="text-align: right; width: 150px;">
-                            ${actionBtns}
-                            ${trackerDropdown}
-                        </td>
-                    `;
-                    table.appendChild(row);
-                });
-            } catch (error) { console.error('Intelligence Feed Broken:', error); }
-        }
-
-        function openLinkedInSearch(person, company) {
-            const query = encodeURIComponent(person + ' ' + company + ' LinkedIn profile');
-            window.open('https://www.linkedin.com/search/results/people/?keywords=' + query, '_blank');
-        }
-
-        function copyPitch(company, name, financials, signal) {
-            const firstName = name.split(' ')[0] || 'there';
-            const pitch = `Hi ${firstName},\n\nI was researching ${company} and noticed your recent momentum with ${financials} and your focus on ${signal}.\n\nGiven your current tech needs, my agency provides pre-vetted senior software developers that integrate seamlessly in your timezone.\n\nAre you open to a quick 5-min intro chat next week to see if we'd be a good resource for your roadmap?\n\nBest,\n[Your Name]`;
-            navigator.clipboard.writeText(pitch).then(() => {
-                alert('Personalized Pitch Copied to Clipboard!');
-            });
-        }
-
-        function updateStatus(id, newStatus) {
-            localStorage.setItem('lead_status_' + id, newStatus);
-            // Flash color based on status
-            const sel = document.getElementById('status-select-' + id);
-            if (sel) {
-                if (newStatus === "Meeting Booked" || newStatus === "Deal Closed") sel.style.borderColor = 'var(--green)';
-                else if (newStatus === "Replied") sel.style.borderColor = 'var(--accent)';
-                else sel.style.borderColor = 'rgba(255, 255, 255, 0.1)';
             }
         }
 
-        async function fetchUsage() {
+        function createRow(lead) {
+            const row = document.createElement('tr');
+            const score = lead.confidence_score || 0;
+            const badgeClass = score > 80 ? 'badge-verified' : 'badge-pending';
+            const badgeText = score > 80 ? 'HQ VERIFIED' : 'PENDING';
+            
+            row.innerHTML = `
+                <td>
+                    <div style="font-weight: 800; color: #fff;">${lead.company}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-dim);">${lead.industry || 'Tech'}</div>
+                    <span class="badge ${badgeClass}" style="margin-top: 5px; display: inline-block;">${badgeText}</span>
+                </td>
+                <td>
+                    <div style="color: #62ffaa; font-weight: 600;">${lead.funding_amount || 'Seed'}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-dim);">${lead.funding_round || 'Undisclosed'}</div>
+                </td>
+                <td style="max-width:300px">
+                    <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>Signal:</strong> ${lead.strategic_signal || 'N/A'}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-dim);"><strong>Opp:</strong> ${lead.integration_opportunity || 'N/A'}</div>
+                </td>
+                <td>
+                    <div style="font-weight: 600;">${lead.contact_name || 'Founder/CEO'}</div>
+                    <div style="font-size: 0.8rem; color: var(--primary);">
+                        <a href="https://www.google.com/search?q=${encodeURIComponent(lead.contact_name + ' ' + lead.company + ' LinkedIn')}" target="_blank" style="color: inherit; text-decoration: none;">
+                            <i class="fab fa-linkedin"></i> Find on LinkedIn
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-group">
+                        <button onclick="copyPitch('${lead.company.replace(/'/g, "\\'")}', '${lead.funding_amount}', '${lead.funding_round}', '${(lead.strategic_signal || "").replace(/'/g, "\\'")}')" class="btn btn-primary btn-sm">
+                            <i class="fas fa-copy"></i> PITCH
+                        </button>
+                        <button onclick="manualVerify('${lead.company.replace(/'/g, "\\'")}', this)" class="btn btn-ghost btn-sm">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <a href="${lead.url}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </td>
+            `;
+            return row;
+        }
+
+        async function updateDashboard() {
             try {
-                const response = await fetch('/api/usage');
-                const usage = await response.json();
-                                const updateEl = (id, val) => {
-                    const el = document.getElementById(id);
-                    if (el) el.innerText = val || 0;
-                };
+                const [usageRes, leadsRes] = await Promise.all([
+                    fetch('/api/usage').then(r => r.json()),
+                    fetch('/api/updates').then(r => r.json())
+                ]);
+
+                document.getElementById('found-today').innerText = usageRes.today_count;
+                document.getElementById('total-leads').innerText = usageRes.total_leads;
+                document.getElementById('serper-stat').innerText = usageRes.Serper;
+                document.getElementById('gemini-stat').innerText = usageRes.Gemini;
+                document.getElementById('agent-status').innerText = usageRes.status;
+
+                const indicator = document.getElementById('status-indicator');
+                indicator.className = 'status-dot ' + (usageRes.status.includes('Active') ? 'status-online' : 'status-paused');
                 
-                const serperUsed = usage.Serper || 0;
-                const serperTotal = 10000; // 4 Keys x 2500 per month
-                const serperPercent = ((serperUsed / serperTotal) * 100).toFixed(1);
-                
-                const serperEl = document.getElementById('serper-usage-display');
-                if (serperEl) serperEl.innerText = `${serperUsed.toLocaleString()} / 10,000`;
-                
-                const serperPctEl = document.getElementById('serper-percent');
-                if (serperPctEl) serperPctEl.innerText = `${serperPercent}% of Monthly Quota Used`;
+                const toggleBtn = document.getElementById('toggle-btn');
+                toggleBtn.innerHTML = usageRes.status.includes('Paused') ? '<i class="fas fa-play"></i> RESUME ENGINE' : '<i class="fas fa-pause"></i> PAUSE ENGINE';
 
-                updateEl('gemini-usage', usage.Gemini);
-                updateEl('groq-usage', usage.Groq);
-                updateEl('total-scans', usage.total_scans);
-                updateEl('today-insights', usage.today_count);
-                updateEl('total-updates', usage.total_leads);
-
-                const statusDot = document.getElementById('status-dot');
-                const statusText = document.getElementById('status-text');
-                const cloudStatus = usage.status || 'Sleeping 💤';
-                
-                if (statusText) statusText.innerText = cloudStatus.includes('Sleeping') ? `Automation Armed (Sleeping) 🛡️💤` : `Cloud Engine: ${cloudStatus}`;
-                if (statusDot) {
-                    if (cloudStatus.includes('Hunting')) {
-                        statusDot.classList.add('active');
-                        statusDot.style.background = "#ef4444";
-                    } else {
-                        statusDot.classList.remove('active');
-                        statusDot.style.background = "#10b981";
-                    }
-                }
-
-                const heartbeatEl = document.getElementById('heartbeat-pulse');
-                if (heartbeatEl) heartbeatEl.innerText = `Pulse: Healthy 💓`;
-
-                const lastUpdateEl = document.getElementById('last-update');
-                if (lastUpdateEl && usage.last_run && usage.last_run !== 'Recently') {
-                    try {
-                        let runDate = new Date(usage.last_run);
-                        if (!usage.last_run.includes('Z') && !usage.last_run.includes('+')) {
-                            runDate = new Date(usage.last_run + 'Z'); 
-                        }
-                        let timeStr = runDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        
-                        if (cloudStatus.includes('Hunting') || cloudStatus.includes('Waking')) {
-                            lastUpdateEl.innerText = `${cloudStatus} (Started: ${timeStr})`;
-                        } else if (cloudStatus.includes('Paused')) {
-                            lastUpdateEl.innerText = `Paused manually at ${timeStr}`;
-                        } else {
-                            lastUpdateEl.innerText = `Sleep: ${timeStr} | Waiting for Automated GitHub Trigger`;
-                        }
-                    } catch(e) {
-                         lastUpdateEl.innerText = usage.last_run;
-                    }
-                } else if (lastUpdateEl) {
-                    lastUpdateEl.innerText = 'Recently';
-                }
-            } catch (error) { console.error('Usage Tracking Error:', error); }
+                const body = document.getElementById('leads-body');
+                body.innerHTML = '';
+                leadsRes.forEach(lead => body.appendChild(createRow(lead)));
+            } catch (e) {
+                console.error("Dashboard error:", e);
+            }
         }
 
-        async function startEngine() {
-            if (!confirm('Start hunting right now?')) return;
-            try {
-                await fetch('/api/control', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'start' }) });
-                document.getElementById('status-text').innerText = 'Cloud Engine: Waking Up 🌅';
-                refreshData();
-            } catch (e) { alert('Failed to start engine'); }
+        async function toggleEngine() {
+            const btn = document.getElementById('toggle-btn');
+            const action = btn.innerText.includes('RESUME') ? 'start' : 'stop';
+            await fetch('/api/control', { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action })
+            });
+            updateDashboard();
         }
 
-        async function stopEngine() {
-            if (!confirm('Pause the autonomous agent?')) return;
-            try {
-                await fetch('/api/control', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'stop' }) });
-                document.getElementById('status-text').innerText = 'Cloud Engine: Paused ⏸️';
-                refreshData();
-            } catch (e) { alert('Failed to stop engine'); }
+        async function manualVerify(company, btn) {
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            await fetch('/api/verify', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ company })
+            });
+            updateDashboard();
         }
 
-        async function verifyLead(company) {
-            await fetch('/api/verify', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ company }) });
-            refreshData();
+        function copyPitch(company, funding, round, signal) {
+            const pitch = `Hi,\n\nI saw that ${company} recently raised ${funding} in a ${round} round. Your focus on ${signal} is impressive.\n\nMy team specializes in scaling engineering teams for high-growth startups in the UAE. Would you be open to a quick chat about your roadmap?`;
+            navigator.clipboard.writeText(pitch);
+            alert("Copy-paste pitch ready for " + company);
         }
 
-        function refreshData() {
-            fetchUpdates();
-            fetchUsage();
-        }
-
-        setInterval(refreshData, 5000);
-        refreshData();
+        setInterval(updateDashboard, 15000);
+        updateDashboard();
     </script>
 </body>
 </html>

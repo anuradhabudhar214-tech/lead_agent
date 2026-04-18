@@ -135,6 +135,17 @@ def save_to_csv(lead):
     """Saves lead to local CSV backup matching your format."""
     file_exists = os.path.exists(CSV_FILE)
     headers = ["Confidence", "Company", "Industry", "Patron/Chairman", "CEO/Founder", "Funding Amount", "Funding Round", "Financials", "2026 Strategic Signal", "Integration Opportunity", "Registry Status", "URL", "Discovered At"]
+    
+    # Deduplication check
+    if file_exists:
+        try:
+            with open(CSV_FILE, "r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row.get("Company") == lead.get("company"):
+                        return # Skip duplicate
+        except Exception: pass
+
     try:
         with open(CSV_FILE, "a", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=headers)
@@ -415,29 +426,37 @@ def run_tracker():
     # --- AUTO-RESURRECTION: Restore lost April 14-17 data from Git backup ---
     try:
         res = supabase.table("uae_leads").select("count", count="exact").execute()
-        if res.count < 10: # If DB was wiped or very low, restore from Git
+        if res.count < 150: # FORCE RESTORE: If DB has less than 200 leads, restore from Git to fix 4 count issue
             logger.info("🚑 AUTO-RESURRECTION: Target count low. Pulling leads from Git 'Time Machine'...")
             import subprocess, csv, io
             old_csv_raw = subprocess.check_output(["git", "show", "47a4d22:enterprise_leads.csv"]).decode('utf-8')
             reader = csv.DictReader(io.StringIO(old_csv_raw))
             restore_list = []
             for row in reader:
-                restore_list.append({
-                    "company": row.get("Company"),
-                    "industry": row.get("Industry"),
-                    "confidence_score": 85,
-                    "funding_amount": row.get("Financials", "Undisclosed"),
-                    "financials": row.get("Financials"),
-                    "strategic_signal": row.get("2026 Strategic Signal"),
-                    "integration_opportunity": row.get("Integration Opportunity"),
-                    "url": row.get("URL"),
-                    "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
-                })
+                try:
+                    restore_list.append({
+                        "company": row.get("Company") or "Unknown",
+                        "industry": row.get("Industry") or "Tech",
+                        "confidence_score": 85,
+                        "funding_amount": row.get("Funding") or row.get("Financials") or "Undisclosed",
+                        "financials": row.get("Financials") or "Undisclosed",
+                        "strategic_signal": row.get("2026 Strategic Signal") or "N/A",
+                        "integration_opportunity": row.get("Integration Opportunity") or "N/A",
+                        "url": row.get("URL") or "",
+                        "discovered_at": row.get("Discovered At") or datetime.now(timezone.utc).isoformat()
+                    })
+                except Exception: pass
             if restore_list:
-                supabase.table("uae_leads").upsert(restore_list, on_conflict="company").execute()
+                for i in range(0, len(restore_list), 50):
+                    chunk = restore_list[i:i+50]
+                    try:
+                        supabase.table("uae_leads").upsert(chunk, on_conflict="company").execute()
+                        logger.info(f"✅ Fast-Synced chunk {i}")
+                    except Exception as e:
+                        logger.error(f"❌ Upsert Sync Error: {e}")
                 logger.info(f"✅ Successfully Resurrected {len(restore_list)} historical leads!")
     except Exception as e:
-        logger.warning(f"Resurrection skip: {e}")
+        logger.warning(f"Resurrection skip/error: {e}")
 
     # --- ATOMIC VELOCITY BOOST ---
     num_niches_to_scan = 10
