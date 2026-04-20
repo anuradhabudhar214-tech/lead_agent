@@ -450,7 +450,7 @@ def run_tracker():
                                 "strategic_signal": row.get("2026 Strategic Signal") or "N/A",
                                 "integration_opportunity": row.get("Integration Opportunity") or "N/A",
                                 "url": row.get("URL") or "",
-                                "discovered_at": "2026-04-16T12:00:00+00:00" 
+                                "discovered_at": datetime.now(timezone.utc).isoformat() 
                             }
                 except: continue
 
