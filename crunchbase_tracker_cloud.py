@@ -193,10 +193,16 @@ def clean_company_name(raw_name):
     """Deep scrubber to isolate company names and kill news headlines."""
     if not raw_name: return "Unknown Entity"
     
-    # 1. Skip if it looks like a news title prefix
-    if re.match(r'^\d', raw_name) or any(word in raw_name.lower() for word in ['joined', 'member', 'launches', 'announced', 'hiring']):
-        return "FILTERED_HEADLINE"
-        
+    # 1. Reject Garbage Entities (Chambers, Governments, Big Tech)
+    rejection_keywords = [
+        'chamber', 'authority', 'government', 'park', 'ministry', 'department', 
+        'council', 'centre', 'center', 'university', 'college', 'school',
+        'openai', 'google', 'meta', 'microsoft', 'amazon', 'apple',
+        'summit', 'conference', 'workshop', 'exhibition', 'festival'
+    ]
+    if any(k in raw_name.lower() for k in rejection_keywords):
+        return "FILTERED_GARBAGE"
+
     # 2. Extract pure company name (usually before the first dash or pipe)
     clean = re.split(r' \-| \| | \/ | \.\.\.|\: ', raw_name)[0]
     
@@ -279,14 +285,13 @@ def compile_auditor_intel_extreme(discovery_package):
     CRUNCHBASE SOURCE: {discovery_package}
 
     AUDIT RULES:
-    1. This is a REAL Crunchbase profile. Extract all funding data visible in the snippet.
-    2. GCC ONLY: Must be a real UAE/Dubai/Abu Dhabi entity. If not, score: 0.
-    3. funding_round: Extract the EXACT round type shown on Crunchbase (e.g. "Seed", "Series A", "Series B", "Pre-Seed", "Venture Round", "Angel", "IPO"). NEVER return "Unknown Round" if text mentions any funding event.
-    4. funding_amount: Extract ONLY the exact money amount (e.g., "$5M", "AED 10.5M", "$2.3B"). If not shown, return "Undisclosed".
-    5. financials: Name the actual investors or lead VC funds if mentioned. Otherwise describe the round briefly.
-    6. ceo_founder: Real full name and role, format: 'Name (Title)'.
-    7. registry_status: UAE registry from: DED Dubai, DCAI, ADBC, DIFC, WAM.ae, "Active Entity - Master Registry", "Financial Register - Verified". Default: "PROBING..."
-    8. patron_chairman: UAE government patron or board chairman if known, else "N/A".
+    1. STRICT REJECTION: Score 0 if entity is a Government Body, Chamber of Commerce, Research Park, Non-Profit, or Global Giant (OpenAI/Google).
+    2. TARGET: Private SME/Startups raising venture capital (Seed, Series A/B/C, etc.) in the UAE.
+    3. DATE SENSITIVITY: Prioritize announcements from April 2026.
+    4. funding_round: Extract EXACT round type from text.
+    5. funding_amount: Extract EXACT money amount (e.g. $5M). Default: "Undisclosed".
+    6. ceo_founder: Real full name and role.
+    7. financials: Specific investor names.
     9. integration_opportunity: Specific IT service this company needs from an IT solutions vendor.
     10. RETURN JSON ONLY. No markdown. No extra text.
 
@@ -426,22 +431,24 @@ def run_tracker():
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     current_niches = [
-        # LIVE PULSE: Last 30 Days strictly (qdr:m) & 2026 Context
-        'crunchbase.com UAE funding raised today qdr:m',
-        'crunchbase.com Dubai startup round news qdr:m',
-        'crunchbase.com UAE "Series A" funding April 2026 qdr:m',
-        'crunchbase.com Dubai "Seed" funding raised April 2026 qdr:m',
-        'crunchbase.com UAE tech startup "Venture Round" qdr:m',
-        'crunchbase.com Abu Dhabi startup investment qdr:m',
-        'crunchbase.com UAE fintech startup funding qdr:m',
-        'crunchbase.com UAE startup "Series A" funding raised million qdr:m',
-        'crunchbase.com Dubai startup "Series B" funding raised million qdr:m',
-        'crunchbase.com "Abu Dhabi" startup "Seed" funding raised qdr:m',
-        'crunchbase.com UAE startup "Pre-Seed" funding raised 2026 qdr:m',
-        'crunchbase.com Dubai startup "Venture Round" raised million qdr:m',
-        'crunchbase.com UAE "Series C" funding round raised 2026 qdr:m',
-        'crunchbase UAE Dubai AI technology startup funding round raised qdr:m',
-        'crunchbase Dubai fintech startup seed funding raised million qdr:m',
+        # --- APRIL 2026 REAL-TIME BREAKTHROUGH TARGETS ---
+        'site:wamda.com "Ray" seed funding April 2026',
+        'site:wamda.com "Aya" Series A fashion UAE',
+        'site:wamda.com "Kernel" Falak Holding acquisition',
+        'site:wamda.com "Sufra AI" funding 2024',
+        
+        # --- LIVE NEWS SOURCES (Last 7 Days) ---
+        'site:wamda.com startup funding UAE qdr:w',
+        'site:magnitt.com UAE venture capital news qdr:w',
+        'site:entrepreneur.com Dubai startup round qdr:w',
+        'site:uaestartupstory.com funding announcements qdr:w',
+        'news.google.com UAE startup "Seed" funding qdr:w',
+        'site:gulfnews.com "startup" raised funding Dubai qdr:w',
+        
+        # --- CRUNCHBASE PRECISION (Last 30 Days) ---
+        'site:crunchbase.com/organization "Dubai" funding 2026 qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" funding 2026 qdr:m',
+        'site:crunchbase.com/funding_round UAE startup 2026 qdr:m',
         'crunchbase UAE proptech startup funding round 2026 qdr:m',
         'crunchbase Dubai SaaS B2B startup series A funding raised qdr:m',
         'crunchbase UAE healthtech biotech funding series raised qdr:m',
