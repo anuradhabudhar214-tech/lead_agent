@@ -130,10 +130,24 @@ def update_agent_status(status):
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
         
         # Incremental Heartbeat: One scan happened
-        res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "total_scans"})
+        res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "total_scans,today_scans,last_run_at"})
         if res:
-            new_scans = (res[0].get("total_scans") or 0) + 1
-            supabase_call("PATCH", "system_stats", data={"total_scans": new_scans}, params={"id": "eq.1"})
+            stats = res[0]
+            total_s = (stats.get("total_scans") or 0) + 1
+            today_s = (stats.get("today_scans") or 0) + 1
+            
+            # Smart Reset: If last_run_at day is different from now, reset today count to 1
+            last_run_at = stats.get("last_run_at")
+            if last_run_at:
+                try:
+                    last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                    if last_dt.day != now.day or last_dt.month != now.month:
+                        today_s = 1
+                except: pass
+                
+            supabase_call("PATCH", "system_stats", 
+                          data={"total_scans": total_s, "today_scans": today_s, "last_run_at": now.isoformat()}, 
+                          params={"id": "eq.1"})
     except:
         logger.warning("⚠️ Status Heartbeat Blinked (but hunt continues)")
 

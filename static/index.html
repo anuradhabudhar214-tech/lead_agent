@@ -171,8 +171,8 @@
         </div>
         <div class="stat-card">
             <span id="scans-stat" class="stat-value">0</span>
-            <span class="stat-label">Total Heartbeats</span>
-            <span class="usage-desc">24/7 Cycles Checked</span>
+            <span class="stat-label">Today's Heartbeats</span>
+            <span class="usage-desc">Active Swipes Today</span>
         </div>
     </div>
 
@@ -277,7 +277,7 @@
                 document.getElementById('serper-stat').innerText = `${usageRes.Serper || 0} / 10,000`;
                 document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
                 document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
-                document.getElementById('scans-stat').innerText = usageRes.total_scans || 0;
+                document.getElementById('scans-stat').innerText = usageRes.today_scans || 0;
                 document.getElementById('last-sweep').innerText = usageRes.last_run || "Recently";
                 document.getElementById('agent-status').innerText = usageRes.status || "Active";
 

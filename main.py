@@ -136,6 +136,7 @@ async def get_usage():
                 "Gemini": stats.get("gemini_calls", 0),
                 "Groq": stats.get("groq_calls", 0),
                 "total_scans": stats.get("total_scans", 0),
+                "today_scans": stats.get("today_scans", 0),
                 "status": stats.get("status", "Sleeping 💤"),
                 "last_run": stats.get("last_run_at", "Recently"),
                 "today_count": today_count,
