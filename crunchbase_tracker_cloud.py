@@ -426,92 +426,48 @@ def serper_search_broad(query):
 
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
-    num_niches_to_scan = 15
+    num_niches_to_scan = 40
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     current_niches = [
-        # --- APRIL 2026 REAL-TIME BREAKTHROUGH TARGETS ---
-        'site:wamda.com "Ray" seed funding April 2026',
-        'site:wamda.com "Aya" Series A fashion UAE',
-        'site:wamda.com "Kernel" Falak Holding acquisition',
-        'site:wamda.com "Sufra AI" funding 2026',
+        # --- BROAD MARKET SWEEPS ---
+        'site:crunchbase.com/organization "Dubai" OR "Abu Dhabi" "Seed" OR "Pre-Seed"',
+        'site:crunchbase.com/organization "United Arab Emirates" "Series A"',
+        'site:crunchbase.com/organization "UAE" "Series B" OR "Venture Round"',
+        'site:crunchbase.com/organization "Dubai" "Angel" OR "Convertible Note"',
+        'site:crunchbase.com/organization "Abu Dhabi" "Private Equity" OR "Corporate Round"',
         
-        # --- LIVE NEWS SOURCES (Last 7 Days) ---
-        'site:wamda.com startup funding UAE qdr:w',
-        'site:magnitt.com UAE venture capital news qdr:w',
-        'site:entrepreneur.com Dubai startup round qdr:w',
-        'site:uaestartupstory.com funding announcements qdr:w',
-        'news.google.com UAE startup "Seed" funding qdr:w',
-        'site:gulfnews.com "startup" raised funding Dubai qdr:w',
+        # --- SECTOR SPECIFIC BROAD SWEEPS ---
+        'site:crunchbase.com/organization "Dubai" AND ("FinTech" OR "Crypto" OR "Web3" OR "Blockchain")',
+        'site:crunchbase.com/organization "UAE" AND ("HealthTech" OR "MedTech" OR "Biotech")',
+        'site:crunchbase.com/organization "Abu Dhabi" AND ("EdTech" OR "PropTech" OR "Real Estate")',
+        'site:crunchbase.com/organization "Dubai" AND ("AI" OR "Artificial Intelligence" OR "Machine Learning")',
+        'site:crunchbase.com/organization "UAE" AND ("SaaS" OR "Cloud" OR "Enterprise Software")',
+        'site:crunchbase.com/organization "Dubai" AND ("E-commerce" OR "Marketplace" OR "Retail Tech")',
+        'site:crunchbase.com/organization "Abu Dhabi" AND ("CleanTech" OR "Climate" OR "Energy")',
+        'site:crunchbase.com/organization "UAE" AND ("Cybersecurity" OR "Security" OR "Privacy")',
+        'site:crunchbase.com/organization "Dubai" AND ("Logistics" OR "Supply Chain" OR "Delivery")',
+        'site:crunchbase.com/organization "UAE" AND ("HR Tech" OR "LegalTech" OR "InsurTech")',
         
-        # --- CRUNCHBASE PRECISION (Last 30 Days) ---
-        'site:crunchbase.com/organization "Dubai" funding 2026 qdr:m',
-        'site:crunchbase.com/organization "Abu Dhabi" funding 2026 qdr:m',
-        'site:crunchbase.com/funding_round UAE startup 2026 qdr:m',
-        'crunchbase UAE proptech startup funding round 2026 qdr:m',
-        'crunchbase Dubai SaaS B2B startup series A funding raised qdr:m',
-        'crunchbase UAE healthtech biotech funding series raised qdr:m',
-        'crunchbase Dubai cybersecurity startup funding round raised qdr:m',
-        'crunchbase UAE logistics supply chain startup funding raised qdr:m',
-        'crunchbase Dubai edtech startup funding raised million qdr:m',
-        'crunchbase Abu Dhabi cleantech green energy funding raised qdr:m',
-        'crunchbase UAE e-commerce startup raised series funding 2026 qdr:m',
-        'crunchbase Dubai robotics automation startup funding raised qdr:m',
-        'crunchbase UAE web3 blockchain crypto startup funding qdr:m',
-        'crunchbase Dubai cloud infrastructure SaaS startup raised qdr:m',
-        'crunchbase UAE insurtech legaltech startup funding raised qdr:m',
-        'crunchbase Dubai founded 2026 2026 UAE tech startup funding qdr:m',
-        'crunchbase Abu Dhabi capital investment tech startup raised qdr:m',
-        'crunchbase UAE smart mobility transport startup raised qdr:m',
-        'crunchbase Dubai gaming esports tech startup funding raised qdr:m',
+        # --- RECENTLY REFRESHED GOOGLE DORKS (Time-Limited) ---
+        'site:crunchbase.com/organization "Dubai" "raised" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "funding" qdr:m',
+        'site:crunchbase.com/organization "United Arab Emirates" "investment" qdr:m',
+        'site:crunchbase.com/organization "UAE" "stealth" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "venture capital" qdr:m',
         
-        # --- GROWTH SURGE: NEW SPECIALIZED NICHES (ALL LAST 30 DAYS = qdr:m) ---
-        'crunchbase Abu Dhabi blockchain infrastructure funding qdr:m',
-        'crunchbase Dubai sustainable aviation fuel startup funding qdr:m',
-        'crunchbase UAE quantum computing research investment qdr:m',
-        'crunchbase Dubai vertical farming agritech raised million qdr:m',
-        'crunchbase UAE desalination tech water startup funding qdr:m',
-        'crunchbase Dubai space tech satellite startup raised qdr:m',
-        'crunchbase UAE alternative protein foodtech investment qdr:m',
-        'crunchbase Dubai autonomous driving robotics funding qdr:m',
-        'crunchbase UAE clean hydrogen energy startup investment qdr:m',
-        'crunchbase Dubai edtech vocational training raised million qdr:m',
-        'crunchbase UAE telehealth mental health startup funding qdr:m',
-        'crunchbase Dubai property management SaaS proptech raised qdr:m',
-        'crunchbase UAE supply chain transparency blockchain raised qdr:m',
-        'crunchbase Dubai influencer marketing tech platform funding qdr:m',
-        'crunchbase UAE 3D printing manufacturing startup investment qdr:m',
-        'crunchbase Dubai micro-mobility electric scooter funding qdr:m',
-        'crunchbase UAE solar energy storage startup raised million qdr:m',
-        'crunchbase Dubai HR tech recruitment automation funding qdr:m',
-        'crunchbase UAE legaltech smart contract platform investment qdr:m',
-        'crunchbase Dubai insurtech fractional ownership platform raised qdr:m',
-        'crunchbase UAE e-mobility charging infrastructure funding qdr:m',
-        'crunchbase Dubai biotech drug discovery startup raised qdr:m',
-        'crunchbase UAE regtech compliance automation investment qdr:m',
-        'crunchbase Dubai last-mile delivery drone funding qdr:m',
-        'crunchbase UAE cybersecurity zero-trust startup raised qdr:m',
-        'crunchbase Dubai VR/AR immersive training startup funding qdr:m',
-        'crunchbase UAE pet tech e-commerce startup investment qdr:m',
-        'crunchbase Dubai event tech platform funding raised million qdr:m',
-        'crunchbase UAE creator economy fintech startup raised qdr:m',
-        'crunchbase Dubai open banking API startup investment qdr:m',
-        'crunchbase UAE trade finance blockchain platform funding qdr:m',
-        'crunchbase Dubai smart city IoT sensor startup raised qdr:m',
-        'crunchbase UAE waste-to-energy circular economy funding qdr:m',
-        'crunchbase Dubai digital identity biometric startup raised qdr:m',
-        'crunchbase UAE elderly care healthtech startup investment qdr:m',
-        'crunchbase Dubai yacht booking concierge tech funding qdr:m',
-        'crunchbase UAE luxury real estate tokenization platform raised qdr:m',
-        'crunchbase Dubai cloud gaming infrastructure startup funding qdr:m',
-        'crunchbase UAE sports tech analytics platform investment qdr:m',
-        'crunchbase Dubai sleep tech wellness startup raised million qdr:m',
-        'crunchbase UAE carbon credit marketplace startup funding qdr:m',
-        'crunchbase Dubai fractional investment platform for startups raised qdr:m',
-        'crunchbase UAE deep sea exploration subsea tech investment qdr:m',
-        'crunchbase Dubai holographic display tech startup funding qdr:m',
-        'crunchbase UAE personalized nutrition healthtech raised qdr:m',
+        # --- HIGH-GROWTH SPECIFIC ---
+        'site:crunchbase.com/organization "Dubai" "autonomous" OR "robotics"',
+        'site:crunchbase.com/organization "UAE" "telehealth" OR "virtual care"',
+        'site:crunchbase.com/organization "Abu Dhabi" "quantum computing"',
+        'site:crunchbase.com/organization "Dubai" "creator economy"',
+        'site:crunchbase.com/organization "UAE" "agritech" OR "vertical farming"',
+        
+        # --- OPEN NET ---
+        'site:wamda.com "funded" "Dubai" OR "Abu Dhabi"',
+        'site:magnitt.com "raised" "UAE"',
+        'site:gulfnews.com "startup" "raised" "Dubai"'
     ]
     
     import random
@@ -571,39 +527,43 @@ def run_tracker():
 
     # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
     current_niches = [
-        # Historical Targets (April/May 2026)
-        'crunchbase.com UAE "Series A" funding April 2026',
-        'crunchbase.com Dubai "Seed" funding raised April 2026',
-        'crunchbase.com Abu Dhabi startup raised May 2026',
-        'crunchbase.com UAE "Series B" funding May 2026',
-        'crunchbase.com Dubai tech "Venture Round" April 2026',
-        'crunchbase.com UAE startup "Series A" May 2026',
+        # --- BROAD MARKET SWEEPS ---
+        'site:crunchbase.com/organization "Dubai" OR "Abu Dhabi" "Seed" OR "Pre-Seed"',
+        'site:crunchbase.com/organization "United Arab Emirates" "Series A"',
+        'site:crunchbase.com/organization "UAE" "Series B" OR "Venture Round"',
+        'site:crunchbase.com/organization "Dubai" "Angel" OR "Convertible Note"',
+        'site:crunchbase.com/organization "Abu Dhabi" "Private Equity" OR "Corporate Round"',
         
-        # Fresh Targets (Latest 2026/2026)
-        'crunchbase.com UAE startup "Series A" funding raised million',
-        'crunchbase.com Dubai startup "Series B" funding raised million',
-        'crunchbase.com "Abu Dhabi" startup "Seed" funding raised',
-        'crunchbase.com UAE startup "Pre-Seed" funding raised 2026',
-        'crunchbase.com Dubai startup "Venture Round" raised million',
-        'crunchbase.com UAE "Series C" funding round raised 2026',
-        'crunchbase UAE Dubai AI technology startup funding round raised',
-        'crunchbase Dubai fintech startup seed funding raised million',
-        'crunchbase UAE proptech startup funding round 2026 2026',
-        'crunchbase Dubai SaaS B2B startup series A funding raised',
-        'crunchbase UAE healthtech biotech funding series raised',
-        'crunchbase Dubai cybersecurity startup funding round raised',
-        'crunchbase UAE logistics supply chain startup funding raised',
-        'crunchbase Dubai edtech startup funding raised million',
-        'crunchbase Abu Dhabi cleantech green energy funding raised',
-        'crunchbase UAE e-commerce startup raised series funding 2026',
-        'crunchbase Dubai robotics automation startup funding raised',
-        'crunchbase UAE web3 blockchain crypto startup funding',
-        'crunchbase Dubai cloud infrastructure SaaS startup raised',
-        'crunchbase UAE insurtech legaltech startup funding raised',
-        'crunchbase Dubai founded 2022 2023 2026 UAE tech startup funding',
-        'crunchbase Abu Dhabi capital investment tech startup raised',
-        'crunchbase UAE smart mobility transport startup raised',
-        'crunchbase Dubai gaming esports tech startup funding raised',
+        # --- SECTOR SPECIFIC BROAD SWEEPS ---
+        'site:crunchbase.com/organization "Dubai" AND ("FinTech" OR "Crypto" OR "Web3" OR "Blockchain")',
+        'site:crunchbase.com/organization "UAE" AND ("HealthTech" OR "MedTech" OR "Biotech")',
+        'site:crunchbase.com/organization "Abu Dhabi" AND ("EdTech" OR "PropTech" OR "Real Estate")',
+        'site:crunchbase.com/organization "Dubai" AND ("AI" OR "Artificial Intelligence" OR "Machine Learning")',
+        'site:crunchbase.com/organization "UAE" AND ("SaaS" OR "Cloud" OR "Enterprise Software")',
+        'site:crunchbase.com/organization "Dubai" AND ("E-commerce" OR "Marketplace" OR "Retail Tech")',
+        'site:crunchbase.com/organization "Abu Dhabi" AND ("CleanTech" OR "Climate" OR "Energy")',
+        'site:crunchbase.com/organization "UAE" AND ("Cybersecurity" OR "Security" OR "Privacy")',
+        'site:crunchbase.com/organization "Dubai" AND ("Logistics" OR "Supply Chain" OR "Delivery")',
+        'site:crunchbase.com/organization "UAE" AND ("HR Tech" OR "LegalTech" OR "InsurTech")',
+        
+        # --- RECENTLY REFRESHED GOOGLE DORKS (Time-Limited) ---
+        'site:crunchbase.com/organization "Dubai" "raised" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "funding" qdr:m',
+        'site:crunchbase.com/organization "United Arab Emirates" "investment" qdr:m',
+        'site:crunchbase.com/organization "UAE" "stealth" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "venture capital" qdr:m',
+        
+        # --- HIGH-GROWTH SPECIFIC ---
+        'site:crunchbase.com/organization "Dubai" "autonomous" OR "robotics"',
+        'site:crunchbase.com/organization "UAE" "telehealth" OR "virtual care"',
+        'site:crunchbase.com/organization "Abu Dhabi" "quantum computing"',
+        'site:crunchbase.com/organization "Dubai" "creator economy"',
+        'site:crunchbase.com/organization "UAE" "agritech" OR "vertical farming"',
+        
+        # --- OPEN NET ---
+        'site:wamda.com "funded" "Dubai" OR "Abu Dhabi"',
+        'site:magnitt.com "raised" "UAE"',
+        'site:gulfnews.com "startup" "raised" "Dubai"'
     ]
     
     # Pick niches based on the current hour and catch-up requirement
