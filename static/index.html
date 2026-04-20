@@ -102,6 +102,25 @@
         }
 
         .action-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        .date-header {
+            background: #1c2128;
+            padding: 0.8rem 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+        }
+        
+        .usage-desc {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            margin-top: 4px;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -124,19 +143,28 @@
     <div class="stats-grid">
         <div class="stat-card">
             <span id="found-today" class="stat-value">0</span>
-            <span class="stat-label">Found Today</span>
+            <span class="stat-label">Harvested Today</span>
+            <span class="usage-desc">New Leads Cycle</span>
         </div>
         <div class="stat-card">
             <span id="total-leads" class="stat-value">0</span>
             <span class="stat-label">Total Pipeline</span>
+            <span class="usage-desc">Global Database</span>
         </div>
         <div class="stat-card">
             <span id="serper-stat" class="stat-value">0</span>
-            <span class="stat-label">Discovery API</span>
+            <span class="stat-label">Serper Vision</span>
+            <span class="usage-desc">Web & Search Discovery</span>
         </div>
         <div class="stat-card">
             <span id="gemini-stat" class="stat-value">0</span>
-            <span class="stat-label">AI Analysis</span>
+            <span class="stat-label">Gemini Brain</span>
+            <span class="usage-desc">Lead Data Extraction</span>
+        </div>
+        <div class="stat-card">
+            <span id="groq-stat" class="stat-value">0</span>
+            <span class="stat-label">Groq Velocity</span>
+            <span class="usage-desc">Rapid screening energy</span>
         </div>
     </div>
 
@@ -232,11 +260,12 @@
                     fetch('/api/updates').then(r => r.json())
                 ]);
 
-                document.getElementById('found-today').innerText = usageRes.today_count;
-                document.getElementById('total-leads').innerText = usageRes.total_leads;
-                document.getElementById('serper-stat').innerText = usageRes.Serper;
-                document.getElementById('gemini-stat').innerText = usageRes.Gemini;
-                document.getElementById('agent-status').innerText = usageRes.status;
+                document.getElementById('found-today').innerText = usageRes.today_count || 0;
+                document.getElementById('total-leads').innerText = usageRes.total_leads || 0;
+                document.getElementById('serper-stat').innerText = usageRes.Serper || 0;
+                document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
+                document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
+                document.getElementById('agent-status').innerText = usageRes.status || "Active";
 
                 const indicator = document.getElementById('status-indicator');
                 indicator.className = 'status-dot ' + (usageRes.status.includes('Active') ? 'status-online' : 'status-paused');
@@ -246,7 +275,20 @@
 
                 const body = document.getElementById('leads-body');
                 body.innerHTML = '';
-                leadsRes.forEach(lead => body.appendChild(createRow(lead)));
+                
+                let lastDate = "";
+                
+                leadsRes.forEach(lead => {
+                    // Date grouping logic
+                    const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    if (leadDate !== lastDate) {
+                        const header = document.createElement('tr');
+                        header.innerHTML = `<td colspan="5"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
+                        body.appendChild(header);
+                        lastDate = leadDate;
+                    }
+                    body.appendChild(createRow(lead));
+                });
             } catch (e) {
                 console.error("Dashboard error:", e);
             }

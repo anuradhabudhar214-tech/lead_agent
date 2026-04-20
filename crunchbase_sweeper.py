@@ -16,6 +16,11 @@ class CrunchbaseSweeper:
         self.serper_key = SERPER_API_KEYS.split(',')[0].strip() if SERPER_API_KEYS else None
         self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
 
+    def extract_funding_from_text(self, company, context):
+        """Regex-based extraction - no AI quota needed. Reads Crunchbase text directly."""
+        amount = "Undisclosed"
+        round_name = "Unknown Round"
+        
         # Match dollar/AED amounts: $5M, $2.5 million, AED 10M, USD 100M, billions etc.
         amt_patterns = [
             r'\$([\d\.]+)\s*(billion|million|B|M|bn|mn)',
