@@ -138,8 +138,9 @@
                 <i class="fas fa-pause"></i> PAUSE ENGINE
             </button>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 5px;">
-            <i class="fas fa-clock"></i> Last Sweep: <span id="last-sweep">Never</span>
+        <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 5px; display: flex; gap: 1rem;">
+            <span><i class="fas fa-clock"></i> Last Pulse: <span id="last-sweep">Never</span></span>
+            <span><i class="fas fa-hourglass-half"></i> Next Sweep: <span id="next-sweep">Calculating...</span></span>
         </div>
     </header>
 
@@ -268,6 +269,21 @@
         let liveHeartbeats = 0;
         let lastScanTime = "";
 
+        // Helper to format ISO time to AM/PM local time
+        function formatTime(isoStr) {
+            if (!isoStr) return "Never";
+            try {
+                const date = new Date(isoStr);
+                return date.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch (e) {
+                return "Recently";
+            }
+        }
+
         async function updateDashboard() {
             try {
                 const [usageRes, leadsRes] = await Promise.all([
@@ -293,14 +309,17 @@
                 const dailyCount = (usageRes.today_scans !== undefined && usageRes.today_scans !== null) ? usageRes.today_scans : liveHeartbeats;
                 document.getElementById('scans-stat').innerText = dailyCount;
                 
-                document.getElementById('last-sweep').innerText = usageRes.last_run || "Recently";
+                // TIMES: Human Readable AM/PM
+                document.getElementById('last-sweep').innerText = formatTime(usageRes.last_run);
+                document.getElementById('next-sweep').innerText = formatTime(usageRes.next_run);
+                
                 document.getElementById('agent-status').innerText = usageRes.status || "Active";
 
                 const indicator = document.getElementById('status-indicator');
-                if (usageRes.status.includes('Watching') || usageRes.status.includes('Active') || usageRes.status.includes('Hunting')) {
+                if (usageRes.status.includes('Hunting') || usageRes.status.includes('Active')) {
                     indicator.className = 'status-dot status-online';
                 } else {
-                    indicator.className = 'status-dot status-paused';
+                    indicator.className = 'status-dot status-offline';
                 }
                 
                 const toggleBtn = document.getElementById('toggle-btn');

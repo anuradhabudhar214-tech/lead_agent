@@ -131,6 +131,18 @@ async def get_usage():
 
         if usage_res.data:
             stats = usage_res.data[0]
+            last_run = stats.get("last_run_at")
+            
+            # Calculate Next Run (Last Run + 20 mins)
+            import datetime
+            next_run = None
+            if last_run:
+                try:
+                    last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
+                    next_run_dt = last_dt + datetime.timedelta(minutes=20)
+                    next_run = next_run_dt.isoformat()
+                except: pass
+
             return {
                 "Serper": stats.get("serper_calls", 0),
                 "Gemini": stats.get("gemini_calls", 0),
@@ -138,6 +150,11 @@ async def get_usage():
                 "total_scans": stats.get("total_scans", 0),
                 "today_scans": stats.get("today_scans", 0),
                 "status": stats.get("status", "Sleeping 💤"),
+                "last_run": last_run,
+                "next_run": next_run,
+                "today_count": today_count,
+                "total_leads": total_leads
+            }
                 "last_run": stats.get("last_run_at", "Recently"),
                 "today_count": today_count,
                 "total_leads": total_leads
