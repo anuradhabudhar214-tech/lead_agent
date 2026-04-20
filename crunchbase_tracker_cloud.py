@@ -435,7 +435,7 @@ def run_tracker():
         'site:wamda.com "Ray" seed funding April 2026',
         'site:wamda.com "Aya" Series A fashion UAE',
         'site:wamda.com "Kernel" Falak Holding acquisition',
-        'site:wamda.com "Sufra AI" funding 2024',
+        'site:wamda.com "Sufra AI" funding 2026',
         
         # --- LIVE NEWS SOURCES (Last 7 Days) ---
         'site:wamda.com startup funding UAE qdr:w',
@@ -461,7 +461,7 @@ def run_tracker():
         'crunchbase UAE web3 blockchain crypto startup funding qdr:m',
         'crunchbase Dubai cloud infrastructure SaaS startup raised qdr:m',
         'crunchbase UAE insurtech legaltech startup funding raised qdr:m',
-        'crunchbase Dubai founded 2025 2026 UAE tech startup funding qdr:m',
+        'crunchbase Dubai founded 2026 2026 UAE tech startup funding qdr:m',
         'crunchbase Abu Dhabi capital investment tech startup raised qdr:m',
         'crunchbase UAE smart mobility transport startup raised qdr:m',
         'crunchbase Dubai gaming esports tech startup funding raised qdr:m',
@@ -571,36 +571,36 @@ def run_tracker():
 
     # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
     current_niches = [
-        # Historical Targets (April/May 2024)
-        'crunchbase.com UAE "Series A" funding April 2024',
-        'crunchbase.com Dubai "Seed" funding raised April 2024',
-        'crunchbase.com Abu Dhabi startup raised May 2024',
-        'crunchbase.com UAE "Series B" funding May 2024',
-        'crunchbase.com Dubai tech "Venture Round" April 2024',
-        'crunchbase.com UAE startup "Series A" May 2024',
+        # Historical Targets (April/May 2026)
+        'crunchbase.com UAE "Series A" funding April 2026',
+        'crunchbase.com Dubai "Seed" funding raised April 2026',
+        'crunchbase.com Abu Dhabi startup raised May 2026',
+        'crunchbase.com UAE "Series B" funding May 2026',
+        'crunchbase.com Dubai tech "Venture Round" April 2026',
+        'crunchbase.com UAE startup "Series A" May 2026',
         
-        # Fresh Targets (Latest 2024/2025)
+        # Fresh Targets (Latest 2026/2026)
         'crunchbase.com UAE startup "Series A" funding raised million',
         'crunchbase.com Dubai startup "Series B" funding raised million',
         'crunchbase.com "Abu Dhabi" startup "Seed" funding raised',
-        'crunchbase.com UAE startup "Pre-Seed" funding raised 2024',
+        'crunchbase.com UAE startup "Pre-Seed" funding raised 2026',
         'crunchbase.com Dubai startup "Venture Round" raised million',
-        'crunchbase.com UAE "Series C" funding round raised 2024',
+        'crunchbase.com UAE "Series C" funding round raised 2026',
         'crunchbase UAE Dubai AI technology startup funding round raised',
         'crunchbase Dubai fintech startup seed funding raised million',
-        'crunchbase UAE proptech startup funding round 2024 2025',
+        'crunchbase UAE proptech startup funding round 2026 2026',
         'crunchbase Dubai SaaS B2B startup series A funding raised',
         'crunchbase UAE healthtech biotech funding series raised',
         'crunchbase Dubai cybersecurity startup funding round raised',
         'crunchbase UAE logistics supply chain startup funding raised',
         'crunchbase Dubai edtech startup funding raised million',
         'crunchbase Abu Dhabi cleantech green energy funding raised',
-        'crunchbase UAE e-commerce startup raised series funding 2024',
+        'crunchbase UAE e-commerce startup raised series funding 2026',
         'crunchbase Dubai robotics automation startup funding raised',
         'crunchbase UAE web3 blockchain crypto startup funding',
         'crunchbase Dubai cloud infrastructure SaaS startup raised',
         'crunchbase UAE insurtech legaltech startup funding raised',
-        'crunchbase Dubai founded 2022 2023 2024 UAE tech startup funding',
+        'crunchbase Dubai founded 2022 2023 2026 UAE tech startup funding',
         'crunchbase Abu Dhabi capital investment tech startup raised',
         'crunchbase UAE smart mobility transport startup raised',
         'crunchbase Dubai gaming esports tech startup funding raised',
