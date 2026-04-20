@@ -179,6 +179,7 @@
         <table id="leads-table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>COMPANY</th>
                     <th>FUNDING / ROUND</th>
                     <th>SIGNAL & MISSION</th>
@@ -210,13 +211,16 @@
             }
         }
 
-        function createRow(lead) {
+        function createRow(lead, index) {
             const row = document.createElement('tr');
             const score = lead.confidence_score || 0;
             const badgeClass = score > 80 ? 'badge-verified' : 'badge-pending';
             const badgeText = score > 80 ? 'HQ VERIFIED' : 'PENDING';
             
             row.innerHTML = `
+                <td>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">${index + 1}</div>
+                </td>
                 <td>
                     <div style="font-weight: 800; color: #fff;">${lead.company}</div>
                     <div style="font-size: 0.8rem; color: var(--text-dim);">${lead.industry || 'Tech'}</div>
@@ -283,11 +287,11 @@
                     const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     if (leadDate !== lastDate) {
                         const header = document.createElement('tr');
-                        header.innerHTML = `<td colspan="5"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
+                        header.innerHTML = `<td colspan="6"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
                         body.appendChild(header);
                         lastDate = leadDate;
                     }
-                    body.appendChild(createRow(lead));
+                    body.appendChild(createRow(lead, index));
                 });
             } catch (e) {
                 console.error("Dashboard error:", e);
