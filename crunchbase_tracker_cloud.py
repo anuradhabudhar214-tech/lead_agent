@@ -376,6 +376,12 @@ def serper_search_broad(query):
     try:
         track_cloud_usage("Serper")
         payload = {"q": query, "num": 50}
+        if "qdr:" in query:
+            # Extract qdr filter if passed in query string for flexibility
+            parts = query.split(" qdr:")
+            payload["q"] = parts[0]
+            payload["tbs"] = f"qdr:{parts[1]}"
+        
         r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
         res_data = r.json()
         if r.status_code == 403 or r.status_code == 429:
@@ -396,6 +402,48 @@ def serper_search_broad(query):
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
     num_niches_to_scan = 5
+    update_agent_status("Hunting Leads 🎯")
+    
+    # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
+    current_niches = [
+        # LIVE PULSE: Last 24 Hours
+        'crunchbase.com UAE funding raised today qdr:d',
+        'crunchbase.com Dubai startup round news qdr:d',
+        
+        # DEEP DEPTH: Past 1 Month (User Request)
+        'crunchbase.com UAE "Series A" funding April 2024 qdr:m',
+        'crunchbase.com Dubai "Seed" funding raised April 2024 qdr:m',
+        'crunchbase.com UAE tech startup "Venture Round" qdr:m',
+        'crunchbase.com Abu Dhabi startup investment qdr:m',
+        'crunchbase.com UAE fintech startup funding qdr:m',
+        
+        # Fresh Targets (General)
+        'crunchbase.com UAE startup "Series A" funding raised million',
+        'crunchbase.com Dubai startup "Series B" funding raised million',
+        'crunchbase.com "Abu Dhabi" startup "Seed" funding raised',
+        'crunchbase.com UAE startup "Pre-Seed" funding raised 2024',
+        'crunchbase.com Dubai startup "Venture Round" raised million',
+        'crunchbase.com UAE "Series C" funding round raised 2024',
+        'crunchbase UAE Dubai AI technology startup funding round raised',
+        'crunchbase Dubai fintech startup seed funding raised million',
+        'crunchbase UAE proptech startup funding round 2024 2025',
+        'crunchbase Dubai SaaS B2B startup series A funding raised',
+        'crunchbase UAE healthtech biotech funding series raised',
+        'crunchbase Dubai cybersecurity startup funding round raised',
+        'crunchbase UAE logistics supply chain startup funding raised',
+        'crunchbase Dubai edtech startup funding raised million',
+        'crunchbase Abu Dhabi cleantech green energy funding raised',
+        'crunchbase UAE e-commerce startup raised series funding 2024',
+        'crunchbase Dubai robotics automation startup funding raised',
+        'crunchbase UAE web3 blockchain crypto startup funding',
+        'crunchbase Dubai cloud infrastructure SaaS startup raised',
+        'crunchbase UAE insurtech legaltech startup funding raised',
+        'crunchbase Dubai founded 2022 2023 2024 UAE tech startup funding',
+        'crunchbase Abu Dhabi capital investment tech startup raised',
+        'crunchbase UAE smart mobility transport startup raised',
+        'crunchbase Dubai gaming esports tech startup funding raised',
+    ]
+
     if supabase:
         try:
             res = supabase.table("system_stats").select("status,last_run_at").eq("id", 1).execute()
@@ -603,4 +651,4 @@ if __name__ == "__main__":
     try:
         run_tracker()
     finally:
-        update_agent_status("Sleeping 💤")
+        update_agent_status("Watching Market 👁️")
