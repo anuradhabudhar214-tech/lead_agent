@@ -489,8 +489,8 @@ def run_tracker():
             # 2. URL is a known news site (not just 'not Crunchbase')
             # 3. Name is garbage/too long
             if cleaned == "FILTERED_HEADLINE" or any(news in (url or "").lower() for news in ['wam.ae', 'reuters', 'bloomberg', 'news.']) or len(old_name) > 60:
-                supabase.table("uae_leads").delete().eq("id", item["id"]).execute()
-                logger.info(f"🗑️ Purged Bad Entry: {old_name[:30]}...")
+                # supabase.table("uae_leads").delete().eq("id", item["id"]).execute()
+                logger.info(f"⚠️ Flagged Bad Entry (Skipping for safety): {old_name[:30]}...")
             elif cleaned != old_name:
                 supabase.table("uae_leads").update({"company": cleaned}).eq("id", item["id"]).execute()
                 logger.info(f"✨ Cleaned: {old_name[:20]} -> {cleaned}")
