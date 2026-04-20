@@ -16,12 +16,7 @@ class CrunchbaseSweeper:
         self.serper_key = SERPER_API_KEYS.split(',')[0].strip() if SERPER_API_KEYS else None
         self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
 
-    def extract_funding_from_text(self, company, context):
-        """Regex-based extraction - no AI quota needed. Reads Crunchbase text directly."""
-        amount = "Undisclosed"
-        round_name = "Unknown Round"
-        
-        # Match dollar/AED amounts: $5M, $2.5 million, AED 10M, USD 100M etc.
+        # Match dollar/AED amounts: $5M, $2.5 million, AED 10M, USD 100M, billions etc.
         amt_patterns = [
             r'\$([\d\.]+)\s*(billion|million|B|M|bn|mn)',
             r'([\d\.]+)\s*(billion|million)\s*(?:USD|AED|dollars?)',
@@ -30,6 +25,7 @@ class CrunchbaseSweeper:
             r'raised\s+\$?([\d\.]+)\s*(billion|million|B|M)',
             r'secured\s+\$?([\d\.]+)\s*(billion|million|B|M)',
             r'funding\s+of\s+\$?([\d\.]+)\s*(billion|million|B|M)',
+            r'total\s+funding\s+of\s+\$?([\d\.]+)\s*(billion|million|B|M)',
         ]
         
         for pattern in amt_patterns:
@@ -51,14 +47,10 @@ class CrunchbaseSweeper:
             (r'series\s+c\b', 'Series C'),
             (r'series\s+d\b', 'Series D'),
             (r'series\s+e\b', 'Series E'),
-            (r'funding\s+round|equity\s+round|financing\s+round', 'Funding Round'),
-            (r'private\s+equity|equity\s+funding', 'Private Equity'),
             (r'venture\s+round|venture\s+capital\s+round', 'Venture'),
-            (r'corporate\s+round|strategic\s+investment', 'Corporate'),
-            (r'scale[\-\s]?up', 'Scaleup Funding'),
-            (r'ipo|initial\s+public\s+offering', 'IPO'),
-            (r'debt\s+financing|loan|credit\s+facility', 'Debt'),
             (r'angel\s+round|angel\s+investment', 'Angel'),
+            (r'private\s+equity|equity\s+funding', 'Private Equity'),
+            (r'corporate\s+round|strategic\s+investment', 'Corporate'),
             (r'grant|award|prize', 'Grant'),
         ]
         

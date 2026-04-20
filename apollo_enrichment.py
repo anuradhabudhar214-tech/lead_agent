@@ -71,23 +71,24 @@ def ask_gemini_for_linkedin(company_name, company_context=""):
     If no LinkedIn profile is found, return: {{"name": "Name if found", "role": "Role if found", "linkedin": "not_found", "confidence": "low"}}
     """
     
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 256}
+        "generationConfig": {"response_mime_type": "application/json"}
     }
     
     try:
         r = requests.post(url, json=payload, timeout=20)
-        if r.status_code == 429:
-            logger.warning("Gemini quota hit, retrying with next key.")
-            key = get_gemini_key()
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
-            r = requests.post(url, json=payload, timeout=20)
+        res_data = r.json()
+        if 'error' in res_data:
+            if res_data['error'].get('code') == 429:
+                logger.warning("Gemini quota hit, rotating.")
+                key = get_gemini_key()
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+                r = requests.post(url, json=payload, timeout=20)
+                res_data = r.json()
         
-        text = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-        # Strip markdown code fences if present
-        text = re.sub(r"```json|```", "", text).strip()
+        text = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
         data = json.loads(text)
         return data
     except Exception as e:

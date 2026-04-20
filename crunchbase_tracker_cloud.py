@@ -497,10 +497,17 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- CRUNCHBASE FUNDING HUNT: Search for UAE startups with funding data ---
-    # NOTE: site:crunchbase.com returns no results (Crunchbase blocks Google)
-    # Strategy: Search for UAE funded companies -> URL filter keeps ONLY Crunchbase links
+    # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
     current_niches = [
+        # Historical Targets (April/May 2024)
+        'crunchbase.com UAE "Series A" funding April 2024',
+        'crunchbase.com Dubai "Seed" funding raised April 2024',
+        'crunchbase.com Abu Dhabi startup raised May 2024',
+        'crunchbase.com UAE "Series B" funding May 2024',
+        'crunchbase.com Dubai tech "Venture Round" April 2024',
+        'crunchbase.com UAE startup "Series A" May 2024',
+        
+        # Fresh Targets (Latest 2024/2025)
         'crunchbase.com UAE startup "Series A" funding raised million',
         'crunchbase.com Dubai startup "Series B" funding raised million',
         'crunchbase.com "Abu Dhabi" startup "Seed" funding raised',
@@ -525,12 +532,6 @@ def run_tracker():
         'crunchbase Abu Dhabi capital investment tech startup raised',
         'crunchbase UAE smart mobility transport startup raised',
         'crunchbase Dubai gaming esports tech startup funding raised',
-        'crunchbase UAE agritech foodtech startup funding round',
-        'crunchbase Dubai HR tech workforce management startup raised',
-        'crunchbase UAE media entertainment tech startup funding',
-        'crunchbase Dubai deeptech quantum space startup funding',
-        'crunchbase UAE construction proptech startup raised million',
-        'crunchbase Dubai retail ecommerce platform startup raised',
     ]
     
     # Pick niches based on the current hour and catch-up requirement
