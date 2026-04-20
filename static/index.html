@@ -282,7 +282,11 @@
                 document.getElementById('agent-status').innerText = usageRes.status || "Active";
 
                 const indicator = document.getElementById('status-indicator');
-                indicator.className = 'status-dot ' + (usageRes.status.includes('Active') ? 'status-online' : 'status-paused');
+                if (usageRes.status.includes('Watching') || usageRes.status.includes('Active') || usageRes.status.includes('Hunting')) {
+                    indicator.className = 'status-dot status-online';
+                } else {
+                    indicator.className = 'status-dot status-paused';
+                }
                 
                 const toggleBtn = document.getElementById('toggle-btn');
                 toggleBtn.innerHTML = usageRes.status.includes('Paused') ? '<i class="fas fa-play"></i> RESUME ENGINE' : '<i class="fas fa-pause"></i> PAUSE ENGINE';
@@ -292,17 +296,21 @@
                 
                 let lastDate = "";
                 
-                leadsRes.forEach((lead, index) => {
-                    // Date grouping logic
-                    const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    if (leadDate !== lastDate) {
-                        const header = document.createElement('tr');
-                        header.innerHTML = `<td colspan="6"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
-                        body.appendChild(header);
-                        lastDate = leadDate;
-                    }
-                    body.appendChild(createRow(lead, index));
-                });
+                if (leadsRes.length === 0) {
+                    body.innerHTML = '<tr><td colspan="6"><div style="text-align:center; padding:40px; color:var(--text-dim);"><i class="fas fa-search" style="font-size:2rem; margin-bottom:10px; display:block;"></i> Market Scanned Successfully.<br>No brand-new funding rounds appeared in the last 20-minute sweep. Check back soon!</div></td></tr>';
+                } else {
+                    leadsRes.forEach((lead, index) => {
+                        // Date grouping logic
+                        const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        if (leadDate !== lastDate) {
+                            const header = document.createElement('tr');
+                            header.innerHTML = `<td colspan="6"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
+                            body.appendChild(header);
+                            lastDate = leadDate;
+                        }
+                        body.appendChild(createRow(lead, index));
+                    });
+                }
             } catch (e) {
                 console.error("Dashboard error:", e);
             }

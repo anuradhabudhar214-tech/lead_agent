@@ -656,4 +656,4 @@ if __name__ == "__main__":
     try:
         run_tracker()
     finally:
-        update_agent_status("Watching Market 👁️")
+        update_agent_status(f"Watching Market 👁️ | 35+ Niches Audited")
