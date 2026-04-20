@@ -265,6 +265,9 @@
             return row;
         }
 
+        let liveHeartbeats = 0;
+        let lastScanTime = "";
+
         async function updateDashboard() {
             try {
                 const [usageRes, leadsRes] = await Promise.all([
@@ -272,12 +275,24 @@
                     fetch('/api/updates').then(r => r.json())
                 ]);
 
+                // Update session heartbeat if time changed
+                if (usageRes.last_run !== lastScanTime && lastScanTime !== "") {
+                    liveHeartbeats++;
+                    lastScanTime = usageRes.last_run;
+                } else if (lastScanTime === "") {
+                    lastScanTime = usageRes.last_run;
+                }
+
                 document.getElementById('found-today').innerText = usageRes.today_count || 0;
                 document.getElementById('total-leads').innerText = usageRes.total_leads || 0;
                 document.getElementById('serper-stat').innerText = `${usageRes.Serper || 0} / 10,000`;
                 document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
                 document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
-                document.getElementById('scans-stat').innerText = usageRes.today_scans || 0;
+                
+                // Smart Counter: Use DB history if patch is applied, otherwise show Live Session Activity
+                const dailyCount = (usageRes.today_scans !== undefined && usageRes.today_scans !== null) ? usageRes.today_scans : liveHeartbeats;
+                document.getElementById('scans-stat').innerText = dailyCount;
+                
                 document.getElementById('last-sweep').innerText = usageRes.last_run || "Recently";
                 document.getElementById('agent-status').innerText = usageRes.status || "Active";
 
