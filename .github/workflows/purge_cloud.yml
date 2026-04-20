@@ -1,0 +1,21 @@
+name: "🇦🇪 Database Zero-Garbage Purge"
+on:
+  workflow_dispatch:
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install supabase
+      - name: Run Cleanup
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          python -c "import os; from supabase import create_client; supabase = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY')); bad_names = ['DIFC', 'DCDE', 'Mubadala', 'ADIA', 'ADGM', 'Government', 'Authority', 'Park', 'Chamber', 'Foundation']; res = supabase.table('uae_leads').select('id, company').execute(); to_delete = [r['id'] for r in res.data if any(b.lower() in r['company'].lower() for b in bad_names)]; [supabase.table('uae_leads').delete().eq('id', tid).execute() for tid in to_delete]; print(f'Deleted {len(to_delete)} garbage entries from Cloud.')"
