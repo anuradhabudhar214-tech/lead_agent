@@ -591,7 +591,7 @@ def run_tracker():
         logger.warning(f"Resurrection skip: {e}")
 
     # --- ATOMIC VELOCITY BOOST ---
-    num_niches_to_scan = 10
+    num_niches_to_scan = 25
     logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
 
     # Remnant block removed to prevent double execution.
@@ -724,4 +724,4 @@ if __name__ == "__main__":
     try:
         run_tracker()
     finally:
-        update_agent_status(f"Watching Market 👁️ | 35+ Niches Audited")
+        update_agent_status("Sleeping 💤 | Waiting for trigger")
