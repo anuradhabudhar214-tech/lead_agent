@@ -535,63 +535,14 @@ def run_tracker():
                     last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
                     gap_mins = (datetime.now(timezone.utc) - last_dt).total_seconds() / 60
                     if gap_mins > 40:
-                        logger.warning(f"🚀 CATCH-UP MODE: Detected {int(gap_mins)}m gap. Doubling harvest velocity.")
-                        num_niches_to_scan = 10
+                        pass
         except:
             pass
 
-    # --- DEEP AUTO-RESURRECTION: Scans entire Git history to recover all 100+ leads ---
-    try:
-        res = supabase.table("uae_leads").select("id", count="exact").execute()
-        if res.count < 100:
-            logger.info("🕰️ DEEP RECONSTRUCTION: Scanning entire Git history for lost leads...")
-            import subprocess, csv, io
-            
-            # 1. Get all commits for the leads file
-            commits = subprocess.check_output(['git', 'log', '--pretty=format:%h', 'enterprise_leads.csv']).decode().split()
-            all_historical_leads = {} 
-
-            # 2. Extract unique companies from every single backup
-            for c in commits[:50]: # Scan last 50 backups for maximum coverage
-                try:
-                    data = subprocess.check_output(['git', 'show', f'{c}:enterprise_leads.csv'], stderr=subprocess.DEVNULL).decode(errors='ignore')
-                    reader = csv.DictReader(io.StringIO(data))
-                    for row in reader:
-                        name = (row.get("Company") or row.get("company") or "").strip()
-                        if not name or name == "Filter Out" or len(name) < 2: continue
-                        
-                        conf = int(row.get("Confidence") or 85)
-                        if name not in all_historical_leads or conf > all_historical_leads[name].get('confidence_score', 0):
-                            all_historical_leads[name] = {
-                                "company": name,
-                                "industry": row.get("Industry") or "Technology",
-                                "confidence_score": conf,
-                                "funding_amount": row.get("Funding Amount") or row.get("Financials") or "Undisclosed",
-                                "financials": row.get("Financials") or "Undisclosed",
-                                "strategic_signal": row.get("2026 Strategic Signal") or "N/A",
-                                "integration_opportunity": row.get("Integration Opportunity") or "N/A",
-                                "url": row.get("URL") or "",
-                                "discovered_at": datetime.now(timezone.utc).isoformat() 
-                            }
-                except: continue
-
-            # 3. Resilient Individual Sync
-            if all_historical_leads:
-                leads_list = list(all_historical_leads.values())
-                logger.info(f"✨ Reconstructed {len(leads_list)} unique companies from history. Syncing...")
-                success_count = 0
-                for lead in leads_list:
-                    try:
-                        supabase.table("uae_leads").upsert(lead, on_conflict="company").execute()
-                        success_count += 1
-                    except Exception: pass
-                
-                logger.info(f"🏁 DEEP RECONSTRUCTION COMPLETE: {success_count} leads restored!")
-    except Exception as e:
-        logger.warning(f"Resurrection skip: {e}")
+    # --- DEEP AUTO-RESURRECTION DISABLED ---
 
     # --- ATOMIC VELOCITY BOOST ---
-    num_niches_to_scan = 25
+    num_niches_to_scan = 40
     logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
 
     # Remnant block removed to prevent double execution.
