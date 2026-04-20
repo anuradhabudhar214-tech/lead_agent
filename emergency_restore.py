@@ -15,12 +15,12 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def restore_universal_history():
-    print("🛸 STARTING UNIVERSAL HISTORY RESTORATION...")
+    print(">>> STARTING UNIVERSAL HISTORY RESTORATION...")
     
     try:
         # 1. Get all commits for the master CSV
         commits = subprocess.check_output(['git', 'log', '--pretty=format:%h', 'enterprise_leads.csv']).decode().split()
-        print(f"📦 Found {len(commits)} historical backups to audit.")
+        print(f"BACKUP: Found {len(commits)} historical backups to audit.")
         
         all_unique_leads = {}
         
@@ -48,7 +48,7 @@ def restore_universal_history():
                         }
             except: continue
         
-        print(f"💎 Recovered {len(all_unique_leads)} unique historical leads.")
+        print(f"RECOVERED: {len(all_unique_leads)} unique historical leads.")
         
         # 3. Mass Sync to Cloud
         count = 0
@@ -58,11 +58,11 @@ def restore_universal_history():
                 supabase.table("uae_leads").upsert(lead, on_conflict="company").execute()
                 count += 1
                 if count % 10 == 0:
-                    print(f"📤 Synced {count}/{len(all_unique_leads)}...")
+                    print(f"SYNCING: {count}/{len(all_unique_leads)}...")
             except Exception as e:
-                print(f"⚠️ Error syncing {name}: {e}")
+                print(f"ERROR: Error syncing {name}: {e}")
         
-        print(f"✅ RESTORATION COMPLETE: {count} leads are now safe in the cloud.")
+        print(f"SUCCESS: {count} leads are now safe in the cloud.")
 
     except Exception as e:
         print(f"❌ ERROR DURING RESTORATION: {e}")
