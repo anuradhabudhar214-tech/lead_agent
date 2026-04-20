@@ -104,6 +104,7 @@ def ask_gemini_for_linkedin(company_name, company_context=""):
                 logger.warning("Gemini quota hit, rotating.")
                 key = get_gemini_key()
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+                track_cloud_usage("Gemini")
                 r = requests.post(url, json=payload, timeout=20)
                 res_data = r.json()
         

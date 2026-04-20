@@ -113,6 +113,7 @@ def update_agent_status(status):
                     try:
                         last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
                         # We only reset Serper monthly (10k limit), we keep Gemini/Groq cumulative or session-based
+                        # We keep Gemini/Groq cumulative or session-based (Transparency Fix)
                         if last_dt.month < now.month or last_dt.year < now.year:
                             data.update({"serper_calls": 0})
                     except: pass
@@ -406,7 +407,7 @@ def serper_search_broad(query):
 
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
-    num_niches_to_scan = 5
+    num_niches_to_scan = 15
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
@@ -447,7 +448,56 @@ def run_tracker():
         'crunchbase Abu Dhabi capital investment tech startup raised',
         'crunchbase UAE smart mobility transport startup raised',
         'crunchbase Dubai gaming esports tech startup funding raised',
+        # --- GROWTH SURGE: NEW SPECIALIZED NICHES ---
+        'crunchbase Abu Dhabi blockchain infrastructure funding',
+        'crunchbase Dubai sustainable aviation fuel startup funding',
+        'crunchbase UAE quantum computing research investment',
+        'crunchbase Dubai vertical farming agritech raised million',
+        'crunchbase UAE desalination tech water startup funding',
+        'crunchbase Dubai space tech satellite startup raised',
+        'crunchbase UAE alternative protein foodtech investment',
+        'crunchbase Dubai autonomous driving robotics funding',
+        'crunchbase UAE clean hydrogen energy startup investment',
+        'crunchbase Dubai edtech vocational training raised million',
+        'crunchbase UAE telehealth mental health startup funding',
+        'crunchbase Dubai property management SaaS proptech raised',
+        'crunchbase UAE supply chain transparency blockchain raised',
+        'crunchbase Dubai influencer marketing tech platform funding',
+        'crunchbase UAE 3D printing manufacturing startup investment',
+        'crunchbase Dubai micro-mobility electric scooter funding',
+        'crunchbase UAE solar energy storage startup raised million',
+        'crunchbase Dubai HR tech recruitment automation funding',
+        'crunchbase UAE legaltech smart contract platform investment',
+        'crunchbase Dubai insurtech fractional ownership platform raised',
+        'crunchbase UAE e-mobility charging infrastructure funding',
+        'crunchbase Dubai biotech drug discovery startup raised',
+        'crunchbase UAE regtech compliance automation investment',
+        'crunchbase Dubai last-mile delivery drone funding',
+        'crunchbase UAE cybersecurity zero-trust startup raised',
+        'crunchbase Dubai VR/AR immersive training startup funding',
+        'crunchbase UAE pet tech e-commerce startup investment',
+        'crunchbase Dubai event tech platform funding raised million',
+        'crunchbase UAE creator economy fintech startup raised',
+        'crunchbase Dubai open banking API startup investment',
+        'crunchbase UAE trade finance blockchain platform funding',
+        'crunchbase Dubai smart city IoT sensor startup raised',
+        'crunchbase UAE waste-to-energy circular economy funding',
+        'crunchbase Dubai digital identity biometric startup raised',
+        'crunchbase UAE elderly care healthtech startup investment',
+        'crunchbase Dubai yacht booking concierge tech funding',
+        'crunchbase UAE luxury real estate tokenization platform raised',
+        'crunchbase Dubai cloud gaming infrastructure startup funding',
+        'crunchbase UAE sports tech analytics platform investment',
+        'crunchbase Dubai sleep tech wellness startup raised million',
+        'crunchbase UAE carbon credit marketplace startup funding',
+        'crunchbase Dubai fractional investment platform for startups raised',
+        'crunchbase UAE deep sea exploration subsea tech investment',
+        'crunchbase Dubai holographic display tech startup funding',
+        'crunchbase UAE personalized nutrition healthtech raised',
     ]
+    
+    import random
+    random.shuffle(current_niches)
 
     if supabase:
         try:
