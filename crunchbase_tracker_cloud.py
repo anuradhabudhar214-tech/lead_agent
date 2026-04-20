@@ -112,8 +112,7 @@ def update_agent_status(status):
                 if last_run_at:
                     try:
                         last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
-                        if last_dt.date() < now.date():
-                            data.update({"gemini_calls": 0, "groq_calls": 0, "total_scans": 0})
+                        # We only reset Serper monthly (10k limit), we keep Gemini/Groq cumulative or session-based
                         if last_dt.month < now.month or last_dt.year < now.year:
                             data.update({"serper_calls": 0})
                     except: pass
@@ -128,6 +127,12 @@ def update_agent_status(status):
         data["status"] = status
         # NUCLEAR PATCH: Straight to the point
         supabase_call("PATCH", "system_stats", data=data, params={"id": "eq.1"})
+        
+        # Incremental Heartbeat: One scan happened
+        res = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "total_scans"})
+        if res:
+            new_scans = (res[0].get("total_scans") or 0) + 1
+            supabase_call("PATCH", "system_stats", data={"total_scans": new_scans}, params={"id": "eq.1"})
     except:
         logger.warning("⚠️ Status Heartbeat Blinked (but hunt continues)")
 

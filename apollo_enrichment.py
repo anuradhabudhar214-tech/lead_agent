@@ -4,7 +4,24 @@ import requests
 import json
 import logging
 import re
+from datetime import datetime, timezone
 from supabase import create_client, Client
+
+# --- CLOUD TRACKING ---
+def track_cloud_usage(api_name):
+    try:
+        url = f"{SUPABASE_URL}/rest/v1/system_stats"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json"
+        }
+        col = f"{api_name.lower()}_calls"
+        res = requests.get(url, headers=headers, params={"id": "eq.1", "select": col}).json()
+        if res:
+            new_val = (res[0].get(col) or 0) + 1
+            requests.patch(url, headers=headers, json={col: new_val}, params={"id": "eq.1"})
+    except: pass
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -43,6 +60,7 @@ def search_serper(query):
     """Use Serper to search web for person's info."""
     key = get_serper_key()
     if not key: return []
+    track_cloud_usage("Serper")
     try:
         r = requests.post(
             "https://google.serper.dev/search",
@@ -78,6 +96,7 @@ def ask_gemini_for_linkedin(company_name, company_context=""):
     }
     
     try:
+        track_cloud_usage("Gemini")
         r = requests.post(url, json=payload, timeout=20)
         res_data = r.json()
         if 'error' in res_data:
