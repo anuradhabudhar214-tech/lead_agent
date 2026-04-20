@@ -282,7 +282,7 @@
                 
                 let lastDate = "";
                 
-                leadsRes.forEach(lead => {
+                leadsRes.forEach((lead, index) => {
                     // Date grouping logic
                     const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     if (leadDate !== lastDate) {
