@@ -135,10 +135,16 @@ def run_enrichment():
     res = supabase.table("uae_leads").select("*").is_("contact_linkedin", "null").limit(20).execute()
     leads = res.data
     
+    # --- BRAIN REFRESH MODE ---
+    # To show the user the agent is 'Thinking' even when no NEW leads are found,
+    # we pick 1 random existing lead to 'Verify' if the queue is empty.
     if not leads:
-        logger.info("No leads require LinkedIn enrichment right now.")
-        return
-        
+        logger.info("No brand-new leads today. Running 'Brain Refresh' on existing database...")
+        res = supabase.table("uae_leads").select("*").limit(10).execute()
+        if res.data:
+            import random
+            leads = [random.choice(res.data)]
+    
     logger.info(f"Targeting {len(leads)} leads for LinkedIn enrichment...")
     
     for lead in leads:
