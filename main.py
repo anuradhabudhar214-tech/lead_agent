@@ -155,10 +155,6 @@ async def get_usage():
                 "today_count": today_count,
                 "total_leads": total_leads
             }
-                "last_run": stats.get("last_run_at", "Recently"),
-                "today_count": today_count,
-                "total_leads": total_leads
-            }
         return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
     except Exception as e:
         return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}

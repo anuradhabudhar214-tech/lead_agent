@@ -724,4 +724,4 @@ if __name__ == "__main__":
     try:
         run_tracker()
     finally:
-        update_agent_status("Sleeping 💤 | Waiting for trigger")
+        update_agent_status("Sleeping 💤")
