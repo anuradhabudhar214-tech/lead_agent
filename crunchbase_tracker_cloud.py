@@ -279,38 +279,17 @@ def compile_auditor_intel_extreme(discovery_package):
     if company_name == "FILTERED_HEADLINE":
         return "SKIP"
     
-    prompt = f"""
-    ROLE: Senior UAE Market Intelligence Auditor reading a REAL Crunchbase.com company profile.
-    MISSION: Extract precise funding intelligence for '{company_name}'.
-    CRUNCHBASE SOURCE: {discovery_package}
-
+    prompt = f"""    ROLE: Hyper-Scale UAE Lead Generation Agent in April 2026.
+    MISSION: Identify private startup funding rounds.
+    
     AUDIT RULES:
-    1. STRICT REJECTION: Score 0 if entity is a Government Body, Chamber of Commerce, Research Park, Non-Profit, or Global Giant (OpenAI/Google).
-    2. TARGET: Private SME/Startups raising venture capital (Seed, Series A/B/C, etc.) in the UAE.
-    3. DATE SENSITIVITY: Prioritize announcements from April 2026.
-    4. funding_round: Extract EXACT round type from text.
-    5. funding_amount: Extract EXACT money amount (e.g. $5M). Default: "Undisclosed".
-    6. ceo_founder: Real full name and role.
-    7. financials: Specific investor names.
-    9. integration_opportunity: Specific IT service this company needs from an IT solutions vendor.
-    10. RETURN JSON ONLY. No markdown. No extra text.
-
-    FORMAT:
-    {{
-        "company": "string (exact company name as on Crunchbase)",
-        "industry": "string",
-        "confidence_score": int (0-100, min 70 to pass),
-        "strategic_signal": "string (1 sentence: what they are doing in UAE right now)",
-        "integration_opportunity": "string (specific IT service opportunity)",
-        "patron_chairman": "string",
-        "ceo_founder": "string (Name and Role)",
-        "funding_amount": "string (exact amount or Undisclosed)",
-        "funding_round": "string (exact round type: Seed/Series A/Series B/Pre-Seed/Venture/Angel/IPO/etc)",
-        "financials": "string (investor names or round summary)",
-        "registry_status": "string (UAE registry classification)"
-    }}
-    Not a UAE tech company or score below 70? Return: {{"confidence_score": 0}}
-    """
+    1. STARTUP FOCUS: Only accept private companies (Seed, Series A, Venture, etc.).
+    2. REJECT: Government, Large Corporates (>1000 employees), Non-Profits.
+    3. UAE ONLY: Must be headquartered or have significant operations in UAE.
+    4. DATE: Last 30-90 days is acceptable.
+    
+    RETURN JSON ONLY: {"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "ceo_founder": "Name", "integration_opportunity": "IT Need"}
+    If not a UAE startup? Return: {"confidence_score": 0}"""
     
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -426,38 +405,41 @@ def serper_search_broad(query):
 
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
-    num_niches_to_scan = 40
+    num_niches_to_scan = 60
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     current_niches = [
-        # --- FRESH STARTUP SIGNALS (Targeting 2026) ---
-        'site:crunchbase.com/organization "Dubai" "Seed" OR "Pre-Seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" "Series A" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "Venture Round" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" "FinTech" "Seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "AI" "Aura" OR "Aya" OR "Ray" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
+        # --- PRIMARY STARTUP SWEEPS (Last 30 Days) ---
+        'site:crunchbase.com/organization "Dubai" "Seed" OR "Pre-Seed" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "Series A" qdr:m',
+        'site:crunchbase.com/organization "UAE" "Venture Round" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "FinTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "AI" OR "SaaS" qdr:m',
+        'site:crunchbase.com/organization "UAE" PropTech qdr:m',
+        'site:crunchbase.com/organization "Dubai" HealthTech qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" Logistics qdr:m',
+        'site:crunchbase.com/organization "Dubai" E-commerce qdr:m',
+        'site:crunchbase.com/organization "UAE" "stealth" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "funding" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "investment" qdr:m',
         
-        # --- HIGH PROBABILITY TECH (SME Scale) ---
-        'site:crunchbase.com/organization "Dubai" SaaS "funding" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" PropTech "raised" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" HealthTech "seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" Logistics "Series A" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" E-commerce "funding" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
+        # --- SECTOR TARGETING ---
+        'site:crunchbase.com/organization "Dubai" "EdTech" qdr:m',
+        'site:crunchbase.com/organization "UAE" "InsurTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Cyber" qdr:m',
+        'site:crunchbase.com/organization "UAE" "Web3" OR "Crypto" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Robotics" qdr:m',
+        'site:crunchbase.com/organization "UAE" "CleanTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Gaming" qdr:m',
+        'site:crunchbase.com/organization "UAE" "HR Tech" qdr:m',
         
-        # --- RECENTLY DISCOVERED NEWS (Last 30 Days) ---
-        'site:wamda.com "funded" UAE 2026 qdr:m',
-        'site:magnitt.com "invested" Dubai 2026 qdr:m',
-        'site:entrepreneur.com "startup" Abu Dhabi 2026 qdr:m',
-        'site:crunchbase.com/organization "Dubai" "stealth" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "stealth mode" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        
-        # --- BROADENING SEARCH OPERATORS ---
-        'site:crunchbase.com/organization "Dubai" AND ("Cyber" OR "Crypto" OR "Web3") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" AND ("EdTech" OR "InsurTech" OR "LegalTech") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" AND ("HR" OR "Gaming" OR "Retail") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" AND ("CleanTech" OR "Climate" OR "Water") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" AND ("Robotics" OR "Drones" OR "Mobility") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA'
+        # --- NEWS SOURCE TRIGGERS ---
+        'site:wamda.com "Dubai" OR "Abu Dhabi" 2026 qdr:m',
+        'site:magnitt.com "UAE" funding qdr:m',
+        'site:entrepreneur.com "startup" Dubai qdr:m',
+        'site:gulfnews.com "startup" raised funding qdr:m',
+        'site:thenationalnews.com UAE startup funding qdr:m'
     ]
     
     import random
@@ -488,7 +470,7 @@ def run_tracker():
     # --- DEEP AUTO-RESURRECTION DISABLED ---
 
     # --- ATOMIC VELOCITY BOOST ---
-    num_niches_to_scan = 40
+    num_niches_to_scan = 60
     logger.info(f"🚀 ATOMIC VELOCITY: Scanning {num_niches_to_scan} niches to restore lead volume!")
 
     # Remnant block removed to prevent double execution.
@@ -517,33 +499,36 @@ def run_tracker():
 
     # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
     current_niches = [
-        # --- FRESH STARTUP SIGNALS (Targeting 2026) ---
-        'site:crunchbase.com/organization "Dubai" "Seed" OR "Pre-Seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" "Series A" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "Venture Round" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" "FinTech" "Seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "AI" "Aura" OR "Aya" OR "Ray" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
+        # --- PRIMARY STARTUP SWEEPS (Last 30 Days) ---
+        'site:crunchbase.com/organization "Dubai" "Seed" OR "Pre-Seed" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "Series A" qdr:m',
+        'site:crunchbase.com/organization "UAE" "Venture Round" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "FinTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "AI" OR "SaaS" qdr:m',
+        'site:crunchbase.com/organization "UAE" PropTech qdr:m',
+        'site:crunchbase.com/organization "Dubai" HealthTech qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" Logistics qdr:m',
+        'site:crunchbase.com/organization "Dubai" E-commerce qdr:m',
+        'site:crunchbase.com/organization "UAE" "stealth" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "funding" qdr:m',
+        'site:crunchbase.com/organization "Abu Dhabi" "investment" qdr:m',
         
-        # --- HIGH PROBABILITY TECH (SME Scale) ---
-        'site:crunchbase.com/organization "Dubai" SaaS "funding" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" PropTech "raised" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" HealthTech "seed" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" Logistics "Series A" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" E-commerce "funding" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
+        # --- SECTOR TARGETING ---
+        'site:crunchbase.com/organization "Dubai" "EdTech" qdr:m',
+        'site:crunchbase.com/organization "UAE" "InsurTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Cyber" qdr:m',
+        'site:crunchbase.com/organization "UAE" "Web3" OR "Crypto" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Robotics" qdr:m',
+        'site:crunchbase.com/organization "UAE" "CleanTech" qdr:m',
+        'site:crunchbase.com/organization "Dubai" "Gaming" qdr:m',
+        'site:crunchbase.com/organization "UAE" "HR Tech" qdr:m',
         
-        # --- RECENTLY DISCOVERED NEWS (Last 30 Days) ---
-        'site:wamda.com "funded" UAE 2026 qdr:m',
-        'site:magnitt.com "invested" Dubai 2026 qdr:m',
-        'site:entrepreneur.com "startup" Abu Dhabi 2026 qdr:m',
-        'site:crunchbase.com/organization "Dubai" "stealth" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" "stealth mode" 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        
-        # --- BROADENING SEARCH OPERATORS ---
-        'site:crunchbase.com/organization "Dubai" AND ("Cyber" OR "Crypto" OR "Web3") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "UAE" AND ("EdTech" OR "InsurTech" OR "LegalTech") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" AND ("HR" OR "Gaming" OR "Retail") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Abu Dhabi" AND ("CleanTech" OR "Climate" OR "Water") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA',
-        'site:crunchbase.com/organization "Dubai" AND ("Robotics" OR "Drones" OR "Mobility") 2026 -Government -Authority -Chamber -Foundation -ADGM -DIFC -Park -Mubadala -Hub71 -ADIA'
+        # --- NEWS SOURCE TRIGGERS ---
+        'site:wamda.com "Dubai" OR "Abu Dhabi" 2026 qdr:m',
+        'site:magnitt.com "UAE" funding qdr:m',
+        'site:entrepreneur.com "startup" Dubai qdr:m',
+        'site:gulfnews.com "startup" raised funding qdr:m',
+        'site:thenationalnews.com UAE startup funding qdr:m'
     ]
     
     # Pick niches based on the current hour and catch-up requirement
