@@ -615,4 +615,4 @@ if __name__ == "__main__":
     try:
         run_tracker()
     finally:
-        update_agent_status("Sleeping 💤")
+        update_agent_status("Sleeping 💤 | Watching 24/7 Trigger")

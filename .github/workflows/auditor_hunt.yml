@@ -4,12 +4,8 @@ on:
   push:
     branches: [ main ]
   schedule:
-    # Safe 20-minute interval (100% Free Forever - Occasional GitHub Queue Delays Expected)
+    # Optimized 20-minute autonomous cycle
     - cron: '*/20 * * * *'
-  workflow_run:
-    workflows: ["🇦🇪 UAE Auditor - Diagnostic Cycle"]
-    types:
-      - completed
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
