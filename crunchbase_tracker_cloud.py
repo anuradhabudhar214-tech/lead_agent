@@ -27,15 +27,12 @@ class Vault:
         if os.path.exists("config.json"):
             with open("config.json", "r") as f:
                 self.config = json.load(f)
-        serper_env = os.getenv("SERPER_API_KEYS", "")
-        gemini_env = os.getenv("GEMINI_API_KEYS", "")
+                gemini_env = os.getenv("GEMINI_API_KEYS", "")
         groq_env = os.getenv("GROQ_API_KEYS", "") or os.getenv("GROQ_API_KEY", "")
-        self.serper_keys = [k.strip() for k in (serper_env or os.getenv("SERPER_API_KEY", "")).split(",") if k.strip()] or self.config.get("SERPER_API_KEYS", [])
-        self.gemini_keys = [k.strip() for k in (gemini_env or os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()] or self.config.get("GEMINI_API_KEYS", [])
+                self.gemini_keys = [k.strip() for k in (gemini_env or os.getenv("GEMINI_API_KEY", "")).split(",") if k.strip()] or self.config.get("GEMINI_API_KEYS", [])
         self.groq_keys = [k.strip() for k in (groq_env or os.getenv("GROQ_API_KEY", "")).split(",") if k.strip()] or self.config.get("GROQ_API_KEYS", []) or self.config.get("GROQ_API_KEY", [])
         if isinstance(self.groq_keys, str): self.groq_keys = [self.groq_keys]
-        self.serper_idx = 0
-        self.gemini_idx = 0
+                self.gemini_idx = 0
         self.groq_idx = 0
         self.dead_keys = set()
 
@@ -369,12 +366,7 @@ def compile_auditor_intel_extreme(discovery_package):
         "status": "Pending"
     }
 
-def serper_search_broad(query):
-    """Crunchbase-targeted Serper discovery."""
-    key = vault.get_serper_key()
-    if not key:
-        logger.error("No Serper keys available!")
-        return []
+
     url = "https://google.serper.dev/search"
     headers = {"X-API-KEY": key, "Content-Type": "application/json"}
     try:
@@ -538,7 +530,7 @@ def run_tracker():
         update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
 
-        results = gemini_discovery_grounded(niche) or serper_search_broad(niche)
+        results = gemini_discovery_grounded(niche)
         
         for idx, item in enumerate(results):
             # Instant Kill Switch: Check if user paused via dashboard during the hunt

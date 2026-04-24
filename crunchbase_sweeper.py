@@ -7,14 +7,12 @@ import re
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-SERPER_API_KEYS = os.environ.get("SERPER_API_KEYS", os.environ.get("SERPER_API_KEY", ""))
 GEMINI_API_KEYS = os.environ.get("GEMINI_API_KEYS", os.environ.get("GEMINI_API_KEY", ""))
 
 class CrunchbaseSweeper:
     def __init__(self):
         self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
-        self.serper_key = SERPER_API_KEYS.split(',')[0].strip() if SERPER_API_KEYS else None
-        self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
+                self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
 
     def extract_funding_from_text(self, company, context):
         """Regex-based extraction - no AI quota needed. Reads Crunchbase text directly."""
@@ -70,38 +68,20 @@ class CrunchbaseSweeper:
         print(f"  Regex extracted: {amount} | {round_name}")
         return {"amount": amount, "round": round_name, "financials_summary": summary}
 
-    def search_crunchbase(self, company):
-        """Search Crunchbase via Google Serper for funding data."""
-        if not self.serper_key:
-            return ""
+    
 
-        queries = [
-            f'site:crunchbase.com "{company}" funding raised million',
-            f'"{company}" UAE startup funding round stage raised crunchbase',
-            f'"{company}" "Series A" OR "Seed" OR "round" site:crunchbase.com',
-        ]
-
-        all_snippets = []
-        for query in queries:
-            try:
-                r = requests.post(
-                    "https://google.serper.dev/search",
-                    headers={"X-API-KEY": self.serper_key, "Content-Type": "application/json"},
-                    json={"q": query, "num": 5},
-                    timeout=10
-                )
-                results = r.json().get('organic', [])
-                for res in results:
-                    snippet = res.get('snippet', '')
-                    title = res.get('title', '')
-                    if snippet:
-                        all_snippets.append(f"{title}: {snippet}")
-                time.sleep(1)
-            except Exception as e:
-                print(f"  Serper error: {e}")
-
-        return " | ".join(all_snippets)
-
+        def search_crunchbase_grounded(self, company):
+        if not self.gemini_key: return ""
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
+        prompt = f"Search for Crunchbase funding data for {company}. Return a summary of the round and amount."
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "tools": [{"google_search_retrieval": {}}]
+        }
+        try:
+            r = requests.post(url, json=payload, timeout=20)
+            return r.json()['candidates'][0]['content']['parts'][0]['text']
+        except: return ""
     def sweep(self):
         if not self.supabase:
             print("No Supabase connection")
@@ -130,7 +110,7 @@ class CrunchbaseSweeper:
         for lead in leads[:50]:  # Process up to 50 per run
             company = lead['company']
             print(f"\nSearching Crunchbase for: {company}")
-            snippets = self.search_crunchbase(company)
+            snippets = self.search_crunchbase_grounded(company)
 
             if snippets and len(snippets) > 30:
                 print(f"  Found context ({len(snippets)} chars), parsing text...")

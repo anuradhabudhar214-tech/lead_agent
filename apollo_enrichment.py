@@ -30,7 +30,6 @@ logger = logging.getLogger(__name__)
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 GEMINI_API_KEYS_STR = os.environ.get("GEMINI_API_KEYS", "") or os.environ.get("GEMINI_API_KEY", "")
-SERPER_API_KEYS_STR = os.environ.get("SERPER_API_KEYS", "") or os.environ.get("SERPER_API_KEY", "")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     logger.error("Supabase credentials missing.")
@@ -38,9 +37,7 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 gemini_keys = [k.strip() for k in GEMINI_API_KEYS_STR.split(",") if k.strip()]
-serper_keys = [k.strip() for k in SERPER_API_KEYS_STR.split(",") if k.strip()]
 gemini_idx = 0
-serper_idx = 0
 
 def get_gemini_key():
     global gemini_idx
@@ -49,17 +46,7 @@ def get_gemini_key():
     gemini_idx += 1
     return key
 
-def get_serper_key():
-    global serper_idx  
-    if not serper_keys: return None
-    key = serper_keys[serper_idx % len(serper_keys)]
-    serper_idx += 1
-    return key
 
-def search_serper(query):
-    """Use Serper to search web for person's info."""
-    key = get_serper_key()
-    if not key: return []
     track_cloud_usage("Serper")
     try:
         r = requests.post(
@@ -73,25 +60,14 @@ def search_serper(query):
         return []
 
 def ask_gemini_for_linkedin(company_name, company_context=""):
-    """Ask Gemini to find the LinkedIn profile of the CEO/CTO."""
     key = get_gemini_key()
     if not key: return None
-    
-    prompt = f"""You are a B2B contact researcher. Search the web deeply and find:
-    1. The CEO, CTO, Founder, or VP Engineering of company: "{company_name}"
-    2. Then, search for: "[Their Name] {company_name} LinkedIn profile"
-    
-    Context about the company: {company_context}
-    
-    Return ONLY a JSON object (no markdown, no extra text) in this format:
-    {{"name": "Full Name", "role": "CEO", "linkedin": "linkedin.com/in/firstname-lastname", "confidence": "high/medium/low"}}
-    
-    If no LinkedIn profile is found, return: {{"name": "Name if found", "role": "Role if found", "linkedin": "not_found", "confidence": "low"}}
-    """
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+    prompt = f"Search for the LinkedIn profile of the CEO or Founder of {company_name}. Return JSON: {{'name': 'Full Name', 'linkedin': 'URL', 'role': 'CEO'}}"
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
+        "tools": [{"google_search_retrieval": {}}],
+        "generationConfig": {"response_mime_type": "application/json"}
+    }]}],
         "generationConfig": {"response_mime_type": "application/json"}
     }
     
@@ -165,24 +141,7 @@ def run_enrichment():
             found_role = contact.get("role", "CEO")
             logger.info(f"Target Identified: {found_name} ({found_role})")
             
-            # Step 2: Precision Serper Search using Exact Name
-            query = f'"{found_name}" "{company}" site:linkedin.com/in/'
-            results = search_serper(query)
-            
-            if results:
-                for result in results:
-                    link = result.get("link", "")
-                    title = result.get("title", "").lower()
-                    # Verify it's actually their profile and not an article
-                    if "linkedin.com/in/" in link and "/dir/" not in link and "pub/" not in link:
-                        # Extra check: make sure part of their name is in the title to avoid rogue pages
-                        first_name = found_name.split()[0].lower()
-                        if first_name in title or company.lower() in title:
-                            found_linkedin = link
-                            logger.info(f"Verified Profile Found: {found_linkedin}")
-                            break
-                            
-            # Fallback if Serper failed but Gemini guessed a URL
+            # Verification step: Ensure URL is valid
             if not found_linkedin:
                 lnk = contact.get("linkedin", "")
                 if lnk and lnk != "not_found" and "linkedin.com/in" in lnk.lower():
