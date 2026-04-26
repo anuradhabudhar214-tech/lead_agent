@@ -285,7 +285,7 @@ def compile_auditor_intel_extreme(discovery_package):
     3. UAE ONLY: Must be headquartered or have significant operations in UAE.
     4. DATE: Last 30-90 days is acceptable.
     
-    RETURN JSON ONLY: {"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "ceo_founder": "Name", "integration_opportunity": "IT Need"}
+    RETURN JSON ONLY: {"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "funding_date": "Month Year (e.g. April 2026)", "ceo_founder": "Name", "integration_opportunity": "IT Need"}
     If not a UAE startup? Return: {"confidence_score": 0}"""
     
     payload = {
@@ -430,6 +430,18 @@ def gemini_discovery_grounded(query):
         logger.error(f"⚠️ Gemini Discovery Failed: {e}")
     return []
 
+def serper_search_broad(query):
+    """High-Reliability Serper Fallback."""
+    key = vault.get_serper_key()
+    if not key: return []
+    url = "https://google.serper.dev/search"
+    headers = {"X-API-KEY": key, "Content-Type": "application/json"}
+    try:
+        track_cloud_usage("Serper")
+        r = requests.post(url, headers=headers, json={"q": query, "num": 10}, timeout=15)
+        return r.json().get('organic', [])
+    except: return []
+
 def run_tracker():
     # 1. Smart Overlap & Pause Protection
     num_niches_to_scan = 60
@@ -530,7 +542,7 @@ def run_tracker():
         update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
 
-        results = gemini_discovery_grounded(niche)
+        results = gemini_discovery_grounded(niche) or serper_search_broad(niche)
         
         for idx, item in enumerate(results):
             # Instant Kill Switch: Check if user paused via dashboard during the hunt
