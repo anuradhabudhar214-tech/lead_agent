@@ -1,6 +1,6 @@
+name: 🇦🇪 UAE Auditor - Hourly Hunt Cycle
+
 on:
-  push:
-    branches: [ main ]
   schedule:
     # Robust 15-minute autonomous cycle
     - cron: '*/15 * * * *'

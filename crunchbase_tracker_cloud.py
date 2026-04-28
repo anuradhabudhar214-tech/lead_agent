@@ -41,6 +41,10 @@ class Vault:
         self.groq_idx = 0
         self.dead_keys = set()
 
+        def reset_daily(self):
+        self.dead_keys = set()
+        logger.info("🌤️ TOKEN SELF-HEALING: New day detected. All Gemini/Groq keys refreshed.")
+
     def get_serper_key(self):
         if not self.serper_keys: return None
         return self.serper_keys[self.serper_idx % len(self.serper_keys)]
@@ -450,6 +454,27 @@ def serper_search_broad(query):
     except: return []
 
 def run_tracker():
+    # --- DAILY INTELLIGENCE SYNC ---
+    now = datetime.now(timezone.utc)
+    try:
+        stats_res = supabase.table("system_stats").select("*").eq("id", 1).execute()
+        if stats_res.data:
+            stats = stats_res.data[0]
+            last_run_str = stats.get("last_run_at")
+            if last_run_str:
+                last_dt = datetime.fromisoformat(last_run_str.replace('Z', '+00:00'))
+                # Reset if it's a new day (UTC)
+                if last_dt.date() < now.date():
+                    logger.info("📅 NEW DAY DETECTED: Resetting Daily Stats...")
+                    vault.reset_daily()
+                    supabase.table("system_stats").update({
+                        "today_scans": 0,
+                        "today_leads": 0, # Assuming this column is added or handled
+                        "last_run_at": now.isoformat()
+                    }).eq("id", 1).execute()
+    except Exception as e:
+        logger.error(f"Daily Sync Error: {e}")
+
     # 1. Smart Overlap & Pause Protection
     num_niches_to_scan = 60
     update_agent_status("Hunting Leads 🎯")
@@ -600,6 +625,9 @@ def run_tracker():
                     except Exception as e:
                         logger.error(f"❌ DB Error: {e}")
                 save_to_csv(intel)
+                # Update today_leads in DB
+                try: supabase.rpc("increment_today_leads", {"row_id": 1}).execute()
+                except: pass
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
 if __name__ == "__main__":
