@@ -41,7 +41,7 @@ class Vault:
         self.groq_idx = 0
         self.dead_keys = set()
 
-        def reset_daily(self):
+    def reset_daily(self):
         self.dead_keys = set()
         logger.info("🌤️ TOKEN SELF-HEALING: New day detected. All Gemini/Groq keys refreshed.")
 
