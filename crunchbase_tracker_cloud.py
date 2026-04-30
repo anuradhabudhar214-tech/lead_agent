@@ -443,7 +443,8 @@ def gemini_discovery_grounded(query):
                     continue # Retry with next key
             elif 'candidates' in data:
                 text = data['candidates'][0]['content']['parts'][0]['text']
-                return json.loads(text)
+                clean_text = re.sub(r'```json\s*|\s*```', '', text).strip()
+                return json.loads(clean_text)
         except Exception as e:
             logger.error(f"⚠️ Gemini Discovery Failed: {e}")
             break
