@@ -288,7 +288,8 @@ def compile_auditor_intel_extreme(discovery_package):
         return "SKIP"
     
     prompt = f"""    ROLE: Hyper-Scale UAE Lead Generation Agent in April 2026.
-    MISSION: Identify private startup funding rounds.
+    MISSION: Identify private startup funding rounds from the following search result:
+    {discovery_package}
     
     AUDIT RULES:
     1. STARTUP FOCUS: Only accept private companies (Seed, Series A, Venture, etc.).
@@ -296,8 +297,8 @@ def compile_auditor_intel_extreme(discovery_package):
     3. UAE ONLY: Must be headquartered or have significant operations in UAE.
     4. DATE: Last 30-90 days is acceptable.
     
-    RETURN JSON ONLY: {"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "funding_date": "Month Year (e.g. April 2026)", "ceo_founder": "Name", "integration_opportunity": "IT Need"}
-    If not a UAE startup? Return: {"confidence_score": 0}"""
+    RETURN JSON ONLY: {{"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "funding_date": "Month Year (e.g. April 2026)", "ceo_founder": "Name", "integration_opportunity": "IT Need"}}
+    If not a UAE startup? Return: {{"confidence_score": 0}}"""
     
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -408,12 +409,6 @@ def compile_auditor_intel_extreme(discovery_package):
 
 def gemini_discovery_grounded(query):
     """Hyper-accurate IT discovery using Gemini Search Grounding."""
-    key = vault.get_gemini_key()
-    if not key:
-        logger.error("No Gemini keys available for discovery!")
-        return []
-    
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
     
     prompt = f"""
     You are an IT Market Intelligence Agent. Search for 5 NEW (last 30 days) tech startups or IT companies in the UAE 
@@ -421,7 +416,7 @@ def gemini_discovery_grounded(query):
     Specifically look for Crunchbase profiles or news of them hiring IT talent.
     
     Return a JSON array of objects:
-    [{"title": "Company Name | Signal", "link": "Crunchbase URL", "snippet": "Description of hiring or funding"}]
+    [{{ "title": "Company Name | Signal", "link": "Crunchbase URL", "snippet": "Description of hiring or funding" }}]
     """
     
     payload = {
@@ -430,15 +425,28 @@ def gemini_discovery_grounded(query):
         "generationConfig": {"response_mime_type": "application/json"}
     }
     
-    try:
-        track_cloud_usage("Gemini")
-        r = requests.post(url, json=payload, timeout=30)
-        data = r.json()
-        if 'candidates' in data:
-            text = data['candidates'][0]['content']['parts'][0]['text']
-            return json.loads(text)
-    except Exception as e:
-        logger.error(f"⚠️ Gemini Discovery Failed: {e}")
+    for _ in range(2): # Try up to 2 keys
+        key = vault.get_gemini_key()
+        if not key:
+            logger.error("No Gemini keys available for discovery!")
+            return []
+            
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+        try:
+            track_cloud_usage("Gemini")
+            r = requests.post(url, json=payload, timeout=30)
+            data = r.json()
+            if 'error' in data:
+                if data['error'].get('code') in [429, 403, 400]:
+                    logger.warning(f"⚠️ Gemini Discovery Quota Hit: Rotating Key...")
+                    vault.rotate_gemini()
+                    continue # Retry with next key
+            elif 'candidates' in data:
+                text = data['candidates'][0]['content']['parts'][0]['text']
+                return json.loads(text)
+        except Exception as e:
+            logger.error(f"⚠️ Gemini Discovery Failed: {e}")
+            break
     return []
 
 def serper_search_broad(query):
