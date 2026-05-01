@@ -1,29 +1,12 @@
 import os
-import time
 import requests
 import json
 import logging
-import re
+import time
 from datetime import datetime, timezone
 from supabase import create_client, Client
 
-# --- CLOUD TRACKING ---
-def track_cloud_usage(api_name):
-    try:
-        url = f"{SUPABASE_URL}/rest/v1/system_stats"
-        headers = {
-            "apikey": SUPABASE_KEY,
-            "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json"
-        }
-        col = f"{api_name.lower()}_calls"
-        res = requests.get(url, headers=headers, params={"id": "eq.1", "select": col}).json()
-        if res:
-            new_val = (res[0].get(col) or 0) + 1
-            requests.patch(url, headers=headers, json={col: new_val}, params={"id": "eq.1"})
-    except: pass
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- CONFIGURATION ---
@@ -46,129 +29,81 @@ def get_gemini_key():
     gemini_idx += 1
     return key
 
-
-    track_cloud_usage("Serper")
+def track_cloud_usage(api_name):
     try:
-        r = requests.post(
-            "https://google.serper.dev/search",
-            headers={"X-API-KEY": key, "Content-Type": "application/json"},
-            json={"q": query, "num": 5},
-            timeout=10
-        )
-        return r.json().get("organic", [])
-    except:
-        return []
+        col = f"{api_name.lower()}_calls"
+        res = supabase.table("system_stats").select(f"id, {col}").eq("id", 1).execute()
+        if res.data:
+            new_val = (res.data[0].get(col) or 0) + 1
+            supabase.table("system_stats").update({col: new_val}).eq("id", 1).execute()
+    except: pass
 
-def ask_gemini_for_linkedin(company_name, company_context=""):
-    key = get_gemini_key()
-    if not key: return None
-    prompt = f"Search for the LinkedIn profile of the CEO or Founder of {company_name}. Return JSON: {{'name': 'Full Name', 'linkedin': 'URL', 'role': 'CEO'}}"
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "tools": [{"google_search_retrieval": {}}],
-        "generationConfig": {"response_mime_type": "application/json"}
-    }]}],
-        "generationConfig": {"response_mime_type": "application/json"}
-    }
-    
-    try:
-        track_cloud_usage("Gemini")
-        r = requests.post(url, json=payload, timeout=20)
-        res_data = r.json()
-        if 'error' in res_data:
-            if res_data['error'].get('code') == 429:
-                logger.warning("Gemini quota hit, rotating.")
-                key = get_gemini_key()
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
-                track_cloud_usage("Gemini")
-                r = requests.post(url, json=payload, timeout=20)
-                res_data = r.json()
+def ask_gemini_grounded(prompt):
+    """Reliable Gemini Grounded Search."""
+    for _ in range(len(gemini_keys) or 1):
+        key = get_gemini_key()
+        if not key: break
         
-        text = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
-        data = json.loads(text)
-        return data
-    except Exception as e:
-        logger.warning(f"Gemini contact search failed: {e}")
-        return None
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "tools": [{"google_search_retrieval": {}}],
+            "generationConfig": {"response_mime_type": "application/json"}
+        }
+        
+        try:
+            track_cloud_usage("Gemini")
+            r = requests.post(url, json=payload, timeout=20)
+            res_data = r.json()
+            if 'error' in res_data:
+                if res_data['error'].get('code') in [429, 403]:
+                    logger.warning("Gemini quota hit, rotating.")
+                    continue
+                return None
+            
+            text = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
+            return json.loads(text)
+        except Exception as e:
+            logger.warning(f"Gemini Grounded Search failed: {e}")
+            continue
+    return None
 
-def guess_email_format(name, domain):
-    """Generate common email format guesses based on name and domain."""
-    if not name or not domain: return []
-    parts = name.lower().split()
-    if len(parts) < 2: return [f"{parts[0]}@{domain}"]
-    first, last = parts[0], parts[-1]
-    return [
-        f"{first}.{last}@{domain}",
-        f"{first[0]}{last}@{domain}",
-        f"{first}@{domain}",
-        f"{first}_{last}@{domain}",
-    ]
+def enrich_lead(lead_id, company_name):
+    """Finds decision maker LinkedIn and potential email patterns."""
+    logger.info(f"🔎 Enriching: {company_name}")
+    
+    prompt = f"Find the Full Name and LinkedIn profile of the CEO, Founder, or Managing Director of {company_name} in the UAE. Return ONLY JSON: {{'contact_name': 'Name', 'contact_linkedin': 'URL', 'contact_role': 'Title'}}"
+    
+    contact_data = ask_gemini_grounded(prompt)
+    if not contact_data:
+        return
+    
+    # Update lead in DB
+    try:
+        supabase.table("uae_leads").update({
+            "contact_name": contact_data.get("contact_name"),
+            "contact_linkedin": contact_data.get("contact_linkedin"),
+            "contact_role": contact_data.get("contact_role", "Founder/CEO"),
+            "registry_status": "ENRICHED (Gemini Grounding)"
+        }).eq("id", lead_id).execute()
+        logger.info(f"✅ Enriched: {company_name} -> {contact_data.get('contact_name')}")
+    except Exception as e:
+        logger.error(f"Failed to update lead {lead_id}: {e}")
 
 def run_enrichment():
-    logger.info("=== Contact Enrichment Engine v4 (LinkedIn Strategy) Starting ===")
-    
-    # Fetch leads missing a linkedin URL (Increased from 8 to 20 for high-volume)
-    res = supabase.table("uae_leads").select("*").is_("contact_linkedin", "null").limit(20).execute()
-    leads = res.data
-    
-    # --- BRAIN REFRESH MODE ---
-    # To show the user the agent is 'Thinking' even when no NEW leads are found,
-    # we pick 1 random existing lead to 'Verify' if the queue is empty.
-    if not leads:
-        logger.info("No brand-new leads today. Running 'Brain Refresh' on existing database...")
-        res = supabase.table("uae_leads").select("*").limit(10).execute()
-        if res.data:
-            import random
-            leads = [random.choice(res.data)]
-    
-    logger.info(f"Targeting {len(leads)} leads for LinkedIn enrichment...")
-    
-    for lead in leads:
-        company = lead.get("company", "")
-        lead_id = lead.get("id")
-        found_linkedin = None
-        found_name = None
-        found_role = None
+    """Fetches leads with missing contact info and enriches them."""
+    try:
+        # Get leads with no contact_name
+        res = supabase.table("uae_leads").select("id, company").is_("contact_name", "null").limit(20).execute()
+        if not res.data:
+            logger.info("No leads require enrichment at this time.")
+            return
         
-        logger.info(f"Searching LinkedIn profile for: {company}")
-        
-        # STRATEGY: Two-Step Target Acquisition
-        # Step 1: Identify the Name via Gemini
-        contact = ask_gemini_for_linkedin(company, lead.get("strategic_signal", ""))
-        
-        if contact and contact.get("name") and contact.get("name") != "Name if found":
-            found_name = contact.get("name")
-            found_role = contact.get("role", "CEO")
-            logger.info(f"Target Identified: {found_name} ({found_role})")
-            
-            # Verification step: Ensure URL is valid
-            if not found_linkedin:
-                lnk = contact.get("linkedin", "")
-                if lnk and lnk != "not_found" and "linkedin.com/in" in lnk.lower():
-                    found_linkedin = lnk if "http" in lnk else "https://www." + lnk
-                    logger.info(f"Using Gemini Fallback URL: {found_linkedin}")
-        else:
-            logger.info("Could not identify specific leader name.")
-        
-        # Ensure proper URL formatting
-        if found_linkedin and not found_linkedin.startswith("http"):
-            found_linkedin = "https://" + found_linkedin
-            
-        # Write result to Supabase
-        if found_linkedin:
-            logger.info(f"SUCCESS: {company} -> {found_linkedin}")
-            supabase.table("uae_leads").update({
-                "contact_name": found_name,
-                "contact_linkedin": found_linkedin,
-                "contact_role": found_role
-            }).eq("id", lead_id).execute()
-        else:
-            logger.info(f"No LinkedIn found for {company} - marking as Not Found")
-            supabase.table("uae_leads").update({"contact_linkedin": "Not Found"}).eq("id", lead_id).execute()
-            
-        time.sleep(2)
-
+        for lead in res.data:
+            enrich_lead(lead['id'], lead['company'])
+            time.sleep(2) # Stability pause
+    except Exception as e:
+        logger.error(f"Enrichment Loop Error: {e}")
 
 if __name__ == "__main__":
     run_enrichment()
-    logger.info("=== Enrichment Cycle Complete ===")

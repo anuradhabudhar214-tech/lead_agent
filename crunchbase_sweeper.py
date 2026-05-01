@@ -12,7 +12,7 @@ GEMINI_API_KEYS = os.environ.get("GEMINI_API_KEYS", os.environ.get("GEMINI_API_K
 class CrunchbaseSweeper:
     def __init__(self):
         self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL else None
-                self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
+        self.gemini_key = GEMINI_API_KEYS.split(',')[0].strip() if GEMINI_API_KEYS else None
 
     def extract_funding_from_text(self, company, context):
         """Regex-based extraction - no AI quota needed. Reads Crunchbase text directly."""
@@ -68,9 +68,7 @@ class CrunchbaseSweeper:
         print(f"  Regex extracted: {amount} | {round_name}")
         return {"amount": amount, "round": round_name, "financials_summary": summary}
 
-    
-
-        def search_crunchbase_grounded(self, company):
+    def search_crunchbase_grounded(self, company):
         if not self.gemini_key: return ""
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
         prompt = f"Search for Crunchbase funding data for {company}. Return a summary of the round and amount."
@@ -80,8 +78,10 @@ class CrunchbaseSweeper:
         }
         try:
             r = requests.post(url, json=payload, timeout=20)
-            return r.json()['candidates'][0]['content']['parts'][0]['text']
+            data = r.json()
+            return data['candidates'][0]['content']['parts'][0]['text']
         except: return ""
+
     def sweep(self):
         if not self.supabase:
             print("No Supabase connection")
