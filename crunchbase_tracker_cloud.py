@@ -621,19 +621,32 @@ def run_tracker():
                 # --- DUAL STORAGE: Supabase + CSV ---
                 if supabase:
                     try:
-                        supabase.table("uae_leads").upsert(intel, on_conflict="company").execute()
+                        # Clean data for DB (remove extra keys like funding_date that aren't in schema)
+                        db_payload = {k: v for k, v in intel.items() if k in [
+                            "company", "industry", "confidence_score", "strategic_signal", 
+                            "funding_amount", "funding_round", "ceo_founder", 
+                            "integration_opportunity", "url", "status", "discovered_at"
+                        ]}
+                        
+                        supabase.table("uae_leads").upsert(db_payload, on_conflict="company").execute()
+                        logger.info(f"💾 DB SAVE: {intel['company']} (Success)")
+
                         # Direct increment of today_leads in system_stats
                         res = supabase.table("system_stats").select("today_leads").eq("id", 1).execute()
                         if res.data:
                             new_leads = (res.data[0].get("today_leads") or 0) + 1
                             supabase.table("system_stats").update({"today_leads": new_leads}).eq("id", 1).execute()
                     except Exception as e:
-                        logger.error(f"❌ DB Error during lead save: {e}")
+                        logger.error(f"❌ DB Error during lead save for {intel.get('company')}: {e}")
+                
                 save_to_csv(intel)
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
 if __name__ == "__main__":
     try:
         run_tracker()
+    except Exception as e:
+        logger.critical(f"💥 ENGINE CRASH: {e}")
     finally:
         update_agent_status("Sleeping 💤 | Watching 24/7 Trigger")
+        logger.info("📡 STATUS: Agent entering sleep mode.")
