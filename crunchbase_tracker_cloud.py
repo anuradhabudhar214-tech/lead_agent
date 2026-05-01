@@ -6,6 +6,7 @@ import requests
 import csv
 import re
 from datetime import datetime, timezone
+from duckduckgo_search import DDGS
 from groq import Groq
 
 # --- CONFIGURATION & LOGGING (Engine Heartbeat Poke) ---
@@ -405,9 +406,17 @@ def gemini_discovery_grounded(query):
                 text = data['candidates'][0]['content']['parts'][0]['text']
                 clean_text = re.sub(r'```json\s*|\s*```', '', text).strip()
                 return json.loads(clean_text)
-        except Exception as e:
-            logger.error(f"⚠️ Gemini Discovery Failed: {e}")
-            break
+    # FALLBACK: If Gemini Grounding is hit, use DuckDuckGo + Gemini Extraction
+    logger.info(f"🔄 FALLBACK: Using DuckDuckGo for '{query}'...")
+    try:
+        with DDGS() as ddgs:
+            results = list(ddgs.text(f"site:crunchbase.com {query} UAE hiring", max_results=10))
+            if results:
+                formatted = [{"title": r.get("title", ""), "link": r.get("href", ""), "snippet": r.get("body", "")} for r in results]
+                logger.info(f"✅ DuckDuckGo found {len(formatted)} results.")
+                return formatted
+    except Exception as e:
+        logger.error(f"⚠️ DuckDuckGo Fallback Failed: {e}")
     return []
 
 
