@@ -31,12 +31,15 @@ class Vault:
         
         gemini_env = os.getenv("GEMINI_API_KEYS", "") or os.getenv("GEMINI_API_KEY", "")
         groq_env = os.getenv("GROQ_API_KEYS", "") or os.getenv("GROQ_API_KEY", "")
+        serper_env = os.getenv("SERPER_API_KEYS", "") or os.getenv("SERPER_API_KEY", "")
         
         self.gemini_keys = [k.strip() for k in gemini_env.split(",") if k.strip()] or self.config.get("GEMINI_API_KEYS", [])
         self.groq_keys = [k.strip() for k in groq_env.split(",") if k.strip()] or self.config.get("GROQ_API_KEYS", [])
+        self.serper_keys = [k.strip() for k in serper_env.split(",") if k.strip()] or self.config.get("SERPER_API_KEYS", [])
         
         self.gemini_idx = 0
         self.groq_idx = 0
+        self.serper_idx = 0
         self.dead_keys = set()
 
     def reset_daily(self):
@@ -54,6 +57,12 @@ class Vault:
     def mark_key_dead(self, key):
         self.dead_keys.add(key)
         logger.warning(f"💀 KEY BLACKLISTED: {key[:8]}... marked as dead/invalid.")
+
+    def get_serper_key(self):
+        if not self.serper_keys: return None
+        key = self.serper_keys[self.serper_idx % len(self.serper_keys)]
+        self.serper_idx += 1
+        return key
 
     def rotate_gemini(self):
         self.gemini_idx += 1
@@ -371,8 +380,29 @@ def compile_auditor_intel_extreme(discovery_package):
 
 
 def gemini_discovery_grounded(query):
-    """Hyper-accurate IT discovery using Gemini Search Grounding."""
+    """Triple-Layer Discovery: Serper -> Gemini Grounding -> DuckDuckGo."""
     
+    # LAYER 1: SERPER (Most accurate for Crunchbase)
+    serper_key = vault.get_serper_key()
+    if serper_key:
+        logger.info(f"🔍 SERPER SEARCH: '{query}'...")
+        try:
+            track_cloud_usage("Serper")
+            r = requests.post(
+                "https://google.serper.dev/search",
+                headers={"X-API-KEY": serper_key, "Content-Type": "application/json"},
+                json={"q": f"site:crunchbase.com {query} UAE hiring", "num": 10},
+                timeout=10
+            )
+            res = r.json()
+            if "organic" in res:
+                logger.info(f"✅ Serper found {len(res['organic'])} results.")
+                return res["organic"]
+        except Exception as e:
+            logger.warning(f"Serper search failed: {e}")
+
+    # LAYER 2: GEMINI GROUNDING
+    logger.info(f"💎 GEMINI GROUNDING: '{query}'...")
     prompt = f"""
     You are an IT Market Intelligence Agent. Search for 5-10 NEW tech startups or IT companies in the UAE 
     that match this sector: '{query}'. 
