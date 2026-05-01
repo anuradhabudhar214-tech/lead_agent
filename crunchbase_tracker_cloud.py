@@ -371,9 +371,9 @@ def gemini_discovery_grounded(query):
     """Hyper-accurate IT discovery using Gemini Search Grounding."""
     
     prompt = f"""
-    You are an IT Market Intelligence Agent. Search for 5 NEW (last 30 days) tech startups or IT companies in the UAE 
+    You are an IT Market Intelligence Agent. Search for 5-10 NEW tech startups or IT companies in the UAE 
     that match this sector: '{query}'. 
-    Specifically look for Crunchbase profiles or news of them hiring IT talent.
+    Specifically look for Crunchbase profiles, funding news, or official company hiring pages.
     
     Return a JSON array of objects:
     [{{ "title": "Company Name | Signal", "link": "Crunchbase URL", "snippet": "Description of hiring or funding" }}]
@@ -435,7 +435,7 @@ def run_tracker():
         logger.error(f"Daily Sync Error: {e}")
 
     # 1. Smart Overlap & Pause Protection
-    num_niches_to_scan = 60
+    num_niches_to_scan = 12 # Reduced to respect Gemini free-tier RPM limits
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
@@ -536,6 +536,7 @@ def run_tracker():
         results = gemini_discovery_grounded(niche)
         
         for idx, item in enumerate(results):
+            time.sleep(6) # Adhere to Gemini 10 RPM (60s/10)
             # Instant Kill Switch: Check if user paused via dashboard during the hunt
             if supabase and idx % 2 == 0:  # Check every 2 items to save API calls
                 try:
@@ -545,19 +546,18 @@ def run_tracker():
                         return
                 except: pass
 
-            # --- STRICT CRUNCHBASE-ONLY FILTER ---
+            # --- SOURCE FILTER ---
             link = item.get('link', '').lower()
-            # Must be on crunchbase.com
-            if 'crunchbase.com' not in link:
-                continue
-            # Must be a company/organization profile (not blog, hub, lists, etc)
-            is_profile = ('/organization/' in link or '/company/' in link or 
-                         link.rstrip('/').split('crunchbase.com/')[-1].count('/') == 1)
-            if not is_profile:
-                continue
-            # Block known non-profile paths
+            # We prefer Crunchbase, but allow news/official sites since Serper is gone
+            if not any(valid in link for valid in ['crunchbase.com', 'linkedin.com', 'wam.ae', 'zawya.com', 'menabytes.com']):
+                # If it's a direct company site (.ae, .com), we allow it too
+                if not (link.endswith('.ae') or link.endswith('.com')):
+                    continue
+            
+            # Block known garbage
             if any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/', '/event/']):
-                continue
+                if 'crunchbase.com' in link: # Only block these if on Crunchbase
+                    continue
             logger.info(f"  ✅ Valid Crunchbase profile: {link[:80]}")
                 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
