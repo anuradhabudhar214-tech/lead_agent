@@ -28,15 +28,12 @@ class Vault:
             with open("config.json", "r") as f:
                 self.config = json.load(f)
         
-        serper_env = os.getenv("SERPER_API_KEYS", "") or os.getenv("SERPER_API_KEY", "")
         gemini_env = os.getenv("GEMINI_API_KEYS", "") or os.getenv("GEMINI_API_KEY", "")
         groq_env = os.getenv("GROQ_API_KEYS", "") or os.getenv("GROQ_API_KEY", "")
         
-        self.serper_keys = [k.strip() for k in serper_env.split(",") if k.strip()] or self.config.get("SERPER_API_KEYS", [])
         self.gemini_keys = [k.strip() for k in gemini_env.split(",") if k.strip()] or self.config.get("GEMINI_API_KEYS", [])
         self.groq_keys = [k.strip() for k in groq_env.split(",") if k.strip()] or self.config.get("GROQ_API_KEYS", [])
         
-        self.serper_idx = 0
         self.gemini_idx = 0
         self.groq_idx = 0
         self.dead_keys = set()
@@ -44,14 +41,6 @@ class Vault:
     def reset_daily(self):
         self.dead_keys = set()
         logger.info("🌤️ TOKEN SELF-HEALING: New day detected. All Gemini/Groq keys refreshed.")
-
-    def get_serper_key(self):
-        if not self.serper_keys: return None
-        return self.serper_keys[self.serper_idx % len(self.serper_keys)]
-    
-    def rotate_serper(self):
-        self.serper_idx += 1
-        logger.info(f"🔄 Rotated Serper Key")
 
     def get_gemini_key(self):
         if not self.gemini_keys: return None
@@ -120,10 +109,8 @@ def update_agent_status(status):
                 if last_run_at:
                     try:
                         last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
-                        # We only reset Serper monthly (10k limit), we keep Gemini/Groq cumulative or session-based
                         # We keep Gemini/Groq cumulative or session-based (Transparency Fix)
-                        if last_dt.month < now.month or last_dt.year < now.year:
-                            data.update({"serper_calls": 0})
+                        pass
                     except: pass
                 
                 if "Hunting" in status:
@@ -379,33 +366,6 @@ def compile_auditor_intel_extreme(discovery_package):
     }
 
 
-    url = "https://google.serper.dev/search"
-    headers = {"X-API-KEY": key, "Content-Type": "application/json"}
-    try:
-        track_cloud_usage("Serper")
-        payload = {"q": query, "num": 50}
-        if "qdr:" in query:
-            # Extract qdr filter if passed in query string for flexibility
-            parts = query.split(" qdr:")
-            payload["q"] = parts[0]
-            payload["tbs"] = f"qdr:{parts[1]}"
-        
-        r = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
-        res_data = r.json()
-        if r.status_code == 403 or r.status_code == 429:
-            logger.warning(f"Serper key quota hit ({r.status_code}), rotating...")
-            vault.rotate_serper()
-            return []
-        if 'organic' in res_data:
-            results = res_data['organic']
-            logger.info(f"  Serper returned {len(results)} results")
-            return results
-        logger.warning(f"Serper response issue: {res_data.get('message', 'no organic')}")
-        return []
-    except Exception as e:
-        logger.error(f"Serper request failed: {e}")
-        vault.rotate_serper()
-        return []
 
 def gemini_discovery_grounded(query):
     """Hyper-accurate IT discovery using Gemini Search Grounding."""
@@ -450,17 +410,6 @@ def gemini_discovery_grounded(query):
             break
     return []
 
-def serper_search_broad(query):
-    """High-Reliability Serper Fallback."""
-    key = vault.get_serper_key()
-    if not key: return []
-    url = "https://google.serper.dev/search"
-    headers = {"X-API-KEY": key, "Content-Type": "application/json"}
-    try:
-        track_cloud_usage("Serper")
-        r = requests.post(url, headers=headers, json={"q": query, "num": 10}, timeout=15)
-        return r.json().get('organic', [])
-    except: return []
 
 def run_tracker():
     # --- DAILY INTELLIGENCE SYNC ---
@@ -583,7 +532,7 @@ def run_tracker():
         update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
         logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
 
-        results = gemini_discovery_grounded(niche) or serper_search_broad(niche)
+        results = gemini_discovery_grounded(niche)
         
         for idx, item in enumerate(results):
             # Instant Kill Switch: Check if user paused via dashboard during the hunt

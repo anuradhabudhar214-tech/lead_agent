@@ -156,14 +156,9 @@
             <span class="usage-desc">Global Database</span>
         </div>
         <div class="stat-card">
-            <span id="serper-stat" class="stat-value">0</span>
-            <span class="stat-label">Serper Vision</span>
-            <span class="usage-desc">Web & Search Discovery</span>
-        </div>
-        <div class="stat-card">
             <span id="gemini-stat" class="stat-value">0</span>
-            <span class="stat-label">Gemini Brain</span>
-            <span class="usage-desc">Lead Data Extraction</span>
+            <span class="stat-label">Gemini 2.0</span>
+            <span class="usage-desc">Discovery & Extraction</span>
         </div>
         <div class="stat-card">
             <span id="groq-stat" class="stat-value">0</span>
@@ -301,7 +296,6 @@
 
                 document.getElementById('found-today').innerText = usageRes.today_count || 0;
                 document.getElementById('total-leads').innerText = usageRes.total_leads || 0;
-                document.getElementById('serper-stat').innerText = `${usageRes.Serper || 0} / 10,000`;
                 document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
                 document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
                 

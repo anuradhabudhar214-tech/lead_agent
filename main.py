@@ -113,7 +113,7 @@ async def control_agent(request: Request):
 async def get_usage():
     """Returns real usage statistics, live status, and daily lead counts."""
     if not supabase:
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}
+        return {"Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}
     
     try:
         # Get general stats
@@ -144,7 +144,6 @@ async def get_usage():
                 except: pass
 
             return {
-                "Serper": stats.get("serper_calls", 0),
                 "Gemini": stats.get("gemini_calls", 0),
                 "Groq": stats.get("groq_calls", 0),
                 "total_scans": stats.get("total_scans", 0),
@@ -155,9 +154,9 @@ async def get_usage():
                 "today_count": today_count,
                 "total_leads": total_leads
             }
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
+        return {"Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
     except Exception as e:
-        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}
+        return {"Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
