@@ -479,7 +479,7 @@ def run_tracker():
         logger.error(f"Daily Sync Error: {e}")
 
     # 1. Smart Overlap & Pause Protection
-    num_niches_to_scan = 12 # Reduced to respect Gemini free-tier RPM limits
+    num_niches_to_scan = 6 # Calibrated for 24/7 run within Gemini/Groq daily quotas
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History

@@ -35,9 +35,9 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
         }
 
         .stat-card {
@@ -164,6 +164,11 @@
             <span id="groq-stat" class="stat-value">0</span>
             <span class="stat-label">Groq Velocity</span>
             <span class="usage-desc">Rapid screening energy</span>
+        </div>
+        <div class="stat-card">
+            <span id="serper-stat" class="stat-value">0</span>
+            <span class="stat-label">Serper Scout</span>
+            <span class="usage-desc">High-precision discovery</span>
         </div>
         <div class="stat-card">
             <span id="scans-stat" class="stat-value">0</span>
@@ -298,6 +303,7 @@
                 document.getElementById('total-leads').innerText = usageRes.total_leads || 0;
                 document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
                 document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
+                document.getElementById('serper-stat').innerText = usageRes.Serper || 0;
                 
                 // Smart Counter: Use DB history if patch is applied, otherwise show Live Session Activity
                 const dailyCount = (usageRes.today_scans !== undefined && usageRes.today_scans !== null) ? usageRes.today_scans : liveHeartbeats;
