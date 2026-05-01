@@ -438,6 +438,9 @@ def gemini_discovery_grounded(query):
                 text = data['candidates'][0]['content']['parts'][0]['text']
                 clean_text = re.sub(r'```json\s*|\s*```', '', text).strip()
                 return json.loads(clean_text)
+        except Exception as e:
+            logger.error(f"⚠️ Gemini Discovery Failed: {e}")
+            break
     # FALLBACK: If Gemini Grounding is hit, use DuckDuckGo + Gemini Extraction
     logger.info(f"🔄 FALLBACK: Using DuckDuckGo for '{query}'...")
     try:
