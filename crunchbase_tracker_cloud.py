@@ -141,6 +141,12 @@ def update_agent_status(status):
             total_s = (stats.get("total_scans") or 0) + 1
             today_s = (stats.get("today_scans") or 0) + 1
             
+            # NUCLEAR RECALIBRATION: If today_s is stuck on a historical total (impossible for one day)
+            if today_s > 1000:
+                logger.info("🧨 NUCLEAR RECALIBRATION: Resetting stuck historical count.")
+                today_s = 1
+                supabase_call("PATCH", "system_stats", data={"today_leads": 0}, params={"id": "eq.1"})
+            
             # AGGRESSIVE RESET: If the date has changed since the last pulse, start a new day
             last_run_at = stats.get("last_run_at")
             if last_run_at:
