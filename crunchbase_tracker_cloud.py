@@ -423,13 +423,14 @@ def run_tracker():
                 last_dt = datetime.fromisoformat(last_run_str.replace('Z', '+00:00'))
                 # Reset if it's a new day (UTC)
                 if last_dt.date() < now.date():
-                    logger.info("📅 NEW DAY DETECTED: Resetting Daily Stats...")
+                    logger.info("🌤️ NEW DAY DETECTED: Resetting Daily Stats for the new hunt cycle...")
                     vault.reset_daily()
                     supabase.table("system_stats").update({
                         "today_scans": 0,
-                        "today_leads": 0, # Assuming this column is added or handled
+                        "today_leads": 0,
                         "last_run_at": now.isoformat()
                     }).eq("id", 1).execute()
+                    logger.info("✅ Daily stats successfully zeroed out for 12 AM refresh.")
     except Exception as e:
         logger.error(f"Daily Sync Error: {e}")
 
@@ -580,12 +581,14 @@ def run_tracker():
                 if supabase:
                     try:
                         supabase.table("uae_leads").upsert(intel, on_conflict="company").execute()
+                        # Direct increment of today_leads in system_stats
+                        res = supabase.table("system_stats").select("today_leads").eq("id", 1).execute()
+                        if res.data:
+                            new_leads = (res.data[0].get("today_leads") or 0) + 1
+                            supabase.table("system_stats").update({"today_leads": new_leads}).eq("id", 1).execute()
                     except Exception as e:
-                        logger.error(f"❌ DB Error: {e}")
+                        logger.error(f"❌ DB Error during lead save: {e}")
                 save_to_csv(intel)
-                # Update today_leads in DB
-                try: supabase.rpc("increment_today_leads", {"row_id": 1}).execute()
-                except: pass
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
 if __name__ == "__main__":
