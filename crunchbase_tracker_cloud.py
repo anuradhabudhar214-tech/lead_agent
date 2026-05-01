@@ -141,14 +141,18 @@ def update_agent_status(status):
             total_s = (stats.get("total_scans") or 0) + 1
             today_s = (stats.get("today_scans") or 0) + 1
             
-            # Smart Reset: If last_run_at day is different from now, reset today count to 1
+            # AGGRESSIVE RESET: If the date has changed since the last pulse, start a new day
             last_run_at = stats.get("last_run_at")
             if last_run_at:
                 try:
                     last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
                     if last_dt.day != now.day or last_dt.month != now.month:
-                        today_s = 1
-                except: pass
+                        logger.info("🌅 NEW DAY DETECTED: Resetting daily counters.")
+                        today_s = 1 # First scan of the new day
+                        # Reset Today's Leads too
+                        supabase_call("PATCH", "system_stats", data={"today_leads": 0}, params={"id": "eq.1"})
+                except Exception as e:
+                    logger.error(f"Reset Error: {e}")
                 
             supabase_call("PATCH", "system_stats", 
                           data={"total_scans": total_s, "today_scans": today_s, "last_run_at": now.isoformat()}, 
