@@ -312,6 +312,8 @@ def compile_auditor_intel_extreme(discovery_package):
             vault.mark_key_dead(key)
         logger.error(f"⚠️ Gemini Exhausted/Error: {e}")
         vault.rotate_gemini()
+        # If we have more than 1 Gemini key, we could retry, but switching to Groq is safer for extraction
+        
         # FALLBACK: GROQ
         groq_key = vault.get_groq_key()
         if groq_key:
@@ -386,7 +388,7 @@ def gemini_discovery_grounded(query):
         "generationConfig": {"response_mime_type": "application/json"}
     }
     
-    for _ in range(2): # Try up to 2 keys
+    for _ in range(len(vault.gemini_keys) or 1): # Try all available keys
         key = vault.get_gemini_key()
         if not key:
             logger.error("No Gemini keys available for discovery!")
