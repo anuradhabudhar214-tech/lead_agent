@@ -401,12 +401,52 @@ def compile_auditor_intel_extreme(discovery_package):
 
 
 def gemini_discovery_grounded(query):
-    """Triple-Layer Discovery: Serper -> Gemini Grounding -> DuckDuckGo."""
+    """Triple-Layer Discovery: DuckDuckGo -> Gemini Grounding -> Serper."""
     
-    # LAYER 1: SERPER (Most accurate for Crunchbase)
+    # LAYER 1: DUCKDUCKGO (FREE & UNLIMITED)
+    logger.info(f"🔄 LAYER 1: DuckDuckGo for '{query}'...")
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(f"site:crunchbase.com {query} UAE hiring", max_results=10))
+            if results:
+                formatted = [{"title": r.get("title", ""), "link": r.get("href", ""), "snippet": r.get("body", "")} for r in results]
+                logger.info(f"✅ DuckDuckGo found {len(formatted)} results.")
+                return formatted
+    except Exception as e:
+        logger.warning(f"⚠️ DuckDuckGo Layer Failed: {e}")
+
+    # LAYER 2: GEMINI GROUNDING (FREE GOOGLE SEARCH)
+    logger.info(f"💎 LAYER 2: Gemini Grounding for '{query}'...")
+    prompt = f"""
+    Search for 5-10 NEW tech startups or IT companies in the UAE matching: '{query}'. 
+    Specifically look for Crunchbase profiles, funding news, or hiring pages.
+    Return JSON array: [{{ "title": "Name", "link": "URL", "snippet": "Info" }}]
+    """
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "tools": [{"google_search_retrieval": {}}],
+        "generationConfig": {"response_mime_type": "application/json"}
+    }
+    
+    for _ in range(len(vault.gemini_keys) or 1):
+        key = vault.get_gemini_key()
+        if not key: break
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
+        try:
+            track_cloud_usage("Gemini")
+            r = requests.post(url, json=payload, timeout=20)
+            data = r.json()
+            if 'candidates' in data:
+                text = data['candidates'][0]['content']['parts'][0]['text']
+                return json.loads(re.sub(r'```json\s*|\s*```', '', text).strip())
+        except:
+            vault.rotate_gemini()
+
+    # LAYER 3: SERPER (SNIPER BACKUP)
     serper_key = vault.get_serper_key()
     if serper_key:
-        logger.info(f"🔍 SERPER SEARCH: '{query}'...")
+        logger.info(f"🎯 LAYER 3: Serper Sniper for '{query}'...")
         try:
             track_cloud_usage("Serper")
             r = requests.post(
@@ -417,62 +457,11 @@ def gemini_discovery_grounded(query):
             )
             res = r.json()
             if "organic" in res:
-                logger.info(f"✅ Serper found {len(res['organic'])} results.")
+                logger.info(f"✅ Serper Sniper found {len(res['organic'])} results.")
                 return res["organic"]
         except Exception as e:
-            logger.warning(f"Serper search failed: {e}")
+            logger.warning(f"Serper Sniper failed: {e}")
 
-    # LAYER 2: GEMINI GROUNDING
-    logger.info(f"💎 GEMINI GROUNDING: '{query}'...")
-    prompt = f"""
-    You are an IT Market Intelligence Agent. Search for 5-10 NEW tech startups or IT companies in the UAE 
-    that match this sector: '{query}'. 
-    Specifically look for Crunchbase profiles, funding news, or official company hiring pages.
-    
-    Return a JSON array of objects:
-    [{{ "title": "Company Name | Signal", "link": "Crunchbase URL", "snippet": "Description of hiring or funding" }}]
-    """
-    
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "tools": [{"google_search_retrieval": {}}],
-        "generationConfig": {"response_mime_type": "application/json"}
-    }
-    
-    for _ in range(len(vault.gemini_keys) or 1): # Try all available keys
-        key = vault.get_gemini_key()
-        if not key:
-            logger.error("No Gemini keys available for discovery!")
-            return []
-            
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={key}"
-        try:
-            track_cloud_usage("Gemini")
-            r = requests.post(url, json=payload, timeout=30)
-            data = r.json()
-            if 'error' in data:
-                if data['error'].get('code') in [429, 403, 400]:
-                    logger.warning(f"⚠️ Gemini Discovery Quota Hit: Rotating Key...")
-                    vault.rotate_gemini()
-                    continue # Retry with next key
-            elif 'candidates' in data:
-                text = data['candidates'][0]['content']['parts'][0]['text']
-                clean_text = re.sub(r'```json\s*|\s*```', '', text).strip()
-                return json.loads(clean_text)
-        except Exception as e:
-            logger.error(f"⚠️ Gemini Discovery Failed: {e}")
-            break
-    # FALLBACK: If Gemini Grounding is hit, use DuckDuckGo + Gemini Extraction
-    logger.info(f"🔄 FALLBACK: Using DuckDuckGo for '{query}'...")
-    try:
-        with DDGS() as ddgs:
-            results = list(ddgs.text(f"site:crunchbase.com {query} UAE hiring", max_results=10))
-            if results:
-                formatted = [{"title": r.get("title", ""), "link": r.get("href", ""), "snippet": r.get("body", "")} for r in results]
-                logger.info(f"✅ DuckDuckGo found {len(formatted)} results.")
-                return formatted
-    except Exception as e:
-        logger.error(f"⚠️ DuckDuckGo Fallback Failed: {e}")
     return []
 
 
