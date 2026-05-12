@@ -151,7 +151,18 @@ def update_agent_status(status):
             last_run_at = stats.get("last_run_at")
             if last_run_at:
                 try:
-                    last_dt = datetime.fromisoformat(last_run_at.replace("Z", "+00:00"))
+                    # Robust parsing for various ISO formats
+                    ts = last_run_at.replace("Z", "+00:00")
+                    if "." in ts:
+                        try:
+                            parts = ts.split("+")
+                            base = parts[0]
+                            offset = parts[1] if len(parts) > 1 else "00:00"
+                            date_part, micro = base.split(".")
+                            micro = (micro + "000000")[:6]
+                            ts = f"{date_part}.{micro}+{offset}"
+                        except: pass
+                    last_dt = datetime.fromisoformat(ts)
                     if last_dt.day != now.day or last_dt.month != now.month:
                         logger.info("🌅 NEW DAY DETECTED: Resetting daily counters.")
                         today_s = 1 # First scan of the new day
@@ -494,16 +505,15 @@ def run_tracker():
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     current_niches = [
-        "Software Development Hiring Dubai",
-        "SaaS startups Abu Dhabi hiring",
-        "FinTech developers UAE",
-        "AI Research Engineers Dubai",
-        "Cloud Infrastructure hiring UAE",
-        "Cybersecurity startups Dubai",
-        "Web3 developers Abu Dhabi",
-        "E-commerce tech teams UAE",
-        "IT Managed Services hiring Dubai",
-        "Data Science startups UAE"
+        "Web3 and Blockchain startups Dubai",
+        "PropTech and Real Estate AI UAE",
+        "HealthTech and Biotech Dubai hiring",
+        "E-commerce logistics automation UAE",
+        "Cybersecurity firms Abu Dhabi",
+        "EdTech and Learning Management Dubai",
+        "Fintech lending and payments UAE",
+        "AgriTech and FoodTech Dubai startups",
+        "AI for Retail and Marketing UAE"
     ]
     
     import random
@@ -563,16 +573,15 @@ def run_tracker():
 
     # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
     current_niches = [
-        "Software Development Hiring Dubai",
-        "SaaS startups Abu Dhabi hiring",
-        "FinTech developers UAE",
-        "AI Research Engineers Dubai",
-        "Cloud Infrastructure hiring UAE",
-        "Cybersecurity startups Dubai",
-        "Web3 developers Abu Dhabi",
-        "E-commerce tech teams UAE",
-        "IT Managed Services hiring Dubai",
-        "Data Science startups UAE"
+        "Web3 and Blockchain startups Dubai",
+        "PropTech and Real Estate AI UAE",
+        "HealthTech and Biotech Dubai hiring",
+        "E-commerce logistics automation UAE",
+        "Cybersecurity firms Abu Dhabi",
+        "EdTech and Learning Management Dubai",
+        "Fintech lending and payments UAE",
+        "AgriTech and FoodTech Dubai startups",
+        "AI for Retail and Marketing UAE"
     ]
     
     # Pick niches based on the current hour and catch-up requirement
