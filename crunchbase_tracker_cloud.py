@@ -493,16 +493,17 @@ def run_tracker():
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
-    current_niches = [
-        "Web3 and Blockchain startups Dubai",
-        "PropTech and Real Estate AI UAE",
-        "HealthTech and Biotech Dubai hiring",
-        "E-commerce logistics automation UAE",
-        "Cybersecurity firms Abu Dhabi",
-        "EdTech and Learning Management Dubai",
-        "Fintech lending and payments UAE",
-        "AgriTech and FoodTech Dubai startups",
-        "AI for Retail and Marketing UAE"
+        current_niches = [
+        "AI and Machine Learning Logistics Dubai",
+        "Fintech startups DIFC and ADGM",
+        "HealthTech telemedicine UAE hiring",
+        "CleanTech and Solar Energy Dubai",
+        "EdTech and Virtual Learning UAE",
+        "PropTech property management AI Dubai",
+        "Cybersecurity Managed Services Abu Dhabi",
+        "E-commerce delivery drone startups UAE",
+        "AgriTech vertical farming Dubai",
+        "Web3 Gaming and Metaverse Dubai"
     ]
     
     import random
