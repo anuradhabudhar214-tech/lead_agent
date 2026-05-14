@@ -166,8 +166,8 @@ def update_agent_status(status):
                     if last_dt.day != now.day or last_dt.month != now.month:
                         logger.info("🌅 NEW DAY DETECTED: Resetting daily counters.")
                         today_s = 1 # First scan of the new day
-                        # Reset Today's Leads too
-                        supabase_call("PATCH", "system_stats", data={"today_leads": 0}, params={"id": "eq.1"})
+                        # Reset Today's Leads and Daily API limits (Serper is total, so we keep it)
+                        supabase_call("PATCH", "system_stats", data={"today_leads": 0, "gemini_calls": 0, "groq_calls": 0}, params={"id": "eq.1"})
                 except Exception as e:
                     logger.error(f"Reset Error: {e}")
                 
@@ -482,6 +482,8 @@ def run_tracker():
                     supabase.table("system_stats").update({
                         "today_scans": 0,
                         "today_leads": 0,
+                        "gemini_calls": 0,
+                        "groq_calls": 0,
                         "last_run_at": now.isoformat()
                     }).eq("id", 1).execute()
                     logger.info("✅ Daily stats successfully zeroed out for 12 AM refresh.")
