@@ -123,11 +123,10 @@ async def get_usage():
         total_res = supabase.table("uae_leads").select("id", count="exact").execute()
         total_leads = total_res.count if total_res else 0
         
-        # Get today's lead count (Rolling Last 24 Hours)
-        import datetime
-        last_24h = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=24)).isoformat()
-        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gt", last_24h).execute()
-        today_count = today_res.count if today_res else 0
+        # Get today's lead count (Calendar Day Reset)
+        today_count = 0
+        if usage_res.data:
+            today_count = usage_res.data[0].get("today_leads", 0)
 
         if usage_res.data:
             stats = usage_res.data[0]
