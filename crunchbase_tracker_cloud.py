@@ -621,10 +621,11 @@ def run_tracker():
             # --- SMART FILTER: Prevent Wasting AI Credits on Existing Leads ---
             if supabase:
                 try:
-                    # check by URL or Title to avoid AI costs for items we already found
-                    existing = supabase.table("uae_leads").select("id").or_(f"url.eq.{link},company.ilike.%{item.get('title','UNKNOWN')[:15]}%").execute()
+                    # Robust check by exact URL to avoid skipping valid new companies with similar names
+                    existing = supabase.table("uae_leads").select("id").eq("url", link).execute()
                     if existing.data:
-                        continue # Already in HQ, save Gemini call
+                        logger.info(f"  ⏭️ Skipping (Already in HQ): {link[:60]}")
+                        continue 
                 except: pass
 
             intel = compile_auditor_intel_extreme(discovery_package)
