@@ -408,7 +408,8 @@ def gemini_discovery_grounded(query):
     try:
         from duckduckgo_search import DDGS
         with DDGS() as ddgs:
-            results = list(ddgs.text(f"site:crunchbase.com {query} UAE hiring", max_results=10))
+            # Removed redundant "UAE hiring" to prevent over-filtering
+            results = list(ddgs.text(f"site:crunchbase.com/organization {query}", max_results=10))
             if results:
                 formatted = [{"title": r.get("title", ""), "link": r.get("href", ""), "snippet": r.get("body", "")} for r in results]
                 logger.info(f"✅ DuckDuckGo found {len(formatted)} results.")
@@ -452,7 +453,7 @@ def gemini_discovery_grounded(query):
             r = requests.post(
                 "https://google.serper.dev/search",
                 headers={"X-API-KEY": serper_key, "Content-Type": "application/json"},
-                json={"q": f"site:crunchbase.com {query} UAE hiring", "num": 10},
+                json={"q": f"site:crunchbase.com/organization {query}", "num": 10},
                 timeout=10
             )
             res = r.json()
