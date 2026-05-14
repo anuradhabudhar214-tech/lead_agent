@@ -493,7 +493,7 @@ def run_tracker():
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
-        current_niches = [
+    current_niches = [
         "AI and Machine Learning Logistics Dubai",
         "Fintech startups DIFC and ADGM",
         "HealthTech telemedicine UAE hiring",
