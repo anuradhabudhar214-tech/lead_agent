@@ -496,16 +496,16 @@ def run_tracker():
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     current_niches = [
-        "AI and Machine Learning Logistics Dubai",
-        "Fintech startups DIFC and ADGM",
-        "HealthTech telemedicine UAE hiring",
-        "CleanTech and Solar Energy Dubai",
-        "EdTech and Virtual Learning UAE",
-        "PropTech property management AI Dubai",
-        "Cybersecurity Managed Services Abu Dhabi",
-        "E-commerce delivery drone startups UAE",
-        "AgriTech vertical farming Dubai",
-        "Web3 Gaming and Metaverse Dubai"
+        "AI and Machine Learning startups Dubai",
+        "Fintech and Crypto payments UAE",
+        "PropTech real estate AI Dubai",
+        "HealthTech and Biotech UAE hiring",
+        "CleanTech and Green Energy startups Dubai",
+        "EdTech and Hybrid Learning UAE",
+        "Cybersecurity firms Abu Dhabi",
+        "E-commerce logistics automation Dubai",
+        "AgriTech and FoodTech startups UAE",
+        "Web3 Gaming and NFT Dubai"
     ]
     
     import random
