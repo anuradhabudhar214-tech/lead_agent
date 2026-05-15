@@ -167,7 +167,7 @@ def update_agent_status(status):
                         logger.info("🌅 NEW DAY DETECTED: Resetting daily counters.")
                         today_s = 1 # First scan of the new day
                         # Reset Daily API limits (Serper is total, so we keep it)
-                        supabase_call("PATCH", "system_stats", data={"gemini_calls": 0, "groq_calls": 0}, params={"id": "eq.1"})
+                        supabase_call("PATCH", "system_stats", data={"gemini_calls": 0, "groq_calls": 0, "today_scans": 0}, params={"id": "eq.1"})
                 except Exception as e:
                     logger.error(f"Reset Error: {e}")
                 
