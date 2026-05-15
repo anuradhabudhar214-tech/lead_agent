@@ -618,9 +618,9 @@ def run_tracker():
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
             
             # --- SMART FILTER: Prevent Wasting AI Credits on Existing Leads ---
-            if supabase:
+            # --- FORCE SAVE MODE: Bypassing duplicate check for 1 run ---
+            if False and supabase: 
                 try:
-                    # Robust check by exact URL to avoid skipping valid new companies with similar names
                     existing = supabase.table("uae_leads").select("id").eq("url", link).execute()
                     if existing.data:
                         logger.info(f"  ⏭️ Skipping (Already in HQ): {link[:60]}")
