@@ -144,8 +144,8 @@ def update_agent_status(status):
             # NUCLEAR RECALIBRATION: If today_s is stuck on a historical total (impossible for one day)
             if today_s > 1000:
                 logger.info("🧨 NUCLEAR RECALIBRATION: Resetting stuck historical count.")
+                # Recalibrate scans only, leads are calculated on-the-fly by dashboard
                 today_s = 1
-                supabase_call("PATCH", "system_stats", data={"today_leads": 0}, params={"id": "eq.1"})
             
             # AGGRESSIVE RESET: If the date has changed since the last pulse, start a new day
             last_run_at = stats.get("last_run_at")
@@ -166,8 +166,8 @@ def update_agent_status(status):
                     if last_dt.day != now.day or last_dt.month != now.month:
                         logger.info("🌅 NEW DAY DETECTED: Resetting daily counters.")
                         today_s = 1 # First scan of the new day
-                        # Reset Today's Leads and Daily API limits (Serper is total, so we keep it)
-                        supabase_call("PATCH", "system_stats", data={"today_leads": 0, "gemini_calls": 0, "groq_calls": 0}, params={"id": "eq.1"})
+                        # Reset Daily API limits (Serper is total, so we keep it)
+                        supabase_call("PATCH", "system_stats", data={"gemini_calls": 0, "groq_calls": 0}, params={"id": "eq.1"})
                 except Exception as e:
                     logger.error(f"Reset Error: {e}")
                 
@@ -482,7 +482,6 @@ def run_tracker():
                     vault.reset_daily()
                     supabase.table("system_stats").update({
                         "today_scans": 0,
-                        "today_leads": 0,
                         "gemini_calls": 0,
                         "groq_calls": 0,
                         "last_run_at": now.isoformat()
@@ -647,11 +646,8 @@ def run_tracker():
                         supabase.table("uae_leads").upsert(db_payload, on_conflict="company").execute()
                         logger.info(f"💾 DB SAVE: {intel['company']} (Success)")
 
-                        # Direct increment of today_leads in system_stats
-                        res = supabase.table("system_stats").select("today_leads").eq("id", 1).execute()
-                        if res.data:
-                            new_leads = (res.data[0].get("today_leads") or 0) + 1
-                            supabase.table("system_stats").update({"today_leads": new_leads}).eq("id", 1).execute()
+                        # Increment today's count handled by dashboard via timestamp
+                        pass
                     except Exception as e:
                         logger.error(f"❌ DB Error during lead save for {intel.get('company')}: {e}")
                 
