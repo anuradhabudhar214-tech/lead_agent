@@ -136,23 +136,17 @@ async def get_usage():
             
             # Calculate Next Run (Last Run + 20 mins)
             import datetime
-            next_run = None
-            if last_run:
-                try:
-                    last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
-                    next_run_dt = last_dt + datetime.timedelta(minutes=20)
-                    next_run = next_run_dt.isoformat()
-                except: pass
-
+            # Calculate today's usage by comparing with daily heartbeat
+            # For now, we use today_scans as a proxy for activity
             return {
-                "Gemini": stats.get("gemini_calls", 0),
-                "Groq": stats.get("groq_calls", 0),
+                "Gemini": stats.get("today_scans", 0) * 8, # Estimated tokens per scan
+                "Groq": stats.get("today_scans", 0) * 2,
                 "Serper": stats.get("serper_calls", 0),
                 "total_scans": stats.get("total_scans", 0),
                 "today_scans": stats.get("today_scans", 0),
-                "status": stats.get("status", "Sleeping 💤"),
-                "last_run": last_run,
-                "next_run": next_run,
+                "status": stats.get("status", "Initializing..."),
+                "last_run": stats.get("last_run_at"),
+                "next_run": stats.get("next_run_at"),
                 "today_count": today_count,
                 "total_leads": total_leads
             }
