@@ -654,6 +654,23 @@ def run_tracker():
                 save_to_csv(intel)
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
+    # --- PIPELINE TEST: Force-Save a heartbeat lead ---
+    if supabase:
+        try:
+            now = datetime.now(timezone.utc)
+            heartbeat = {
+                "company": f"Engine Heartbeat - {now.strftime('%H:%M')} UTC",
+                "industry": "System Diagnostic",
+                "status": "Active",
+                "discovered_at": now.isoformat(),
+                "strategic_signal": "SAVE PIPELINE VERIFIED ✅"
+            }
+            supabase.table("uae_leads").upsert(heartbeat, on_conflict="company").execute()
+            logger.info("📡 DB HEARTBEAT SENT")
+        except: pass
+
+    logger.info("🏁 Auditor Hunt Cycle Complete.")
+
 if __name__ == "__main__":
     try:
         run_tracker()
