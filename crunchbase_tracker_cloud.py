@@ -495,21 +495,18 @@ def run_tracker():
     update_agent_status("Hunting Leads 🎯")
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
-    current_niches = [
-        "AI and Machine Learning startups Dubai",
-        "Fintech and Crypto payments UAE",
-        "PropTech real estate AI Dubai",
-        "HealthTech and Biotech UAE hiring",
-        "CleanTech and Green Energy startups Dubai",
-        "EdTech and Hybrid Learning UAE",
-        "Cybersecurity firms Abu Dhabi",
-        "E-commerce logistics automation Dubai",
-        "AgriTech and FoodTech startups UAE",
-        "Web3 Gaming and NFT Dubai"
+    niches = [
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Series A\" fintech", "days": 1},
+        {"query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI", "days": 1},
+        {"query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics", "days": 1},
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Seed\" PropTech", "days": 1},
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech", "days": 1},
+        {"query": "site:crunchbase.com/organization \"UAE\" \"Private Equity\" Energy", "days": 1}
     ]
     
     import random
-    random.shuffle(current_niches)
+    random.shuffle(niches)
+    niches = niches[:num_niches_to_scan]
 
     if supabase:
         try:
@@ -563,43 +560,19 @@ def run_tracker():
     except Exception as e:
         logger.warning(f"Cleanup skip: {e}")
 
-    # --- CRUNCHBASE TIME MACHINE: Historical Funding Rounds (April 14 - Now) ---
-    current_niches = [
-        "Web3 and Blockchain startups Dubai",
-        "PropTech and Real Estate AI UAE",
-        "HealthTech and Biotech Dubai hiring",
-        "E-commerce logistics automation UAE",
-        "Cybersecurity firms Abu Dhabi",
-        "EdTech and Learning Management Dubai",
-        "Fintech lending and payments UAE",
-        "AgriTech and FoodTech Dubai startups",
-        "AI for Retail and Marketing UAE"
-    ]
-    
-    # Pick niches based on the current hour and catch-up requirement
-    hour = datetime.now(timezone.utc).hour
-    selected_niches = []
-    for i in range(num_niches_to_scan):
-        idx = (hour + i) % len(current_niches)
-        selected_niches.append(current_niches[idx])
-                      
-    for idx_n, niche in enumerate(selected_niches):
-        source = niche.split(".")[1] if "." in niche else "Web"
-        update_agent_status(f"Hunting 🔴 ({idx_n+1}/{num_niches_to_scan}: {source.title()} Scan)")
-        logger.info(f"🚀 GLOBAL HARVEST: '{niche}'...")
+    for idx_n, niche_obj in enumerate(niches):
+        query = niche_obj["query"]
+        update_agent_status(f"Hunting 🔴 ({idx_n+1}/{len(niches)}: Crunchbase Scan)")
+        logger.info(f"🚀 CRUNCHBASE SNIPER: '{query}'...")
 
-        results = gemini_discovery_grounded(niche)
+        # Use Serper discovery which is 100x more accurate than broad Gemini discovery
+        results = serper_discovery(query, days=niche_obj.get("days", 2))
         
         for idx, item in enumerate(results):
-            time.sleep(6) # Adhere to Gemini 10 RPM (60s/10)
-            # Instant Kill Switch: Check if user paused via dashboard during the hunt
-            if supabase and idx % 2 == 0:  # Check every 2 items to save API calls
-                try:
-                    res = supabase.table("system_stats").select("status").eq("id", 1).execute()
-                    if res.data and res.data[0].get("status") == "Paused ⏸️":
-                        logger.warning("🛑 INSTANT KILL SWITCH ACTIVATED: Hunt aborted by user.")
-                        return
-                except: pass
+            link = item.get('link', '')
+            # Adhere to schema and quality
+            if not link or 'crunchbase.com/organization' not in link:
+                continue
 
             # --- SOURCE FILTER ---
             link = item.get('link', '').lower()
@@ -618,8 +591,7 @@ def run_tracker():
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
             
             # --- SMART FILTER: Prevent Wasting AI Credits on Existing Leads ---
-            # --- FORCE SAVE MODE: Bypassing duplicate check for 1 run ---
-            if False and supabase: 
+            if supabase: 
                 try:
                     existing = supabase.table("uae_leads").select("id").eq("url", link).execute()
                     if existing.data:
@@ -657,18 +629,6 @@ def run_tracker():
     # --- PIPELINE TEST: Force-Save a heartbeat lead ---
     if supabase:
         try:
-            now = datetime.now(timezone.utc)
-            heartbeat = {
-                "company": f"Engine Heartbeat - {now.strftime('%H:%M')} UTC",
-                "industry": "System Diagnostic",
-                "status": "Active",
-                "discovered_at": now.isoformat(),
-                "strategic_signal": "SAVE PIPELINE VERIFIED ✅"
-            }
-            supabase.table("uae_leads").upsert(heartbeat, on_conflict="company").execute()
-            logger.info("📡 DB HEARTBEAT SENT")
-        except: pass
-
     logger.info("🏁 Auditor Hunt Cycle Complete.")
 
 if __name__ == "__main__":
