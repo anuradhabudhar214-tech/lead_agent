@@ -626,9 +626,6 @@ def run_tracker():
                 save_to_csv(intel)
                 logger.info(f"✅ HARVESTED: {intel['company']} (Cloud + Local CSV)")
 
-    # --- PIPELINE TEST: Force-Save a heartbeat lead ---
-    if supabase:
-        try:
     logger.info("🏁 Auditor Hunt Cycle Complete.")
 
 if __name__ == "__main__":
