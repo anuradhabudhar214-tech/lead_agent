@@ -71,7 +71,7 @@ class CrunchbaseSweeper:
     def search_crunchbase_grounded(self, company):
         if not self.gemini_key: return ""
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={self.gemini_key}"
-        prompt = f"Search for Crunchbase funding data for {company}. Return a summary of the round and amount."
+        prompt = f"Search specifically for Crunchbase funding rounds, funding amounts, or investment details for the company: '{company}'. Return a summary of their funding round type (e.g. Seed, Series A, Series B, Venture, etc.) and amount. If no public funding data is found, state that explicitly."
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
             "tools": [{"google_search_retrieval": {}}]

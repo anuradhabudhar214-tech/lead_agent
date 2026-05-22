@@ -218,6 +218,7 @@ def save_to_csv(lead):
 def clean_company_name(raw_name):
     """Deep scrubber to isolate company names and kill news headlines."""
     if not raw_name: return "Unknown Entity"
+    raw_name = raw_name.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
     
     # 1. Reject Garbage Entities (Chambers, Governments, Big Tech)
     rejection_keywords = [
@@ -302,7 +303,7 @@ def compile_auditor_intel_extreme(discovery_package):
     
     # Step 1: Extract and CLEAN company name from discovery package
     company_name = clean_company_name(discovery_package.split('|')[0].replace('Title:', '').strip()[:100])
-    if company_name == "FILTERED_HEADLINE":
+    if company_name in ["FILTERED_HEADLINE", "FILTERED_GARBAGE", "Unknown Entity"]:
         return "SKIP"
     
     prompt = f"""    ROLE: Hyper-Scale UAE Lead Generation Agent in April 2026.
@@ -314,8 +315,10 @@ def compile_auditor_intel_extreme(discovery_package):
     2. REJECT: Government, Large Corporates (>1000 employees), Non-Profits.
     3. UAE ONLY: Must be headquartered or have significant operations in UAE.
     4. DATE: Last 30-90 days is acceptable.
+    5. STRICT ACCURACY: Do not make up, guess, or hallucinate funding rounds or amounts. If the search result does not explicitly mention a funding round (e.g. Seed, Series A) or an amount, set funding_round to "Unknown Round" and funding_amount to "Undisclosed".
+    6. REAL ENTITY check: Verify if the company name split out is a real registered or active company name, not a news headline or arbitrary phrase. If it is not a real UAE tech company, set confidence_score to 0.
     
-    RETURN JSON ONLY: {{"company": "Name", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "funding_date": "Month Year (e.g. April 2026)", "ceo_founder": "Name", "integration_opportunity": "IT Need"}}
+    RETURN JSON ONLY: {{"company": "{company_name}", "industry": "Industry", "confidence_score": 0-100, "strategic_signal": "Description", "funding_amount": "Amount", "funding_round": "Round", "funding_date": "Month Year (e.g. April 2026)", "ceo_founder": "Name", "integration_opportunity": "IT Need"}}
     If not a UAE startup? Return: {{"confidence_score": 0}}"""
     
     payload = {
@@ -463,6 +466,37 @@ def gemini_discovery_grounded(query):
         except Exception as e:
             logger.warning(f"Serper Sniper failed: {e}")
 
+    return []
+
+
+def serper_discovery(query, days=2):
+    """High-precision Serper search specifically for Crunchbase profiles with a daily fallback."""
+    serper_key = vault.get_serper_key()
+    if not serper_key:
+        logger.warning("⚠️ No Serper key available in Vault. Falling back to DuckDuckGo/Gemini Grounding...")
+        return gemini_discovery_grounded(query)
+    try:
+        track_cloud_usage("Serper")
+        url = "https://google.serper.dev/search"
+        headers = {
+            "X-API-KEY": serper_key,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "q": query,
+            "num": 10
+        }
+        if days:
+            payload["tbs"] = f"qdr:d{days}"
+            
+        r = requests.post(url, json=payload, headers=headers, timeout=10)
+        res = r.json()
+        if "organic" in res:
+            logger.info(f"✅ Serper Sniper found {len(res['organic'])} organic results.")
+            return res["organic"]
+    except Exception as e:
+        logger.error(f"❌ serper_discovery error: {e}")
+        return gemini_discovery_grounded(query)
     return []
 
 

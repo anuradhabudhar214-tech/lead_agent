@@ -37,7 +37,7 @@ jobs:
         run: |
           python patch_db.py
           python force_reset_stats.py
-          python -c "import os, requests; url = f'{os.environ.get(\"SUPABASE_URL\")}/rest/v1/uae_leads'; h = {'apikey': os.environ.get(\"SUPABASE_KEY\"), 'Authorization': f'Bearer {os.environ.get(\"SUPABASE_KEY\")}'}; requests.delete(url, headers=h, params={'company': 'ilike.*Heartbeat*'})"
+          python cleanup_garbage.py
 
       - name: 🚀 Execute Intelligence Audit
         env:

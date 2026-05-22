@@ -20,7 +20,8 @@ GARBAGE_PATTERNS = [
     "%Park%", "%Centre%", "%Center%", "%Council%", "%Investopia%",
     "%University%", "%College%", "%School%", "%Summit%", "%Conference%",
     "%OpenAI%", "%Google%", "%Meta%", "%Microsoft%", "%Amazon%", "%Apple%",
-    "% - Funding%", "%| Profile%", "%Apollo.io%", "%Crunchbase%", "%LinkedIn%"
+    "% - Funding%", "%| Profile%", "%Apollo.io%", "%Crunchbase%", "%LinkedIn%",
+    "%FILTERED_GARBAGE%", "%FILTERED_HEADLINE%", "%Unknown Entity%", "%Heartbeat%"
 ]
 
 def cleanup():
