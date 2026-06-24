@@ -90,3 +90,4 @@ jobs:
           git commit -m "📊 Intelligence Sync: lead backup + diagnostics [skip ci]" || echo "No changes to commit"
           git push origin main || echo "Push skipped"
   # verify-trigger-2
+  # verify-trigger-3

@@ -706,6 +706,7 @@ if __name__ == "__main__":
             with open("debug_status.json", "w") as f:
                 json.dump({
                     "run_at": datetime.now(timezone.utc).isoformat(),
+                    "supabase_url_in_use": SUPABASE_URL,
                     "diagnostics": DIAGNOSTICS,
                     "diagnostics_count": len(DIAGNOSTICS)
                 }, f, indent=2)
