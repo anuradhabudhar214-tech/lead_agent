@@ -5,6 +5,10 @@ on:
     # Robust 15-minute autonomous cycle
     - cron: '*/15 * * * *'
   workflow_dispatch: # Allows manual triggering from GitHub UI
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/auditor_hunt.yml'
 
 concurrency:
   group: hunt-cycle
