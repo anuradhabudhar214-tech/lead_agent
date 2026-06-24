@@ -52,9 +52,9 @@ async def get_leads():
             .order("discovered_at", desc=True)\
             .limit(1000)\
             .execute()
-        return JSONResponse(content=res.data, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"})
+        return res.data
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"})
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 @app.post("/api/verify")
 async def verify_lead(request: Request):
@@ -112,9 +112,8 @@ async def control_agent(request: Request):
 @app.get("/api/usage")
 async def get_usage():
     """Returns real usage statistics, live status, and daily lead counts."""
-    NOCACHE = {"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"}
     if not supabase:
-        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}, headers=NOCACHE)
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}
     
     try:
         # Get general stats
@@ -124,11 +123,10 @@ async def get_usage():
         total_res = supabase.table("uae_leads").select("id", count="exact").execute()
         total_leads = total_res.count if total_res else 0
         
-        # Get today's lead count (Calendar Day Reset - UTC)
+        # Get today's lead count (Rolling Last 24 Hours)
         import datetime
-        now = datetime.datetime.now(datetime.timezone.utc)
-        today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
-        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gte", today_start).execute()
+        last_24h = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=24)).isoformat()
+        today_res = supabase.table("uae_leads").select("id", count="exact").filter("discovered_at", "gt", last_24h).execute()
         today_count = today_res.count if today_res else 0
 
         if usage_res.data:
@@ -137,23 +135,29 @@ async def get_usage():
             
             # Calculate Next Run (Last Run + 20 mins)
             import datetime
-            # Calculate today's usage by comparing with daily heartbeat
-            # For now, we use today_scans as a proxy for activity
-            return JSONResponse(content={
-                "Gemini": stats.get("today_scans", 0) * 8, # Estimated tokens per scan
-                "Groq": stats.get("today_scans", 0) * 2,
+            next_run = None
+            if last_run:
+                try:
+                    last_dt = datetime.datetime.fromisoformat(last_run.replace("Z", "+00:00"))
+                    next_run_dt = last_dt + datetime.timedelta(minutes=20)
+                    next_run = next_run_dt.isoformat()
+                except: pass
+
+            return {
                 "Serper": stats.get("serper_calls", 0),
+                "Gemini": stats.get("gemini_calls", 0),
+                "Groq": stats.get("groq_calls", 0),
                 "total_scans": stats.get("total_scans", 0),
                 "today_scans": stats.get("today_scans", 0),
-                "status": stats.get("status", "Initializing..."),
-                "last_run": stats.get("last_run_at"),
-                "next_run": stats.get("next_run_at"),
+                "status": stats.get("status", "Sleeping 💤"),
+                "last_run": last_run,
+                "next_run": next_run,
                 "today_count": today_count,
                 "total_leads": total_leads
-            }, headers=NOCACHE)
-        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}, headers=NOCACHE)
+            }
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
     except Exception as e:
-        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0, "debug_error": str(e)}, headers=NOCACHE)
+        return {"Serper": 0, "Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
