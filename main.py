@@ -52,9 +52,9 @@ async def get_leads():
             .order("discovered_at", desc=True)\
             .limit(1000)\
             .execute()
-        return res.data
+        return JSONResponse(content=res.data, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"})
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        return JSONResponse(content={"error": str(e)}, status_code=500, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"})
 
 @app.post("/api/verify")
 async def verify_lead(request: Request):
@@ -112,8 +112,9 @@ async def control_agent(request: Request):
 @app.get("/api/usage")
 async def get_usage():
     """Returns real usage statistics, live status, and daily lead counts."""
+    NOCACHE = {"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0", "Pragma": "no-cache"}
     if not supabase:
-        return {"Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}
+        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Offline", "today_count": 0, "total_leads": 0}, headers=NOCACHE)
     
     try:
         # Get general stats
@@ -138,7 +139,7 @@ async def get_usage():
             import datetime
             # Calculate today's usage by comparing with daily heartbeat
             # For now, we use today_scans as a proxy for activity
-            return {
+            return JSONResponse(content={
                 "Gemini": stats.get("today_scans", 0) * 8, # Estimated tokens per scan
                 "Groq": stats.get("today_scans", 0) * 2,
                 "Serper": stats.get("serper_calls", 0),
@@ -149,10 +150,10 @@ async def get_usage():
                 "next_run": stats.get("next_run_at"),
                 "today_count": today_count,
                 "total_leads": total_leads
-            }
-        return {"Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}
+            }, headers=NOCACHE)
+        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Initializing", "today_count": today_count, "total_leads": total_leads}, headers=NOCACHE)
     except Exception as e:
-        return {"Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0}
+        return JSONResponse(content={"Gemini": 0, "Groq": 0, "status": "Error", "today_count": 0, "total_leads": 0, "debug_error": str(e)}, headers=NOCACHE)
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
