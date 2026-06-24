@@ -35,9 +35,9 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            padding: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
         }
 
         .stat-card {
@@ -157,19 +157,19 @@
             <span class="usage-desc">Global Database</span>
         </div>
         <div class="stat-card">
+            <span id="serper-stat" class="stat-value">0</span>
+            <span class="stat-label">Serper Vision</span>
+            <span class="usage-desc">Lifetime credits used / total</span>
+        </div>
+        <div class="stat-card">
             <span id="gemini-stat" class="stat-value">0</span>
-            <span class="stat-label">Gemini Daily</span>
-            <span class="usage-desc">Credits refresh daily</span>
+            <span class="stat-label">Gemini Brain</span>
+            <span class="usage-desc">Real calls used — resets at midnight UTC</span>
         </div>
         <div class="stat-card">
             <span id="groq-stat" class="stat-value">0</span>
-            <span class="stat-label">Groq Daily</span>
-            <span class="usage-desc">Velocity refresh daily</span>
-        </div>
-        <div class="stat-card">
-            <span id="serper-stat" class="stat-value">0</span>
-            <span class="stat-label">Serper Scout</span>
-            <span class="usage-desc">Lifetime Sniper Credits</span>
+            <span class="stat-label">Groq Velocity</span>
+            <span class="usage-desc">Real calls used — resets at midnight UTC</span>
         </div>
         <div class="stat-card">
             <span id="scans-stat" class="stat-value">0</span>
@@ -247,17 +247,22 @@
                 <td>
                     <div style="font-weight: 600;">${lead.contact_name || 'Founder/CEO'}</div>
                     <div style="font-size: 0.8rem; color: var(--primary);">
-                        <a href="https://www.google.com/search?q=${encodeURIComponent(lead.contact_name + ' ' + lead.company + ' LinkedIn')}" target="_blank" style="color: inherit; text-decoration: none;">
-                            <i class="fab fa-linkedin"></i> Find on LinkedIn
-                        </a>
+                        ${(lead.contact_linkedin && lead.contact_linkedin !== 'Not Found') ?
+                            `<a href="${lead.contact_linkedin}" target="_blank" style="color: inherit; text-decoration: none;">
+                                <i class="fab fa-linkedin"></i> View Verified Profile
+                            </a>` :
+                            `<a href="https://www.google.com/search?q=${encodeURIComponent((lead.contact_name || lead.company) + ' ' + lead.company + ' LinkedIn')}" target="_blank" style="color: var(--text-dim); text-decoration: none;">
+                                <i class="fab fa-linkedin"></i> Search LinkedIn
+                            </a>`
+                        }
                     </div>
                 </td>
                 <td>
                     <div class="action-group">
-                        <button onclick="copyPitch('${(lead.company || '').replace(/'/g, "\\'")}', '${lead.funding_amount}', '${lead.funding_round}', '${(lead.strategic_signal || "").replace(/'/g, "\\'")}')" class="btn btn-primary btn-sm">
+                        <button onclick="copyPitch('${lead.company.replace(/'/g, "\\'")}', '${lead.funding_amount}', '${lead.funding_round}', '${(lead.strategic_signal || "").replace(/'/g, "\\'")}')" class="btn btn-primary btn-sm">
                             <i class="fas fa-copy"></i> PITCH
                         </button>
-                        <button onclick="manualVerify('${(lead.company || '').replace(/'/g, "\\'")}', this)" class="btn btn-ghost btn-sm">
+                        <button onclick="manualVerify('${lead.company.replace(/'/g, "\\'")}', this)" class="btn btn-ghost btn-sm">
                             <i class="fas fa-check"></i>
                         </button>
                         <a href="${lead.url}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-external-link-alt"></i></a>
@@ -286,9 +291,10 @@
         }
 
         async function updateDashboard() {
+            const cb = Date.now(); // cache-buster: forces a fresh network call every cycle
             const results = await Promise.allSettled([
-                fetch('/api/usage').then(r => r.json()),
-                fetch('/api/updates').then(r => r.json())
+                fetch('/api/usage?cb=' + cb, { cache: 'no-store' }).then(r => r.json()),
+                fetch('/api/updates?cb=' + cb, { cache: 'no-store' }).then(r => r.json())
             ]);
 
             if (results[0].status === 'rejected') {
@@ -312,9 +318,9 @@
 
                 document.getElementById('found-today').innerText = usageRes.today_count || 0;
                 document.getElementById('total-leads').innerText = usageRes.total_leads || 0;
-                document.getElementById('gemini-stat').innerText = usageRes.Gemini || 0;
-                document.getElementById('groq-stat').innerText = usageRes.Groq || 0;
-                document.getElementById('serper-stat').innerText = usageRes.Serper || 0;
+                document.getElementById('serper-stat').innerText = `${usageRes.Serper || 0} / 10,000`;
+                document.getElementById('gemini-stat').innerText = `${usageRes.Gemini || 0} calls today`;
+                document.getElementById('groq-stat').innerText = `${usageRes.Groq || 0} calls today`;
                 
                 // Smart Counter: Use DB history if patch is applied, otherwise show Live Session Activity
                 const dailyCount = (usageRes.today_scans !== undefined && usageRes.today_scans !== null) ? usageRes.today_scans : liveHeartbeats;
