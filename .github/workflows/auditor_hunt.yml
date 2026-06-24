@@ -5,6 +5,10 @@ on:
     # Robust 15-minute autonomous cycle
     - cron: '*/15 * * * *'
   workflow_dispatch: # Allows manual triggering from GitHub UI
+  push:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/auditor_hunt.yml'
 
 concurrency:
   group: hunt-cycle
@@ -82,10 +86,6 @@ jobs:
         run: |
           git config --global user.name "Desert Intel Bot"
           git config --global user.email "bot@desertintel.ae"
-          if [ -f enterprise_leads.csv ]; then
-            git add -f enterprise_leads.csv
-            git commit -m "📊 Intelligence Sync: Updated lead harvest backup" || echo "No changes to commit"
-            git push origin main || echo "Push skipped"
-          else
-            echo "No CSV file generated this run, skipping commit."
-          fi
+          git add -f enterprise_leads.csv debug_status.json 2>/dev/null || true
+          git commit -m "📊 Intelligence Sync: lead backup + diagnostics [skip ci]" || echo "No changes to commit"
+          git push origin main || echo "Push skipped"

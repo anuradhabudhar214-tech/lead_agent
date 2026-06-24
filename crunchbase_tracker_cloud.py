@@ -13,6 +13,13 @@ from groq import Groq
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+DIAGNOSTICS = []
+
+def _diag(event_type, **kwargs):
+    kwargs["type"] = event_type
+    kwargs["ts"] = datetime.now(timezone.utc).isoformat()
+    DIAGNOSTICS.append(kwargs)
+
 from supabase import create_client, Client
 
 # Core Credentials (from Env or Config)
@@ -92,6 +99,7 @@ def supabase_call(method, table, data=None, params=None):
             r = requests.post(url, headers=headers, json=data, params=params)
             if not (200 <= r.status_code < 300):
                 logger.error(f"❌ WRITE FAILED (POST {table}): HTTP {r.status_code} - {r.text[:300]}")
+                _diag("supabase_write_fail", method="POST", table=table, status=r.status_code, body=r.text[:300])
             else:
                 logger.info(f"✅ WRITE OK (POST {table}): HTTP {r.status_code}")
             return r
@@ -99,11 +107,13 @@ def supabase_call(method, table, data=None, params=None):
             r = requests.patch(url, headers=headers, json=data, params=params)
             if not (200 <= r.status_code < 300):
                 logger.error(f"❌ WRITE FAILED (PATCH {table}): HTTP {r.status_code} - {r.text[:300]}")
+                _diag("supabase_write_fail", method="PATCH", table=table, status=r.status_code, body=r.text[:300])
             else:
                 logger.info(f"✅ WRITE OK (PATCH {table}): HTTP {r.status_code}")
             return r
     except Exception as e:
         logger.error(f"❌ Supabase Error: {e}")
+        _diag("supabase_exception", method=method, table=table, error=str(e))
     return None
 
 def track_cloud_usage(api_name):
@@ -504,8 +514,12 @@ def serper_discovery(query, days=2):
         if "organic" in res:
             logger.info(f"✅ Serper Sniper found {len(res['organic'])} organic results.")
             return res["organic"]
+        else:
+            logger.error(f"❌ SERPER NO RESULTS: HTTP {r.status_code} - {str(res)[:300]}")
+            _diag("serper_no_organic", query=query, status=r.status_code, body=str(res)[:300])
     except Exception as e:
         logger.error(f"❌ serper_discovery error: {e}")
+        _diag("serper_exception", query=query, error=str(e))
         return gemini_discovery_grounded(query)
     return []
 
@@ -682,6 +696,17 @@ if __name__ == "__main__":
         run_tracker()
     except Exception as e:
         logger.critical(f"💥 ENGINE CRASH: {e}")
+        _diag("engine_crash", error=str(e))
     finally:
         update_agent_status("Sleeping 💤 | Watching 24/7 Trigger")
         logger.info("📡 STATUS: Agent entering sleep mode.")
+        try:
+            with open("debug_status.json", "w") as f:
+                json.dump({
+                    "run_at": datetime.now(timezone.utc).isoformat(),
+                    "diagnostics": DIAGNOSTICS,
+                    "diagnostics_count": len(DIAGNOSTICS)
+                }, f, indent=2)
+            logger.info(f"📝 Wrote debug_status.json with {len(DIAGNOSTICS)} diagnostic event(s).")
+        except Exception as e:
+            logger.error(f"❌ Failed to write debug_status.json: {e}")
