@@ -90,6 +90,7 @@
         .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
         .status-online { background: #3fb950; box-shadow: 0 0 10px #3fb950; }
         .status-paused { background: #f85149; }
+        .status-offline { background: #8b949e; }
 
         .search-row { margin-bottom: 1rem; display: flex; gap: 1rem; }
         .search-input { 
@@ -253,10 +254,10 @@
                 </td>
                 <td>
                     <div class="action-group">
-                        <button onclick="copyPitch('${lead.company.replace(/'/g, "\\'")}', '${lead.funding_amount}', '${lead.funding_round}', '${(lead.strategic_signal || "").replace(/'/g, "\\'")}')" class="btn btn-primary btn-sm">
+                        <button onclick="copyPitch('${(lead.company || '').replace(/'/g, "\\'")}', '${lead.funding_amount}', '${lead.funding_round}', '${(lead.strategic_signal || "").replace(/'/g, "\\'")}')" class="btn btn-primary btn-sm">
                             <i class="fas fa-copy"></i> PITCH
                         </button>
-                        <button onclick="manualVerify('${lead.company.replace(/'/g, "\\'")}', this)" class="btn btn-ghost btn-sm">
+                        <button onclick="manualVerify('${(lead.company || '').replace(/'/g, "\\'")}', this)" class="btn btn-ghost btn-sm">
                             <i class="fas fa-check"></i>
                         </button>
                         <a href="${lead.url}" target="_blank" class="btn btn-ghost btn-sm"><i class="fas fa-external-link-alt"></i></a>
@@ -285,12 +286,22 @@
         }
 
         async function updateDashboard() {
-            try {
-                const [usageRes, leadsRes] = await Promise.all([
-                    fetch('/api/usage').then(r => r.json()),
-                    fetch('/api/updates').then(r => r.json())
-                ]);
+            const results = await Promise.allSettled([
+                fetch('/api/usage').then(r => r.json()),
+                fetch('/api/updates').then(r => r.json())
+            ]);
 
+            if (results[0].status === 'rejected') {
+                console.error("Dashboard error (usage):", results[0].reason);
+            }
+            if (results[1].status === 'rejected') {
+                console.error("Dashboard error (leads):", results[1].reason);
+            }
+
+            // --- STATS BLOCK: runs independently of the leads table ---
+            if (results[0].status === 'fulfilled') {
+              try {
+                const usageRes = results[0].value;
                 // Update session heartbeat if time changed
                 if (usageRes.last_run !== lastScanTime && lastScanTime !== "") {
                     liveHeartbeats++;
@@ -334,29 +345,43 @@
                 
                 const toggleBtn = document.getElementById('toggle-btn');
                 toggleBtn.innerHTML = usageRes.status.includes('Paused') ? '<i class="fas fa-play"></i> RESUME ENGINE' : '<i class="fas fa-pause"></i> PAUSE ENGINE';
+              } catch (e) {
+                console.error("Dashboard error (rendering stats):", e);
+              }
+            }
 
+            // --- LEADS TABLE BLOCK: runs independently of the stats cards ---
+            if (results[1].status === 'fulfilled') {
+              try {
+                const leadsRes = results[1].value;
                 const body = document.getElementById('leads-body');
                 body.innerHTML = '';
-                
+
                 let lastDate = "";
-                
-                if (leadsRes.length === 0) {
+
+                if (!Array.isArray(leadsRes) || leadsRes.length === 0) {
                     body.innerHTML = '<tr><td colspan="6"><div style="text-align:center; padding:40px; color:var(--text-dim);"><i class="fas fa-search" style="font-size:2rem; margin-bottom:10px; display:block;"></i> Market Scanned Successfully.<br>No brand-new funding rounds appeared in the last 20-minute sweep. Check back soon!</div></td></tr>';
                 } else {
                     leadsRes.forEach((lead, index) => {
-                        // Date grouping logic
-                        const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                        if (leadDate !== lastDate) {
-                            const header = document.createElement('tr');
-                            header.innerHTML = `<td colspan="6"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
-                            body.appendChild(header);
-                            lastDate = leadDate;
+                        try {
+                            if (!lead || !lead.company) return; // skip malformed rows instead of crashing the whole render
+                            // Date grouping logic
+                            const leadDate = new Date(lead.discovered_at).toLocaleDateString('en-AE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                            if (leadDate !== lastDate) {
+                                const header = document.createElement('tr');
+                                header.innerHTML = `<td colspan="6"><div class="date-header"><i class="far fa-calendar-alt"></i> ${leadDate}</div></td>`;
+                                body.appendChild(header);
+                                lastDate = leadDate;
+                            }
+                            body.appendChild(createRow(lead, index));
+                        } catch (rowErr) {
+                            console.error("Dashboard error (row):", rowErr, lead);
                         }
-                        body.appendChild(createRow(lead, index));
                     });
                 }
-            } catch (e) {
-                console.error("Dashboard error:", e);
+              } catch (e) {
+                console.error("Dashboard error (rendering leads):", e);
+              }
             }
         }
 
