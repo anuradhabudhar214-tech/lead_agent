@@ -20,6 +20,7 @@ def _diag(event_type, **kwargs):
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 GEMINI_API_KEYS_STR = os.environ.get("GEMINI_API_KEYS", "") or os.environ.get("GEMINI_API_KEY", "")
+N8N_WEBHOOK_URL = os.environ.get("N8N_WEBHOOK_URL", "https://budhar1.app.n8n.cloud/webhook/9dfb7041-3936-4a0b-a30c-3d3a5a7df4f4")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     logger.error("Supabase credentials missing.")
@@ -90,8 +91,31 @@ def ask_gemini_grounded(prompt, company_name=""):
             continue
     return None
 
-def enrich_lead(lead_id, company_name):
+def notify_n8n(lead, contact_data):
+    """Pushes a freshly-found decision maker straight to the n8n webhook for email-find + Slack notify."""
+    if not N8N_WEBHOOK_URL:
+        return
+    try:
+        payload = {
+            "id": lead.get("id"),
+            "company": lead.get("company"),
+            "url": lead.get("url"),
+            "funding_amount": lead.get("funding_amount"),
+            "funding_round": lead.get("funding_round"),
+            "strategic_signal": lead.get("strategic_signal"),
+            "contact_name": contact_data.get("contact_name"),
+            "contact_role": contact_data.get("contact_role", "Founder/CEO"),
+            "contact_linkedin": contact_data.get("contact_linkedin")
+        }
+        requests.post(N8N_WEBHOOK_URL, json=payload, timeout=10)
+        logger.info(f"📡 Pushed {lead.get('company')} to n8n webhook")
+    except Exception as e:
+        logger.warning(f"n8n webhook push failed: {e}")
+        _diag("n8n_webhook_fail", company=lead.get("company"), error=str(e))
+
+def enrich_lead(lead, company_name):
     """Finds decision maker LinkedIn and potential email patterns."""
+    lead_id = lead["id"]
     logger.info(f"🔎 Enriching: {company_name}")
 
     prompt = f"""Find the Full Name and LinkedIn profile of the CEO, Founder, or Managing Director of "{company_name}" in the UAE.
@@ -118,6 +142,12 @@ If you cannot find a real person, return:
             "registry_status": "ENRICHED (Gemini Grounding)"
         }).eq("id", lead_id).execute()
         logger.info(f"✅ Enriched: {company_name} -> {contact_data.get('contact_name')}")
+
+        # Push to n8n the moment we have a REAL LinkedIn profile (not a "Not Found" fallback)
+        linkedin = contact_data.get("contact_linkedin")
+        if linkedin and linkedin != "Not Found":
+            notify_n8n(lead, contact_data)
+
         return True
     except Exception as e:
         logger.error(f"Failed to update lead {lead_id}: {e}")
@@ -130,7 +160,7 @@ def run_enrichment():
     succeeded = 0
     try:
         # Get leads with no contact_name
-        res = supabase.table("uae_leads").select("id, company").is_("contact_name", "null").limit(6).execute()
+        res = supabase.table("uae_leads").select("id, company, url, funding_amount, funding_round, strategic_signal").is_("contact_name", "null").limit(6).execute()
         if not res.data:
             logger.info("No leads require enrichment at this time.")
             _diag("no_leads_pending")
@@ -138,7 +168,7 @@ def run_enrichment():
 
         for lead in res.data:
             attempted += 1
-            if enrich_lead(lead['id'], lead['company']):
+            if enrich_lead(lead, lead['company']):
                 succeeded += 1
             time.sleep(8) # Stay under free-tier requests-per-minute limit
     except Exception as e:
