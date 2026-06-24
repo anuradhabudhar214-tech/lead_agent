@@ -530,12 +530,16 @@ def run_tracker():
     
     # 2. THE ULTIMATE HUNT: Combining Live Pulse + Deep History
     niches = [
-        {"query": "site:crunchbase.com/organization \"Dubai\" \"Series A\" fintech", "days": 1},
-        {"query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI", "days": 1},
-        {"query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics", "days": 1},
-        {"query": "site:crunchbase.com/organization \"Dubai\" \"Seed\" PropTech", "days": 1},
-        {"query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech", "days": 1},
-        {"query": "site:crunchbase.com/organization \"UAE\" \"Private Equity\" Energy", "days": 1}
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Series A\" fintech", "days": 30},
+        {"query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI", "days": 30},
+        {"query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics", "days": 30},
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Seed\" PropTech", "days": 30},
+        {"query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech", "days": 30},
+        {"query": "site:crunchbase.com/organization \"UAE\" \"Private Equity\" Energy", "days": 30},
+        {"query": "UAE startup raises Series A funding fintech 2026", "days": 30},
+        {"query": "Dubai startup seed funding raised million 2026", "days": 30},
+        {"query": "Abu Dhabi tech startup funding round 2026", "days": 30},
+        {"query": "UAE venture capital investment startup announced 2026", "days": 30}
     ]
     
     import random
@@ -603,24 +607,25 @@ def run_tracker():
         results = serper_discovery(query, days=niche_obj.get("days", 2))
         
         for idx, item in enumerate(results):
-            link = item.get('link', '')
-            # Adhere to schema and quality
-            if not link or 'crunchbase.com/organization' not in link:
+            link = (item.get('link', '') or '').lower()
+            if not link:
                 continue
 
-            # --- SOURCE FILTER ---
-            link = item.get('link', '').lower()
-            # We prefer Crunchbase, but allow news/official sites since Serper is gone
-            if not any(valid in link for valid in ['crunchbase.com', 'linkedin.com', 'wam.ae', 'zawya.com', 'menabytes.com']):
-                # If it's a direct company site (.ae, .com), we allow it too
-                if not (link.endswith('.ae') or link.endswith('.com')):
-                    continue
-            
-            # Block known garbage
-            if any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/', '/event/']):
-                if 'crunchbase.com' in link: # Only block these if on Crunchbase
-                    continue
-            logger.info(f"  ✅ Valid Crunchbase profile: {link[:80]}")
+            # --- SOURCE FILTER: Crunchbase organization pages auto-pass; other trusted ---
+            # --- domains/company sites pass too. This used to be unreachable dead code ---
+            # --- because an earlier hard check rejected everything that wasn't already  ---
+            # --- a crunchbase.com/organization link -- removed that check.              ---
+            is_crunchbase_org = 'crunchbase.com/organization' in link
+            is_trusted_domain = any(valid in link for valid in ['crunchbase.com', 'linkedin.com', 'wam.ae', 'zawya.com', 'menabytes.com'])
+            is_company_site = link.rstrip('/').split('//')[-1].split('/')[0].endswith(('.ae', '.com'))
+
+            if not (is_crunchbase_org or is_trusted_domain or is_company_site):
+                continue
+
+            # Block known garbage paths, but only enforce strictly on Crunchbase itself
+            if 'crunchbase.com' in link and any(bad in link for bad in ['/blog/', '/news/', '/lists/', '/hub/', '/search/', '/investor/', '/person/', '/event/']):
+                continue
+            logger.info(f"  ✅ Accepted source: {link[:80]}")
                 
             discovery_package = f"Title: {item.get('title')} | Snippet: {item.get('snippet')} | URL: {link}"
             
