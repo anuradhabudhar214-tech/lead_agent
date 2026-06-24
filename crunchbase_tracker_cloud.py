@@ -703,10 +703,18 @@ if __name__ == "__main__":
         update_agent_status("Sleeping 💤 | Watching 24/7 Trigger")
         logger.info("📡 STATUS: Agent entering sleep mode.")
         try:
+            readback = None
+            try:
+                rb = supabase_call("GET", "system_stats", params={"id": "eq.1", "select": "id,status,last_run_at,total_scans,today_scans"})
+                readback = rb
+            except Exception as e:
+                readback = f"readback_failed: {e}"
             with open("debug_status.json", "w") as f:
                 json.dump({
                     "run_at": datetime.now(timezone.utc).isoformat(),
                     "supabase_url_in_use": SUPABASE_URL,
+                    "supabase_key_prefix": (SUPABASE_KEY[:12] + "...") if SUPABASE_KEY else None,
+                    "readback_after_write": readback,
                     "diagnostics": DIAGNOSTICS,
                     "diagnostics_count": len(DIAGNOSTICS)
                 }, f, indent=2)
