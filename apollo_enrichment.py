@@ -130,7 +130,7 @@ def run_enrichment():
     succeeded = 0
     try:
         # Get leads with no contact_name
-        res = supabase.table("uae_leads").select("id, company").is_("contact_name", "null").limit(20).execute()
+        res = supabase.table("uae_leads").select("id, company").is_("contact_name", "null").limit(6).execute()
         if not res.data:
             logger.info("No leads require enrichment at this time.")
             _diag("no_leads_pending")
@@ -140,7 +140,7 @@ def run_enrichment():
             attempted += 1
             if enrich_lead(lead['id'], lead['company']):
                 succeeded += 1
-            time.sleep(2) # Stability pause
+            time.sleep(8) # Stay under free-tier requests-per-minute limit
     except Exception as e:
         logger.error(f"Enrichment Loop Error: {e}")
         _diag("enrichment_loop_exception", error=str(e))
