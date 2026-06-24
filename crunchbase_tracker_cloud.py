@@ -89,9 +89,19 @@ def supabase_call(method, table, data=None, params=None):
         if method == "GET":
             return requests.get(url, headers=headers, params=params).json()
         elif method == "POST":
-            return requests.post(url, headers=headers, json=data)
+            r = requests.post(url, headers=headers, json=data, params=params)
+            if not (200 <= r.status_code < 300):
+                logger.error(f"❌ WRITE FAILED (POST {table}): HTTP {r.status_code} - {r.text[:300]}")
+            else:
+                logger.info(f"✅ WRITE OK (POST {table}): HTTP {r.status_code}")
+            return r
         elif method == "PATCH":
-            return requests.patch(url, headers=headers, json=data, params=params)
+            r = requests.patch(url, headers=headers, json=data, params=params)
+            if not (200 <= r.status_code < 300):
+                logger.error(f"❌ WRITE FAILED (PATCH {table}): HTTP {r.status_code} - {r.text[:300]}")
+            else:
+                logger.info(f"✅ WRITE OK (PATCH {table}): HTTP {r.status_code}")
+            return r
     except Exception as e:
         logger.error(f"❌ Supabase Error: {e}")
     return None
