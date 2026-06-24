@@ -86,7 +86,7 @@ jobs:
         run: |
           git config --global user.name "Desert Intel Bot"
           git config --global user.email "bot@desertintel.ae"
-          git add -f enterprise_leads.csv debug_status.json 2>/dev/null || true
+          git add -f enterprise_leads.csv debug_status.json debug_apollo.json 2>/dev/null || true
           git commit -m "📊 Intelligence Sync: lead backup + diagnostics [skip ci]" || echo "No changes to commit"
           git push origin main || echo "Push skipped"
   # verify-trigger-2
