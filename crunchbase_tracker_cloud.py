@@ -517,6 +517,8 @@ def serper_discovery(query, days=2):
         else:
             logger.error(f"❌ SERPER NO RESULTS: HTTP {r.status_code} - {str(res)[:300]}")
             _diag("serper_no_organic", query=query, status=r.status_code, body=str(res)[:300])
+            logger.warning("⚠️ Serper exhausted/failed on this query — falling back to Gemini grounded search.")
+            return gemini_discovery_grounded(query)
     except Exception as e:
         logger.error(f"❌ serper_discovery error: {e}")
         _diag("serper_exception", query=query, error=str(e))
