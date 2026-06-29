@@ -1,13 +1,13 @@
 {
-  "run_at": "2026-06-29T09:25:34.512134+00:00",
+  "run_at": "2026-06-29T13:50:07.746890+00:00",
   "supabase_url_in_use": "https://zsrlgjufmaecmcbqoidd.supabase.co",
   "supabase_key_prefix": "sb_publishab...",
   "readback_after_write": [
     {
       "id": 1,
       "status": "Sleeping \ud83d\udca4 | Watching 24/7 Trigger",
-      "last_run_at": "2026-06-29T09:25:33.319054+00:00",
-      "total_scans": 49077,
+      "last_run_at": "2026-06-29T13:50:06.868934+00:00",
+      "total_scans": 49092,
       "today_scans": 8
     }
   ],
