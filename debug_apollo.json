@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-07-18T16:12:03.434946+00:00",
+  "run_at": "2026-07-18T17:14:07.946152+00:00",
   "gemini_keys_configured": 1,
   "attempted": 6,
   "succeeded": 0,
@@ -9,72 +9,72 @@
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:09.253635+00:00"
+      "ts": "2026-07-18T17:13:16.694574+00:00"
     },
     {
       "company": "DXBStart",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:09.254652+00:00"
+      "ts": "2026-07-18T17:13:16.695482+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:18.816057+00:00"
+      "ts": "2026-07-18T17:13:25.253218+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:18.817011+00:00"
+      "ts": "2026-07-18T17:13:25.254134+00:00"
     },
     {
-      "company": "Jumio",
+      "company": "UIUX STUDIO",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:28.015712+00:00"
+      "ts": "2026-07-18T17:13:33.831039+00:00"
     },
     {
-      "company": "Jumio",
+      "company": "UIUX STUDIO",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:28.016784+00:00"
+      "ts": "2026-07-18T17:13:33.831952+00:00"
     },
     {
       "company": "Glydways",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:37.093219+00:00"
+      "ts": "2026-07-18T17:13:42.405535+00:00"
     },
     {
       "company": "Glydways",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:37.094216+00:00"
+      "ts": "2026-07-18T17:13:42.406535+00:00"
     },
     {
       "company": "SaviorHire",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:45.879906+00:00"
+      "ts": "2026-07-18T17:13:51.424952+00:00"
     },
     {
       "company": "SaviorHire",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:45.880927+00:00"
+      "ts": "2026-07-18T17:13:51.425775+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-07-18T16:11:55.425268+00:00"
+      "ts": "2026-07-18T17:13:59.937404+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "type": "enrich_no_contact_data",
-      "ts": "2026-07-18T16:11:55.426249+00:00"
+      "ts": "2026-07-18T17:13:59.938385+00:00"
     }
   ],
   "diagnostics_count": 12
