@@ -1,58 +1,58 @@
 {
-  "run_at": "2026-08-04T09:28:22.012573+00:00",
+  "run_at": "2026-08-04T11:39:18.609786+00:00",
   "supabase_url_in_use": "https://zsrlgjufmaecmcbqoidd.supabase.co",
   "supabase_key_prefix": "sb_publishab...",
   "readback_after_write": [
     {
       "id": 1,
       "status": "Sleeping \ud83d\udca4 | Watching 24/7 Trigger",
-      "last_run_at": "2026-08-04T09:28:20.108226+00:00",
-      "total_scans": 56412,
+      "last_run_at": "2026-08-04T11:39:17.343655+00:00",
+      "total_scans": 56427,
       "today_scans": 8
     }
   ],
   "diagnostics": [
     {
-      "query": "UAE venture capital investment startup announced 2026",
+      "query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-04T09:27:34.681834+00:00"
+      "ts": "2026-08-04T11:38:33.559054+00:00"
     },
     {
       "query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-04T09:27:41.886365+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"UAE\" \"Private Equity\" Energy",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-04T09:27:50.929373+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-04T09:27:59.441375+00:00"
+      "ts": "2026-08-04T11:38:40.819715+00:00"
     },
     {
       "query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-04T09:28:06.450983+00:00"
+      "ts": "2026-08-04T11:38:49.052557+00:00"
+    },
+    {
+      "query": "UAE startup raises Series A funding fintech 2026",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-04T11:38:56.516588+00:00"
     },
     {
       "query": "Abu Dhabi tech startup funding round 2026",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-04T09:28:14.629623+00:00"
+      "ts": "2026-08-04T11:39:03.954810+00:00"
+    },
+    {
+      "query": "UAE venture capital investment startup announced 2026",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-04T11:39:11.887824+00:00"
     }
   ],
   "diagnostics_count": 6
