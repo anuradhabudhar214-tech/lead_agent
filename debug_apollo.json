@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-08-10T23:51:04.889796+00:00",
+  "run_at": "2026-08-11T01:07:24.589658+00:00",
   "gemini_keys_configured": 1,
   "attempted": 6,
   "succeeded": 0,
@@ -9,72 +9,72 @@
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:10.907776+00:00"
+      "ts": "2026-08-11T01:06:32.401190+00:00"
     },
     {
       "company": "DXBStart",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:10.908662+00:00"
+      "ts": "2026-08-11T01:06:32.402119+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:20.005559+00:00"
+      "ts": "2026-08-11T01:06:41.120401+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:20.006421+00:00"
+      "ts": "2026-08-11T01:06:41.121346+00:00"
     },
     {
-      "company": "UIUX STUDIO",
-      "code": 429,
-      "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
+      "company": "HireCraft Technologies",
+      "code": 404,
+      "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use a newer model for the latest features and improvements. We recommend you to use the Interactions API (https://",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:29.080763+00:00"
+      "ts": "2026-08-11T01:06:50.275778+00:00"
     },
     {
-      "company": "UIUX STUDIO",
+      "company": "HireCraft Technologies",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:29.081638+00:00"
+      "ts": "2026-08-11T01:06:50.276586+00:00"
     },
     {
       "company": "Glydways",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:38.712688+00:00"
+      "ts": "2026-08-11T01:06:59.321101+00:00"
     },
     {
       "company": "Glydways",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:38.713586+00:00"
+      "ts": "2026-08-11T01:06:59.322056+00:00"
     },
     {
       "company": "SaviorHire",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:48.213030+00:00"
+      "ts": "2026-08-11T01:07:07.948671+00:00"
     },
     {
       "company": "SaviorHire",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:48.213927+00:00"
+      "ts": "2026-08-11T01:07:07.949630+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "code": 429,
       "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usa",
       "type": "gemini_api_error",
-      "ts": "2026-08-10T23:50:56.880273+00:00"
+      "ts": "2026-08-11T01:07:16.580059+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-10T23:50:56.881117+00:00"
+      "ts": "2026-08-11T01:07:16.580988+00:00"
     }
   ],
   "diagnostics_count": 12
