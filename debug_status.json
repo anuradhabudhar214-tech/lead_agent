@@ -1,13 +1,13 @@
 {
-  "run_at": "2026-08-20T09:58:31.059401+00:00",
+  "run_at": "2026-08-20T10:28:39.004588+00:00",
   "supabase_url_in_use": "https://zsrlgjufmaecmcbqoidd.supabase.co",
   "supabase_key_prefix": "sb_publishab...",
   "readback_after_write": [
     {
       "id": 1,
       "status": "Sleeping \ud83d\udca4 | Watching 24/7 Trigger",
-      "last_run_at": "2026-08-20T09:58:30.266152+00:00",
-      "total_scans": 63447,
+      "last_run_at": "2026-08-20T10:28:37.577747+00:00",
+      "total_scans": 63462,
       "today_scans": 8
     }
   ],
@@ -17,42 +17,42 @@
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:02.344411+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:05.020602+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:07.647671+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"Dubai\" \"Seed\" PropTech",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:10.340286+00:00"
+      "ts": "2026-08-20T10:28:06.998408+00:00"
     },
     {
       "query": "UAE venture capital investment startup announced 2026",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:20.648334+00:00"
+      "ts": "2026-08-20T10:28:19.923545+00:00"
+    },
+    {
+      "query": "UAE startup raises Series A funding fintech 2026",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-20T10:28:24.230880+00:00"
+    },
+    {
+      "query": "site:crunchbase.com/organization \"Dubai\" \"Seed\" PropTech",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-20T10:28:28.139464+00:00"
     },
     {
       "query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T09:58:28.872373+00:00"
+      "ts": "2026-08-20T10:28:31.650035+00:00"
+    },
+    {
+      "query": "Dubai startup seed funding raised million 2026",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-20T10:28:36.207569+00:00"
     }
   ],
   "diagnostics_count": 6
