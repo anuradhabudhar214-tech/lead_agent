@@ -1,58 +1,58 @@
 {
-  "run_at": "2026-08-20T22:18:42.282122+00:00",
+  "run_at": "2026-08-20T22:52:40.727049+00:00",
   "supabase_url_in_use": "https://zsrlgjufmaecmcbqoidd.supabase.co",
   "supabase_key_prefix": "sb_publishab...",
   "readback_after_write": [
     {
       "id": 1,
       "status": "Sleeping \ud83d\udca4 | Watching 24/7 Trigger",
-      "last_run_at": "2026-08-20T22:18:41.349432+00:00",
-      "total_scans": 63762,
+      "last_run_at": "2026-08-20T22:52:39.534978+00:00",
+      "total_scans": 63777,
       "today_scans": 8
     }
   ],
   "diagnostics": [
     {
-      "query": "site:crunchbase.com/organization \"UAE\" \"Private Equity\" Energy",
+      "query": "site:crunchbase.com/organization \"Dubai\" \"Series A\" fintech",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:12.656148+00:00"
+      "ts": "2026-08-20T22:52:16.396602+00:00"
     },
     {
       "query": "UAE venture capital investment startup announced 2026",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:21.781116+00:00"
+      "ts": "2026-08-20T22:52:21.326450+00:00"
     },
     {
-      "query": "Dubai startup seed funding raised million 2026",
+      "query": "UAE startup raises Series A funding fintech 2026",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:25.860123+00:00"
-    },
-    {
-      "query": "site:crunchbase.com/organization \"Dubai\" \"Venture Round\" Tech",
-      "status": 400,
-      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
-      "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:28.955488+00:00"
+      "ts": "2026-08-20T22:52:25.517464+00:00"
     },
     {
       "query": "site:crunchbase.com/organization \"UAE\" \"Venture\" Logistics",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:31.874444+00:00"
+      "ts": "2026-08-20T22:52:29.197712+00:00"
     },
     {
-      "query": "Abu Dhabi tech startup funding round 2026",
+      "query": "site:crunchbase.com/organization \"Abu Dhabi\" \"Seed\" AI",
       "status": 400,
       "body": "{'message': 'Not enough credits', 'statusCode': 400}",
       "type": "serper_no_organic",
-      "ts": "2026-08-20T22:18:39.978666+00:00"
+      "ts": "2026-08-20T22:52:33.524685+00:00"
+    },
+    {
+      "query": "Dubai startup seed funding raised million 2026",
+      "status": 400,
+      "body": "{'message': 'Not enough credits', 'statusCode': 400}",
+      "type": "serper_no_organic",
+      "ts": "2026-08-20T22:52:37.776550+00:00"
     }
   ],
   "diagnostics_count": 6
