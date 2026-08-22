@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-08-22T08:46:42.942306+00:00",
+  "run_at": "2026-08-22T09:06:22.354646+00:00",
   "gemini_keys_configured": 1,
   "attempted": 6,
   "succeeded": 0,
@@ -9,72 +9,72 @@
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:45:51.575743+00:00"
+      "ts": "2026-08-22T09:05:30.540295+00:00"
     },
     {
       "company": "DXBStart",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:45:51.576336+00:00"
+      "ts": "2026-08-22T09:05:30.541090+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:46:00.554190+00:00"
+      "ts": "2026-08-22T09:05:39.173218+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:46:00.554807+00:00"
+      "ts": "2026-08-22T09:05:39.173975+00:00"
     },
     {
-      "company": "OnlyFans Community Guidelines",
+      "company": "PeekABU \u2013 ABUniverse United States",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:46:09.177051+00:00"
+      "ts": "2026-08-22T09:05:48.441723+00:00"
     },
     {
-      "company": "OnlyFans Community Guidelines",
+      "company": "PeekABU \u2013 ABUniverse United States",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:46:09.177701+00:00"
+      "ts": "2026-08-22T09:05:48.442484+00:00"
     },
     {
       "company": "Glydways",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:46:17.777693+00:00"
+      "ts": "2026-08-22T09:05:57.060741+00:00"
     },
     {
       "company": "Glydways",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:46:17.778253+00:00"
+      "ts": "2026-08-22T09:05:57.061507+00:00"
     },
     {
       "company": "SaviorHire",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:46:26.362799+00:00"
+      "ts": "2026-08-22T09:06:05.694245+00:00"
     },
     {
       "company": "SaviorHire",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:46:26.363443+00:00"
+      "ts": "2026-08-22T09:06:05.694996+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements.",
       "type": "gemini_api_error",
-      "ts": "2026-08-22T08:46:34.933012+00:00"
+      "ts": "2026-08-22T09:06:14.345170+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "type": "enrich_no_contact_data",
-      "ts": "2026-08-22T08:46:34.933681+00:00"
+      "ts": "2026-08-22T09:06:14.345924+00:00"
     }
   ],
   "diagnostics_count": 12
