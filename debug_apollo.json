@@ -1,5 +1,5 @@
 {
-  "run_at": "2026-11-09T02:52:16.240982+00:00",
+  "run_at": "2026-11-09T10:43:25.988663+00:00",
   "gemini_keys_configured": 1,
   "attempted": 6,
   "succeeded": 0,
@@ -9,72 +9,72 @@
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:51:16.956667+00:00"
+      "ts": "2026-11-09T10:42:35.432341+00:00"
     },
     {
       "company": "DXBStart",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:51:16.957327+00:00"
+      "ts": "2026-11-09T10:42:35.433122+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:51:25.568698+00:00"
+      "ts": "2026-11-09T10:42:43.924390+00:00"
     },
     {
       "company": "IRIS STAR Technologies",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:51:25.569456+00:00"
+      "ts": "2026-11-09T10:42:43.925215+00:00"
     },
     {
-      "company": "Leyla",
+      "company": "Shannon Marie McMinimee Profile",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:51:42.597278+00:00"
+      "ts": "2026-11-09T10:42:52.421052+00:00"
     },
     {
-      "company": "Leyla",
+      "company": "Shannon Marie McMinimee Profile",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:51:42.598024+00:00"
+      "ts": "2026-11-09T10:42:52.421907+00:00"
     },
     {
       "company": "Glydways",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:51:51.153598+00:00"
+      "ts": "2026-11-09T10:43:00.898756+00:00"
     },
     {
       "company": "Glydways",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:51:51.154396+00:00"
+      "ts": "2026-11-09T10:43:00.899574+00:00"
     },
     {
       "company": "SaviorHire",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:51:59.714049+00:00"
+      "ts": "2026-11-09T10:43:09.413106+00:00"
     },
     {
       "company": "SaviorHire",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:51:59.714895+00:00"
+      "ts": "2026-11-09T10:43:09.413962+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "code": 404,
       "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API",
       "type": "gemini_api_error",
-      "ts": "2026-11-09T02:52:08.234442+00:00"
+      "ts": "2026-11-09T10:43:17.979538+00:00"
     },
     {
       "company": "Dubai Startup Ecosystem",
       "type": "enrich_no_contact_data",
-      "ts": "2026-11-09T02:52:08.235105+00:00"
+      "ts": "2026-11-09T10:43:17.980317+00:00"
     }
   ],
   "diagnostics_count": 12
